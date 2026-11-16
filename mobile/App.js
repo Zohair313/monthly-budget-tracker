@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { useFonts } from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { BudgetProvider } from './src/context/BudgetContext';
 import AuthScreen from './src/screens/AuthScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import { palette } from './src/theme/colors';
 
-// Fallback Error Boundary to prevent any blank white screen on native iOS
+// Fallback Error Boundary to display runtime errors gracefully
 class ErrorBoundary extends Component {
   state = { hasError: false, error: null };
 
@@ -71,18 +69,8 @@ function RootNavigator() {
 }
 
 export default function App() {
-  const [fontsLoaded] = useFonts(Ionicons.font);
-
-  if (!fontsLoaded) {
-    return (
-      <View style={[styles.rootFill, { backgroundColor: '#0B0D14', alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator size="large" color="#3B82F6" />
-      </View>
-    );
-  }
-
   return (
-    <SafeAreaProvider style={styles.rootFill}>
+    <SafeAreaProvider initialWindowMetrics={initialWindowMetrics} style={styles.rootFill}>
       <ErrorBoundary>
         <AuthProvider>
           <RootNavigator />
