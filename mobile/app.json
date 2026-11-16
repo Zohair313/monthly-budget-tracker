@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Budget Tracker",
-    "slug": "monthly-budget-tracker",
-    "owner": "shah-1100",
+    "slug": "shah",
+    "owner": "shah-1100s-team",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
@@ -23,6 +23,11 @@
     "plugins": [
       "expo-font",
       "expo-status-bar"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "901c114a-9fb4-460c-93ea-27b88692a3ed"
+      }
+    }
   }
 }
