@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Budget Tracker",
+    "slug": "monthly-budget-tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#090A0F"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.budgettracker.mobile"
+    },
+    "android": {
+      "package": "com.budgettracker.mobile"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
