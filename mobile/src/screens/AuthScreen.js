@@ -114,26 +114,26 @@ export default function AuthScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Brand / Hero */}
+        {/* Brand / Hero Section with 3D Inflated Coin */}
         <View style={styles.heroSection}>
           <View
             style={[
               styles.brandIconWrap,
               {
                 backgroundColor: colors.primary,
-                borderTopColor: 'rgba(255, 255, 255, 0.45)',
-                borderLeftColor: 'rgba(255, 255, 255, 0.25)',
+                borderTopColor: 'rgba(255, 255, 255, 0.60)',
+                borderLeftColor: 'rgba(255, 255, 255, 0.35)',
                 borderRightColor: colors.primaryDark,
                 borderBottomColor: colors.primaryDark,
                 shadowColor: colors.primaryDark
               }
             ]}
           >
-            <Ionicons name="wallet" size={36} color="#FFFFFF" />
+            <Ionicons name="wallet" size={40} color="#FFFFFF" />
           </View>
           <Text style={[styles.heroTitle, { color: colors.text }]}>Budget Tracker</Text>
           <Text style={[styles.heroSubtitle, { color: colors.textSecondary }]}>
-            Monthly Income & Expense Management
+            Smart Monthly Financial Management
           </Text>
         </View>
 
@@ -145,8 +145,8 @@ export default function AuthScreen() {
               styles.tabsWrap,
               {
                 backgroundColor: colors.surfaceSubtle,
-                borderTopColor: themeMode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(148,163,184,0.4)',
-                borderBottomColor: themeMode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)'
+                borderTopColor: themeMode === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(148,163,184,0.45)',
+                borderBottomColor: themeMode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.95)'
               }
             ]}
           >
@@ -175,7 +175,7 @@ export default function AuthScreen() {
                   styles.tabBtnText,
                   {
                     color: !isRegister ? colors.text : colors.textSecondary,
-                    fontWeight: !isRegister ? '800' : '600'
+                    fontWeight: !isRegister ? '900' : '600'
                   }
                 ]}
               >
@@ -208,7 +208,7 @@ export default function AuthScreen() {
                   styles.tabBtnText,
                   {
                     color: isRegister ? colors.text : colors.textSecondary,
-                    fontWeight: isRegister ? '800' : '600'
+                    fontWeight: isRegister ? '900' : '600'
                   }
                 ]}
               >
@@ -316,7 +316,7 @@ export default function AuthScreen() {
               ]}
               onPress={handleFillDemo}
             >
-              <Ionicons name="flash-outline" size={14} color={colors.primary} />
+              <Ionicons name="flash-outline" size={15} color={colors.primary} />
               <Text style={[styles.demoFillText, { color: colors.primary }]}>
                 Fill Demo Credentials (demo@budgettracker.com)
               </Text>
@@ -334,9 +334,9 @@ export default function AuthScreen() {
               ]}
               onPress={toggleDemoMode}
             >
-              <Ionicons name="leaf-outline" size={14} color={colors.income} />
+              <Ionicons name="leaf-outline" size={15} color={colors.income} />
               <Text style={[styles.offlineDemoText, { color: colors.income }]}>
-                {demoMode ? 'Switch to Live Database' : '⚡ Try Instant Offline Demo Mode'}
+                {demoMode ? 'Switch to Live PostgreSQL' : '⚡ Instant Offline Demo Mode'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -371,17 +371,17 @@ const styles = StyleSheet.create({
     maxWidth: 420,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 8,
+    gap: 10,
     marginBottom: 16
   },
   clayTopIconBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     borderTopWidth: 2,
     borderLeftWidth: 1.5,
     borderRightWidth: 1.5,
-    borderBottomWidth: 3,
+    borderBottomWidth: 3.5,
     alignItems: 'center',
     justifyContent: 'center',
     shadowOffset: { width: 0, height: 3 },
@@ -391,57 +391,58 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     alignItems: 'center',
-    marginBottom: 20
+    marginBottom: 22
   },
   brandIconWrap: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    borderTopWidth: 2.5,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderTopWidth: 3,
     borderLeftWidth: 2,
     borderRightWidth: 2,
-    borderBottomWidth: 5,
+    borderBottomWidth: 6,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    elevation: 8
+    marginBottom: 14,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.40,
+    shadowRadius: 16,
+    elevation: 9
   },
   heroTitle: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: '900',
-    letterSpacing: -0.6
+    letterSpacing: -0.8
   },
   heroSubtitle: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '600',
     marginTop: 4
   },
   authCard: {
     width: '100%',
     maxWidth: 420,
-    padding: 22
+    padding: 24,
+    borderRadius: 28
   },
   tabsWrap: {
     flexDirection: 'row',
-    borderRadius: 16,
+    borderRadius: 18,
     padding: 4,
-    marginBottom: 20,
+    marginBottom: 22,
     borderWidth: 1.5
   },
   tabBtn: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 11,
     alignItems: 'center',
-    borderRadius: 12
+    borderRadius: 14
   },
   tabBtnActive: {
     borderTopWidth: 2,
     borderLeftWidth: 1.5,
     borderRightWidth: 1.5,
-    borderBottomWidth: 3,
+    borderBottomWidth: 3.5,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -451,28 +452,28 @@ const styles = StyleSheet.create({
     fontSize: 13
   },
   formArea: {
-    gap: 14
+    gap: 16
   },
   inputGroup: {
-    gap: 6
+    gap: 7
   },
   label: {
     fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.7
+    fontWeight: '900',
+    letterSpacing: 0.8
   },
   inputField: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 14,
-    paddingVertical: 12
+    paddingHorizontal: 15,
+    paddingVertical: 13
   },
   fieldIcon: {
     marginRight: 10
   },
   input: {
     flex: 1,
-    fontSize: 14,
+    fontSize: 15,
     padding: 0
   },
   eyeBtn: {
@@ -482,54 +483,54 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     paddingVertical: 10
   },
   errorMsgText: {
     flex: 1,
     fontSize: 11,
-    fontWeight: '700',
-    lineHeight: 15
+    fontWeight: '800',
+    lineHeight: 16
   },
   submitButton: {
-    paddingVertical: 14,
+    paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 4
+    marginTop: 6
   },
   submitButtonText: {
     color: '#FFFFFF',
     fontSize: 15,
-    fontWeight: '800'
+    fontWeight: '900'
   },
   demoFillBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 10
+    gap: 7,
+    paddingVertical: 11
   },
   demoFillText: {
-    fontSize: 11,
-    fontWeight: '700'
+    fontSize: 12,
+    fontWeight: '800'
   },
   offlineDemoBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 10
+    gap: 7,
+    paddingVertical: 11
   },
   offlineDemoText: {
     fontSize: 12,
-    fontWeight: '800'
+    fontWeight: '900'
   },
   footerNote: {
-    marginTop: 24,
+    marginTop: 26,
     alignItems: 'center'
   },
   footerText: {
     fontSize: 11,
-    fontWeight: '500'
+    fontWeight: '600'
   }
 });

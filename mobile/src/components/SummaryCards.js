@@ -14,7 +14,6 @@ export default function SummaryCards({ onOpenSetIncome }) {
   const { summary, incomeData, expenses } = useBudget();
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.dark;
-  const clayCard = getClayCard(themeMode);
   const clayPill = getClayPill(themeMode);
 
   const totalIncome = summary.total_income || 0;
@@ -24,113 +23,124 @@ export default function SummaryCards({ onOpenSetIncome }) {
   const isOverBudget = remainingBalance < 0;
   const isBudgetAlert = summary.is_budget_alert || burnRate >= 80;
 
-  // Determine remaining card status styling
-  let balanceStatusColor = colors.income;
-  let balanceStatusBg = colors.incomeLight;
-  let balanceStatusBorder = colors.incomeDark;
+  // Determine Hero Card Dynamic Clay Persona
+  let heroBg = colors.heroHealthyBg;
+  let heroBottom = colors.heroHealthyBottom;
+  let heroGleam = colors.heroHealthyGleam;
   let balanceStatusLabel = `Healthy (${burnRate}% spent)`;
+  let statusPillBg = 'rgba(255, 255, 255, 0.22)';
+  let statusPillText = '#FFFFFF';
 
   if (isOverBudget) {
-    balanceStatusColor = colors.expense;
-    balanceStatusBg = colors.expenseLight;
-    balanceStatusBorder = colors.expenseDark;
+    heroBg = colors.heroDeficitBg;
+    heroBottom = colors.heroDeficitBottom;
+    heroGleam = colors.heroDeficitGleam;
     balanceStatusLabel = `Deficit (-Rs. ${Math.abs(remainingBalance).toLocaleString()})`;
+    statusPillBg = 'rgba(0, 0, 0, 0.35)';
   } else if (isBudgetAlert) {
-    balanceStatusColor = colors.warning;
-    balanceStatusBg = colors.warningLight;
-    balanceStatusBorder = colors.warningDark;
+    heroBg = colors.heroWarningBg;
+    heroBottom = colors.heroWarningBottom;
+    heroGleam = colors.heroWarningGleam;
     balanceStatusLabel = `Caution: ${burnRate}% spent`;
+    statusPillBg = 'rgba(0, 0, 0, 0.30)';
   }
 
   return (
     <View style={styles.container}>
-      {/* 1. Main Hero Card: Remaining Balance */}
+      {/* 1. Main Signature Hero Clay Pillow: Remaining Balance */}
       <View
         style={[
           styles.mainBalanceCard,
-          clayCard,
-          isOverBudget && {
-            borderBottomColor: colors.expenseDark,
-            shadowColor: colors.expenseDark
+          {
+            backgroundColor: heroBg,
+            borderTopColor: 'rgba(255, 255, 255, 0.60)',
+            borderLeftColor: 'rgba(255, 255, 255, 0.40)',
+            borderRightColor: heroBottom,
+            borderBottomColor: heroBottom,
+            shadowColor: heroBottom
           }
         ]}
       >
+        {/* Subtle decorative clay gleam circle in corner */}
+        <View style={[styles.cornerGleam, { backgroundColor: heroGleam }]} />
+
         <View style={styles.cardHeaderRow}>
           <View style={styles.cardTitleWrap}>
-            <View style={[styles.miniDot, { backgroundColor: balanceStatusColor }]} />
-            <Text style={[styles.cardOverline, { color: colors.textSecondary }]}>REMAINING BALANCE</Text>
+            <View style={styles.glowDot} />
+            <Text style={styles.cardOverline}>REMAINING BALANCE</Text>
           </View>
           <View
             style={[
               styles.statusPill,
               clayPill,
               {
-                backgroundColor: balanceStatusBg,
-                borderBottomColor: balanceStatusBorder
+                backgroundColor: statusPillBg,
+                borderTopColor: 'rgba(255, 255, 255, 0.45)',
+                borderBottomColor: 'rgba(0, 0, 0, 0.35)'
               }
             ]}
           >
-            <Text style={[styles.statusPillText, { color: balanceStatusColor }]}>
+            <Text style={[styles.statusPillText, { color: statusPillText }]}>
               {balanceStatusLabel}
             </Text>
           </View>
         </View>
 
-        <Text style={[styles.mainBalanceAmount, { color: isOverBudget ? colors.expense : colors.text }]}>
+        <Text style={styles.mainBalanceAmount}>
           {formatCurrency(remainingBalance)}
         </Text>
 
-        {/* Debossed Clay Progress Track */}
-        <View
-          style={[
-            styles.progressTrack,
-            {
-              backgroundColor: colors.surfaceSubtle,
-              borderTopColor: themeMode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(148,163,184,0.4)',
-              borderBottomColor: themeMode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)'
-            }
-          ]}
-        >
+        {/* Debossed Grooved Progress Track */}
+        <View style={styles.progressTrack}>
           <View
             style={[
               styles.progressBar,
               {
                 width: `${Math.min(burnRate, 100)}%`,
-                backgroundColor: isOverBudget ? colors.expense : (isBudgetAlert ? colors.warning : colors.income),
-                borderTopColor: 'rgba(255, 255, 255, 0.45)',
-                borderBottomColor: isOverBudget ? colors.expenseDark : (isBudgetAlert ? colors.warningDark : colors.incomeDark)
+                backgroundColor: isOverBudget ? '#FDA4AF' : (isBudgetAlert ? '#FDE68A' : '#6EE7B7')
               }
             ]}
           />
         </View>
 
         <View style={styles.progressLabelRow}>
-          <Text style={[styles.progressSubtext, { color: colors.textTertiary }]}>
+          <Text style={styles.progressSubtext}>
             {burnRate}% of monthly income used
           </Text>
-          <Text style={[styles.progressSubtext, { color: colors.textTertiary }]}>
+          <Text style={styles.progressSubtext}>
             {totalIncome > 0 ? `${formatCurrency(Math.max(0, remainingBalance))} left` : 'No income set'}
           </Text>
         </View>
       </View>
 
-      {/* 2 & 3. Side-by-Side Puffy Clay Cards */}
+      {/* 2 & 3. Side-by-Side Dual Clay Tablets */}
       <View style={styles.dualCardRow}>
-        {/* Total Income Card */}
-        <View style={[styles.subCard, clayCard]}>
+        {/* Total Income Clay Tablet */}
+        <View
+          style={[
+            styles.subCard,
+            {
+              backgroundColor: colors.incomeSurface,
+              borderTopColor: colors.clayBorderTop,
+              borderLeftColor: colors.clayBorderLeft,
+              borderRightColor: colors.incomeBorder,
+              borderBottomColor: colors.incomeDark,
+              shadowColor: colors.incomeDark
+            }
+          ]}
+        >
           <View style={styles.subCardTop}>
             <View
               style={[
                 styles.iconCoin,
                 {
-                  backgroundColor: colors.incomeLight,
-                  borderTopColor: 'rgba(255, 255, 255, 0.45)',
-                  borderBottomColor: colors.incomeDark,
-                  shadowColor: colors.incomeDark
+                  backgroundColor: colors.income,
+                  borderTopColor: 'rgba(255, 255, 255, 0.60)',
+                  borderBottomColor: colors.incomeDark
                 }
               ]}
             >
-              <Ionicons name="arrow-down-circle-outline" size={18} color={colors.income} />
+              <Ionicons name="arrow-down" size={18} color="#FFFFFF" />
             </View>
             <TouchableOpacity
               onPress={onOpenSetIncome}
@@ -138,14 +148,14 @@ export default function SummaryCards({ onOpenSetIncome }) {
                 styles.editIncomeButton,
                 clayPill,
                 {
-                  backgroundColor: colors.primaryLight,
-                  borderBottomColor: colors.primaryDark
+                  backgroundColor: colors.surface,
+                  borderBottomColor: colors.incomeDark
                 }
               ]}
               accessibilityLabel="Edit Income"
             >
-              <Ionicons name="create-outline" size={13} color={colors.primary} />
-              <Text style={[styles.editIncomeText, { color: colors.primary }]}>
+              <Ionicons name="create-outline" size={13} color={colors.income} />
+              <Text style={[styles.editIncomeText, { color: colors.income }]}>
                 {incomeData ? 'Edit' : 'Set'}
               </Text>
             </TouchableOpacity>
@@ -160,32 +170,44 @@ export default function SummaryCards({ onOpenSetIncome }) {
           </Text>
         </View>
 
-        {/* Total Expense Card */}
-        <View style={[styles.subCard, clayCard]}>
+        {/* Total Expense Clay Tablet */}
+        <View
+          style={[
+            styles.subCard,
+            {
+              backgroundColor: colors.expenseSurface,
+              borderTopColor: colors.clayBorderTop,
+              borderLeftColor: colors.clayBorderLeft,
+              borderRightColor: colors.expenseBorder,
+              borderBottomColor: colors.expenseDark,
+              shadowColor: colors.expenseDark
+            }
+          ]}
+        >
           <View style={styles.subCardTop}>
             <View
               style={[
                 styles.iconCoin,
                 {
-                  backgroundColor: colors.expenseLight,
-                  borderTopColor: 'rgba(255, 255, 255, 0.45)',
-                  borderBottomColor: colors.expenseDark,
-                  shadowColor: colors.expenseDark
+                  backgroundColor: colors.expense,
+                  borderTopColor: 'rgba(255, 255, 255, 0.60)',
+                  borderBottomColor: colors.expenseDark
                 }
               ]}
             >
-              <Ionicons name="arrow-up-circle-outline" size={18} color={colors.expense} />
+              <Ionicons name="arrow-up" size={18} color="#FFFFFF" />
             </View>
             <View
               style={[
                 styles.countBadge,
                 clayPill,
                 {
-                  backgroundColor: colors.surfaceSubtle
+                  backgroundColor: colors.surface,
+                  borderBottomColor: colors.expenseDark
                 }
               ]}
             >
-              <Text style={[styles.countBadgeText, { color: colors.textSecondary }]}>
+              <Text style={[styles.countBadgeText, { color: colors.expense }]}>
                 {expenses.length} {expenses.length === 1 ? 'item' : 'items'}
               </Text>
             </View>
@@ -211,7 +233,26 @@ const styles = StyleSheet.create({
     gap: 14
   },
   mainBalanceCard: {
-    padding: 20
+    position: 'relative',
+    overflow: 'hidden',
+    padding: 22,
+    borderRadius: 28,
+    borderTopWidth: 3,
+    borderLeftWidth: 2,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 6,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
+    elevation: 10
+  },
+  cornerGleam: {
+    position: 'absolute',
+    top: -40,
+    right: -40,
+    width: 140,
+    height: 140,
+    borderRadius: 70
   },
   cardHeaderRow: {
     flexDirection: 'row',
@@ -222,45 +263,60 @@ const styles = StyleSheet.create({
   cardTitleWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 7
+    gap: 8
   },
-  miniDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4
+  glowDot: {
+    width: 9,
+    height: 9,
+    borderRadius: 4.5,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 3
   },
   cardOverline: {
     fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 0.9
+    fontWeight: '900',
+    letterSpacing: 1.2,
+    color: 'rgba(255, 255, 255, 0.9)'
   },
   statusPill: {
-    paddingHorizontal: 10,
-    paddingVertical: 3
+    paddingHorizontal: 12,
+    paddingVertical: 4
   },
   statusPillText: {
     fontSize: 11,
-    fontWeight: '700'
+    fontWeight: '800'
   },
   mainBalanceAmount: {
-    fontSize: 34,
+    fontSize: 38,
     fontWeight: '900',
-    letterSpacing: -1,
-    marginVertical: 4
+    letterSpacing: -1.2,
+    color: '#FFFFFF',
+    marginVertical: 6,
+    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6
   },
   progressTrack: {
-    height: 10,
-    borderRadius: 5,
-    marginTop: 12,
+    height: 12,
+    borderRadius: 6,
+    marginTop: 14,
     marginBottom: 8,
-    borderWidth: 1.5,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    borderTopWidth: 2,
+    borderBottomWidth: 1.5,
+    borderTopColor: 'rgba(0, 0, 0, 0.35)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.25)',
     overflow: 'hidden'
   },
   progressBar: {
     height: '100%',
-    borderRadius: 5,
+    borderRadius: 6,
     borderTopWidth: 1.5,
-    borderBottomWidth: 1.5
+    borderTopColor: 'rgba(255, 255, 255, 0.60)'
   },
   progressLabelRow: {
     flexDirection: 'row',
@@ -268,8 +324,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   progressSubtext: {
-    fontSize: 11,
-    fontWeight: '600'
+    fontSize: 12,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.85)'
   },
   dualCardRow: {
     flexDirection: 'row',
@@ -277,62 +334,71 @@ const styles = StyleSheet.create({
   },
   subCard: {
     flex: 1,
-    padding: 16
+    padding: 16,
+    borderRadius: 24,
+    borderTopWidth: 2.5,
+    borderLeftWidth: 2,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 5,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 14,
+    elevation: 8
   },
   subCardTop: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10
+    marginBottom: 12
   },
   iconCoin: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     borderTopWidth: 2,
     borderLeftWidth: 1.5,
     borderRightWidth: 1.5,
-    borderBottomWidth: 3,
+    borderBottomWidth: 3.5,
     alignItems: 'center',
     justifyContent: 'center',
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 3
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4
   },
   editIncomeButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 4
+    paddingHorizontal: 11,
+    paddingVertical: 5
   },
   editIncomeText: {
     fontSize: 11,
-    fontWeight: '700'
+    fontWeight: '800'
   },
   countBadge: {
-    paddingHorizontal: 9,
-    paddingVertical: 3
+    paddingHorizontal: 10,
+    paddingVertical: 4
   },
   countBadgeText: {
     fontSize: 10,
-    fontWeight: '700'
+    fontWeight: '800'
   },
   subCardLabel: {
     fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.7,
+    fontWeight: '900',
+    letterSpacing: 0.8,
     marginBottom: 4
   },
   subCardAmount: {
-    fontSize: 20,
+    fontSize: 21,
     fontWeight: '900',
-    letterSpacing: -0.5
+    letterSpacing: -0.6
   },
   subCardHint: {
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: '600',
     marginTop: 4
   }
 });
