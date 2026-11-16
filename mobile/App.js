@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useFonts } from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { BudgetProvider } from './src/context/BudgetContext';
 import AuthScreen from './src/screens/AuthScreen';
@@ -69,6 +71,16 @@ function RootNavigator() {
 }
 
 export default function App() {
+  const [fontsLoaded] = useFonts(Ionicons.font);
+
+  if (!fontsLoaded) {
+    return (
+      <View style={[styles.rootFill, { backgroundColor: '#0B0D14', alignItems: 'center', justifyContent: 'center' }]}>
+        <ActivityIndicator size="large" color="#3B82F6" />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaProvider style={styles.rootFill}>
       <ErrorBoundary>
