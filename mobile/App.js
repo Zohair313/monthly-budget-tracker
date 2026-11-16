@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { BudgetProvider } from './src/context/BudgetContext';
 import AuthScreen from './src/screens/AuthScreen';
@@ -70,7 +70,7 @@ function RootNavigator() {
 
 export default function App() {
   return (
-    <SafeAreaProvider initialWindowMetrics={initialWindowMetrics} style={styles.rootFill}>
+    <SafeAreaProvider style={styles.rootFill}>
       <ErrorBoundary>
         <AuthProvider>
           <RootNavigator />
