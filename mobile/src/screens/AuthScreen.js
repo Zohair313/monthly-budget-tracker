@@ -17,7 +17,7 @@ import ServerConfigModal from '../components/ServerConfigModal';
 
 export default function AuthScreen() {
   const { login, register, themeMode, toggleTheme, demoMode, toggleDemoMode } = useAuth();
-  const colors = palette[themeMode] || palette.dark;
+  const colors = palette[themeMode] || palette.light;
   const clayCard = getClayCard(themeMode);
   const clayButton = getClayButton(themeMode, colors.primary, colors.primaryDark);
   const clayInput = getClayInput(themeMode);
@@ -68,7 +68,7 @@ export default function AuthScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={[styles.container, { backgroundColor: colors.background }]}
+      style={[styles.container, { backgroundColor: colors.brandViolet }]}
     >
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Top bar with Theme and Server Config */}
@@ -77,12 +77,9 @@ export default function AuthScreen() {
             style={[
               styles.clayTopIconBtn,
               {
-                backgroundColor: colors.surfaceSubtle,
-                borderTopColor: colors.clayBorderTop,
-                borderLeftColor: colors.clayBorderLeft,
-                borderRightColor: colors.clayBorderRight,
-                borderBottomColor: colors.clayBorderBottom,
-                shadowColor: colors.clayShadowColor
+                backgroundColor: 'rgba(255, 255, 255, 0.22)',
+                borderTopColor: 'rgba(255, 255, 255, 0.50)',
+                borderBottomColor: 'rgba(0, 0, 0, 0.25)'
               }
             ]}
             onPress={toggleTheme}
@@ -91,7 +88,7 @@ export default function AuthScreen() {
             <Ionicons
               name={themeMode === 'dark' ? 'sunny-outline' : 'moon-outline'}
               size={18}
-              color={themeMode === 'dark' ? '#FBBF24' : colors.text}
+              color="#FFFFFF"
             />
           </TouchableOpacity>
 
@@ -99,45 +96,42 @@ export default function AuthScreen() {
             style={[
               styles.clayTopIconBtn,
               {
-                backgroundColor: colors.surfaceSubtle,
-                borderTopColor: colors.clayBorderTop,
-                borderLeftColor: colors.clayBorderLeft,
-                borderRightColor: colors.clayBorderRight,
-                borderBottomColor: colors.clayBorderBottom,
-                shadowColor: colors.clayShadowColor
+                backgroundColor: 'rgba(255, 255, 255, 0.22)',
+                borderTopColor: 'rgba(255, 255, 255, 0.50)',
+                borderBottomColor: 'rgba(0, 0, 0, 0.25)'
               }
             ]}
             onPress={() => setShowServerConfig(true)}
             accessibilityLabel="Server Settings"
           >
-            <Ionicons name="server-outline" size={18} color={colors.textSecondary} />
+            <Ionicons name="server-outline" size={18} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
 
-        {/* Brand / Hero Section with 3D Inflated Coin */}
+        {/* Brand Hero with 3D White Inflated Coin on Violet Canvas */}
         <View style={styles.heroSection}>
           <View
             style={[
               styles.brandIconWrap,
               {
-                backgroundColor: colors.primary,
-                borderTopColor: 'rgba(255, 255, 255, 0.60)',
-                borderLeftColor: 'rgba(255, 255, 255, 0.35)',
-                borderRightColor: colors.primaryDark,
-                borderBottomColor: colors.primaryDark,
-                shadowColor: colors.primaryDark
+                backgroundColor: '#FFFFFF',
+                borderTopColor: '#FFFFFF',
+                borderLeftColor: 'rgba(255, 255, 255, 0.9)',
+                borderRightColor: '#E2E8F0',
+                borderBottomColor: '#CBD5E1',
+                shadowColor: 'rgba(0, 0, 0, 0.35)'
               }
             ]}
           >
-            <Ionicons name="wallet" size={40} color="#FFFFFF" />
+            <Ionicons name="wallet" size={42} color={colors.primary} />
           </View>
-          <Text style={[styles.heroTitle, { color: colors.text }]}>Budget Tracker</Text>
-          <Text style={[styles.heroSubtitle, { color: colors.textSecondary }]}>
+          <Text style={styles.heroTitle}>Budget Tracker</Text>
+          <Text style={styles.heroSubtitle}>
             Smart Monthly Financial Management
           </Text>
         </View>
 
-        {/* Clay Auth Card */}
+        {/* Porcelain White Curved Clay Card */}
         <View style={[styles.authCard, clayCard]}>
           {/* Debossed Tabs Track: Sign In / Register */}
           <View
@@ -145,7 +139,7 @@ export default function AuthScreen() {
               styles.tabsWrap,
               {
                 backgroundColor: colors.surfaceSubtle,
-                borderTopColor: themeMode === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(148,163,184,0.45)',
+                borderTopColor: themeMode === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(160,174,192,0.45)',
                 borderBottomColor: themeMode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.95)'
               }
             ]}
@@ -290,7 +284,7 @@ export default function AuthScreen() {
               </View>
             )}
 
-            {/* Chunky Clay Submit Button */}
+            {/* Chunky Violet 3D Clay Submit Button */}
             <TouchableOpacity
               style={[styles.submitButton, clayButton]}
               onPress={handleSubmit}
@@ -336,7 +330,7 @@ export default function AuthScreen() {
             >
               <Ionicons name="leaf-outline" size={15} color={colors.income} />
               <Text style={[styles.offlineDemoText, { color: colors.income }]}>
-                {demoMode ? 'Switch to Live PostgreSQL' : '⚡ Instant Offline Demo Mode'}
+                {demoMode ? 'Switch to Live Database' : '⚡ Instant Offline Demo Mode'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -344,8 +338,8 @@ export default function AuthScreen() {
 
         {/* Footer Note */}
         <View style={styles.footerNote}>
-          <Text style={[styles.footerText, { color: colors.textTertiary }]}>
-            Secure JWT Authentication • Neon Serverless PostgreSQL
+          <Text style={styles.footerText}>
+            Secure JWT Authentication • Neon PostgreSQL
           </Text>
         </View>
       </ScrollView>
@@ -377,10 +371,10 @@ const styles = StyleSheet.create({
   clayTopIconBtn: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: 16,
     borderTopWidth: 2,
     borderLeftWidth: 1.5,
-    borderRightWidth: 1.5,
+    borderRightWidth: 1,
     borderBottomWidth: 3.5,
     alignItems: 'center',
     justifyContent: 'center',
@@ -394,30 +388,32 @@ const styles = StyleSheet.create({
     marginBottom: 22
   },
   brandIconWrap: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 84,
+    height: 84,
+    borderRadius: 42,
     borderTopWidth: 3,
     borderLeftWidth: 2,
-    borderRightWidth: 2,
+    borderRightWidth: 1.5,
     borderBottomWidth: 6,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 14,
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.40,
+    shadowOpacity: 0.35,
     shadowRadius: 16,
     elevation: 9
   },
   heroTitle: {
     fontSize: 30,
     fontWeight: '900',
-    letterSpacing: -0.8
+    letterSpacing: -0.8,
+    color: '#FFFFFF'
   },
   heroSubtitle: {
     fontSize: 13,
-    fontWeight: '600',
-    marginTop: 4
+    fontWeight: '700',
+    marginTop: 4,
+    color: 'rgba(255, 255, 255, 0.85)'
   },
   authCard: {
     width: '100%',
@@ -530,7 +526,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   footerText: {
-    fontSize: 11,
-    fontWeight: '600'
+    fontSize: 12,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.75)'
   }
 });

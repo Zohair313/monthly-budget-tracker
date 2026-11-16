@@ -31,16 +31,17 @@ const formatDate = (dateStr) => {
   }
 };
 
-export default function ExpenseList({ onEditExpense, onAddExpense, activeCategory }) {
-  const { expenses, deleteExpense, isLoading } = useBudget();
+export default function ExpenseList({ onEditExpense, onAddExpense, activeCategory, onToggleFilter }) {
+  const { expenses, deleteExpense } = useBudget();
   const { themeMode } = useAuth();
-  const colors = palette[themeMode] || palette.dark;
+  const colors = palette[themeMode] || palette.light;
   const clayCard = getClayCard(themeMode);
   const clayButton = getClayButton(themeMode, colors.primary, colors.primaryDark);
   const clayPill = getClayPill(themeMode);
   const clayInput = getClayInput(themeMode);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
 
   // Filter expenses by search query and active category filter
   const filteredExpenses = expenses.filter((exp) => {
@@ -72,10 +73,10 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
 
   return (
     <View style={styles.container}>
-      {/* Section Header with Add Button and Count Tag */}
+      {/* Section Header: "Recent" and "View All / Search" (Exact reference image style) */}
       <View style={styles.headerRow}>
         <View style={styles.titleArea}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Expenses</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent</Text>
           <View
             style={[
               styles.countTag,
@@ -91,26 +92,32 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
           </View>
         </View>
 
-        <TouchableOpacity
-          style={[styles.addButton, clayButton]}
-          onPress={onAddExpense}
-          accessibilityLabel="Add New Expense"
-        >
-          <Ionicons name="add" size={18} color="#FFFFFF" />
-          <Text style={styles.addButtonText}>Add Expense</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.searchToggleBtn}
+            onPress={() => setShowSearch(!showSearch)}
+            accessibilityLabel="Search expenses"
+          >
+            <Ionicons name="search" size={17} color={colors.textSecondary} />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={onAddExpense} style={styles.viewAllBtn}>
+            <Text style={[styles.viewAllText, { color: colors.primary }]}>+ Add</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* Debossed Clay Search Input */}
-      {expenses.length > 3 && (
+      {/* Debossed Clay Search Input (When toggled) */}
+      {showSearch && (
         <View style={[styles.searchBox, clayInput]}>
-          <Ionicons name="search-outline" size={18} color={colors.textTertiary} />
+          <Ionicons name="search-outline" size={17} color={colors.textTertiary} />
           <TextInput
             style={[styles.searchInput, { color: colors.text }]}
-            placeholder="Search expenses by name..."
+            placeholder="Search recent transactions..."
             placeholderTextColor={colors.textTertiary}
             value={searchQuery}
             onChangeText={setSearchQuery}
+            autoFocus
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')}>
@@ -133,15 +140,15 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
               }
             ]}
           >
-            <Ionicons name="receipt-outline" size={36} color={colors.textTertiary} />
+            <Ionicons name="receipt-outline" size={34} color={colors.textTertiary} />
           </View>
           <Text style={[styles.emptyTitle, { color: colors.text }]}>
-            {expenses.length === 0 ? 'No expenses recorded' : 'No matching expenses'}
+            {expenses.length === 0 ? 'No recent transactions' : 'No matching expenses'}
           </Text>
           <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
             {expenses.length === 0
-              ? 'Tap "+ Add Expense" above to record your first expense for this month.'
-              : 'Try selecting another category or clearing your search term.'}
+              ? 'Tap the Coral "Expense" button above to record your first monthly transaction.'
+              : 'Try clearing your search query or selecting "All" categories.'}
           </Text>
           {expenses.length === 0 && (
             <TouchableOpacity
@@ -149,11 +156,11 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
               style={[
                 styles.emptyAddBtn,
                 clayButton,
-                { marginTop: 18 }
+                { marginTop: 16 }
               ]}
             >
-              <Ionicons name="add-circle-outline" size={18} color="#FFFFFF" />
-              <Text style={styles.emptyAddBtnText}>Add Expense Now</Text>
+              <Ionicons name="add" size={18} color="#FFFFFF" />
+              <Text style={styles.emptyAddBtnText}>Add Expense</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -162,9 +169,9 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
           {filteredExpenses.map((item) => {
             const cat = item.category || 'General';
             const catConfig = categoryColors[cat] || categoryColors.General;
-            const catColor = themeMode === 'dark' ? catConfig.color : catConfig.color;
-            const catDarkColor = themeMode === 'dark' ? catConfig.darkColor : catConfig.darkColor;
-            const catBg = themeMode === 'dark' ? catConfig.darkBg : catConfig.bg;
+            const catColor = catConfig.color;
+            const catDarkColor = catConfig.darkColor;
+            const catBg = catConfig.bg;
             const iconName = CATEGORY_ICONS[cat] || 'pricetag-outline';
 
             return (
@@ -174,19 +181,20 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                   styles.clayExpenseRow,
                   clayCard,
                   {
-                    padding: 15,
+                    paddingVertical: 14,
+                    paddingHorizontal: 16,
                     borderRadius: 22
                   }
                 ]}
               >
-                {/* Left: Tactile Clay Category Icon Coin */}
+                {/* Left: 3D Rounded Square Icon Badge (Exact reference image icon style) */}
                 <View
                   style={[
-                    styles.categoryIconWrap,
+                    styles.categorySquareBadge,
                     {
                       backgroundColor: catBg,
-                      borderTopColor: 'rgba(255, 255, 255, 0.60)',
-                      borderLeftColor: 'rgba(255, 255, 255, 0.35)',
+                      borderTopColor: 'rgba(255, 255, 255, 0.70)',
+                      borderLeftColor: 'rgba(255, 255, 255, 0.40)',
                       borderRightColor: catDarkColor,
                       borderBottomColor: catDarkColor,
                       shadowColor: catDarkColor
@@ -196,35 +204,17 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                   <Ionicons name={iconName} size={22} color={catColor} />
                 </View>
 
-                {/* Middle: Name, Date & Category */}
+                {/* Middle: Title & Date (Reference image) */}
                 <View style={styles.expenseInfo}>
                   <Text style={[styles.expenseName, { color: colors.text }]} numberOfLines={1}>
                     {item.name}
                   </Text>
-                  <View style={styles.expenseMeta}>
-                    <Text style={[styles.expenseDate, { color: colors.textTertiary }]}>
-                      {formatDate(item.date)}
-                    </Text>
-                    <View style={[styles.metaDot, { backgroundColor: colors.border }]} />
-                    <View
-                      style={[
-                        styles.categoryPill,
-                        clayPill,
-                        {
-                          backgroundColor: colors.surfaceSubtle,
-                          paddingHorizontal: 8,
-                          paddingVertical: 2
-                        }
-                      ]}
-                    >
-                      <Text style={[styles.expenseCategory, { color: catColor }]}>
-                        {cat}
-                      </Text>
-                    </View>
-                  </View>
+                  <Text style={[styles.expenseDate, { color: colors.textTertiary }]}>
+                    {formatDate(item.date)} • {cat}
+                  </Text>
                 </View>
 
-                {/* Right: Amount & Tactile Clay Actions */}
+                {/* Right: Amount in Coral/Red and Mini Action Buttons */}
                 <View style={styles.expenseRight}>
                   <Text style={[styles.expenseAmount, { color: colors.expense }]}>
                     -{formatCurrency(item.amount)}
@@ -238,15 +228,12 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                         {
                           backgroundColor: colors.surfaceSubtle,
                           borderTopColor: colors.clayBorderTop,
-                          borderLeftColor: colors.clayBorderLeft,
-                          borderRightColor: colors.clayBorderRight,
-                          borderBottomColor: colors.clayBorderBottom,
-                          shadowColor: colors.clayShadowColor
+                          borderBottomColor: colors.clayBorderBottom
                         }
                       ]}
                       accessibilityLabel={`Edit ${item.name}`}
                     >
-                      <Ionicons name="pencil" size={13} color={colors.textSecondary} />
+                      <Ionicons name="pencil" size={12} color={colors.textSecondary} />
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -255,16 +242,13 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                         styles.clayMiniActionBtn,
                         {
                           backgroundColor: colors.expenseLight,
-                          borderTopColor: 'rgba(255, 255, 255, 0.45)',
-                          borderLeftColor: 'rgba(255, 255, 255, 0.25)',
-                          borderRightColor: colors.expenseDark,
-                          borderBottomColor: colors.expenseDark,
-                          shadowColor: colors.expenseDark
+                          borderTopColor: 'rgba(255, 255, 255, 0.40)',
+                          borderBottomColor: colors.expenseDark
                         }
                       ]}
                       accessibilityLabel={`Delete ${item.name}`}
                     >
-                      <Ionicons name="trash-outline" size={13} color={colors.expense} />
+                      <Ionicons name="trash-outline" size={12} color={colors.expense} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -279,8 +263,8 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 16,
-    marginTop: 14,
+    paddingHorizontal: 20,
+    marginTop: 20,
     marginBottom: 40
   },
   headerRow: {
@@ -295,27 +279,31 @@ const styles = StyleSheet.create({
     gap: 8
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '900',
-    letterSpacing: -0.5
+    letterSpacing: -0.4
   },
   countTag: {
-    paddingHorizontal: 11,
-    paddingVertical: 3
+    paddingHorizontal: 9,
+    paddingVertical: 2
   },
   countTagText: {
     fontSize: 11,
     fontWeight: '800'
   },
-  addButton: {
+  headerActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 15,
-    paddingVertical: 9
+    gap: 12
   },
-  addButtonText: {
-    color: '#FFFFFF',
+  searchToggleBtn: {
+    padding: 6
+  },
+  viewAllBtn: {
+    paddingVertical: 4,
+    paddingHorizontal: 6
+  },
+  viewAllText: {
     fontSize: 13,
     fontWeight: '800'
   },
@@ -323,8 +311,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     marginBottom: 14
   },
   searchInput: {
@@ -335,28 +323,28 @@ const styles = StyleSheet.create({
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
-    marginTop: 6
+    padding: 36,
+    marginTop: 4
   },
   emptyIconCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    borderTopWidth: 2.5,
-    borderLeftWidth: 2,
+    width: 66,
+    height: 66,
+    borderRadius: 33,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
     borderRightWidth: 1.5,
-    borderBottomWidth: 4,
+    borderBottomWidth: 3.5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 14,
+    marginBottom: 12,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.2,
     shadowRadius: 6,
-    elevation: 4
+    elevation: 3
   },
   emptyTitle: {
-    fontSize: 17,
-    fontWeight: '900',
+    fontSize: 16,
+    fontWeight: '800',
     marginBottom: 4
   },
   emptySubtitle: {
@@ -369,8 +357,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingHorizontal: 18,
-    paddingVertical: 11
+    paddingHorizontal: 16,
+    paddingVertical: 10
   },
   emptyAddBtnText: {
     color: '#FFFFFF',
@@ -384,81 +372,59 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  categoryIconWrap: {
+  categorySquareBadge: {
     width: 48,
     height: 48,
-    borderRadius: 18,
+    borderRadius: 16,
     borderTopWidth: 2.5,
     borderLeftWidth: 2,
     borderRightWidth: 1.5,
     borderBottomWidth: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: 14,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.25,
     shadowRadius: 6,
-    elevation: 4
+    elevation: 3
   },
   expenseInfo: {
     flex: 1,
     marginRight: 8
   },
   expenseName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
-    letterSpacing: -0.3,
-    marginBottom: 4
-  },
-  expenseMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4
+    letterSpacing: -0.2,
+    marginBottom: 3
   },
   expenseDate: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600'
-  },
-  metaDot: {
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
-    marginHorizontal: 4
-  },
-  categoryPill: {
-    borderRadius: 8
-  },
-  expenseCategory: {
-    fontSize: 10,
-    fontWeight: '800'
   },
   expenseRight: {
     alignItems: 'flex-end'
   },
   expenseAmount: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '900',
-    letterSpacing: -0.4,
-    marginBottom: 6
+    letterSpacing: -0.3,
+    marginBottom: 5
   },
   actionButtonsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 7
+    gap: 6
   },
   clayMiniActionBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     borderTopWidth: 1.5,
     borderLeftWidth: 1,
     borderRightWidth: 1,
-    borderBottomWidth: 3,
+    borderBottomWidth: 2.5,
     alignItems: 'center',
-    justifyContent: 'center',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3
+    justifyContent: 'center'
   }
 });

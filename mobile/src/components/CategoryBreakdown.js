@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette, getClayCard, getClayPill } from '../theme/colors';
+import { palette, categoryColors, getClayCard, getClayPill } from '../theme/colors';
 
 const CATEGORY_ICONS = {
   Food: 'restaurant-outline',
@@ -16,32 +16,10 @@ const CATEGORY_ICONS = {
   General: 'pricetag-outline'
 };
 
-const CATEGORY_COLORS = {
-  Food: '#F59E0B',
-  Bills: '#6366F1',
-  Travel: '#14B8A6',
-  Shopping: '#EC4899',
-  Health: '#10B981',
-  Entertainment: '#8B5CF6',
-  Education: '#EAB308',
-  General: '#64748B'
-};
-
-const CATEGORY_DARK_COLORS = {
-  Food: '#B45309',
-  Bills: '#4338CA',
-  Travel: '#0F766E',
-  Shopping: '#BE185D',
-  Health: '#047857',
-  Entertainment: '#6D28D9',
-  Education: '#A16207',
-  General: '#334155'
-};
-
 export default function CategoryBreakdown({ onSelectCategory, activeCategory }) {
   const { categoryBreakdown, summary } = useBudget();
   const { themeMode } = useAuth();
-  const colors = palette[themeMode] || palette.dark;
+  const colors = palette[themeMode] || palette.light;
   const clayCard = getClayCard(themeMode);
   const clayPill = getClayPill(themeMode);
 
@@ -52,63 +30,99 @@ export default function CategoryBreakdown({ onSelectCategory, activeCategory }) 
     return null;
   }
 
+  // Calculate highest category for vertical chart normalization
+  const maxAmount = Math.max(...categories.map((c) => categoryBreakdown[c] || 0), 1);
+
   return (
     <View style={[styles.container, clayCard]}>
+      {/* Header (Reference image Screen 2 style) */}
       <View style={styles.headerRow}>
         <View style={styles.headerLeft}>
-          <View
-            style={[
-              styles.headerIconCoin,
-              {
-                backgroundColor: colors.primaryLight,
-                borderTopColor: 'rgba(255, 255, 255, 0.45)',
-                borderBottomColor: colors.primaryDark
-              }
-            ]}
-          >
-            <Ionicons name="pie-chart-outline" size={14} color={colors.primary} />
-          </View>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Category Breakdown</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Outcome Transactions</Text>
+          <Text style={[styles.sectionSubtitle, { color: colors.textSecondary }]}>
+            Category Distribution
+          </Text>
         </View>
-        <Text style={[styles.headerRight, { color: colors.textSecondary }]}>
-          {categories.length} {categories.length === 1 ? 'category' : 'categories'}
-        </Text>
+
+        <View
+          style={[
+            styles.totalBadge,
+            clayPill,
+            {
+              backgroundColor: colors.surfaceSubtle
+            }
+          ]}
+        >
+          <Text style={[styles.totalBadgeText, { color: colors.primary }]}>
+            Rs. {totalExpense.toLocaleString()}
+          </Text>
+        </View>
       </View>
 
-      {/* Debossed Segmented Distribution Bar */}
+      {/* 3D Vertical Clay Pill Bar Chart (Screen 2 reference style) */}
       <View
         style={[
-          styles.segmentedBar,
+          styles.chartBox,
           {
-            backgroundColor: colors.surfaceSubtle,
-            borderTopColor: themeMode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(148,163,184,0.4)',
-            borderBottomColor: themeMode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)'
+            backgroundColor: themeMode === 'dark' ? '#181630' : '#F7F8FD',
+            borderTopColor: colors.clayBorderTop,
+            borderBottomColor: colors.clayBorderBottom
           }
         ]}
       >
-        {categories.map((cat) => {
-          const amount = categoryBreakdown[cat] || 0;
-          const pct = Math.max((amount / totalExpense) * 100, 2);
-          const barColor = CATEGORY_COLORS[cat] || colors.primary;
+        <View style={styles.barsContainer}>
+          {categories.map((cat) => {
+            const amount = categoryBreakdown[cat] || 0;
+            const barHeightPct = Math.max(Math.round((amount / maxAmount) * 100), 18);
+            const catConfig = categoryColors[cat] || categoryColors.General;
+            const catColor = catConfig.color;
+            const catDarkColor = catConfig.darkColor;
+            const isSelected = activeCategory === cat;
 
-          return (
-            <View
-              key={cat}
-              style={[
-                styles.segment,
-                {
-                  width: `${pct}%`,
-                  backgroundColor: barColor,
-                  borderTopColor: 'rgba(255, 255, 255, 0.4)',
-                  borderBottomColor: CATEGORY_DARK_COLORS[cat] || colors.primaryDark
-                }
-              ]}
-            />
-          );
-        })}
+            return (
+              <TouchableOpacity
+                key={cat}
+                style={styles.barCol}
+                onPress={() => onSelectCategory(isSelected ? null : cat)}
+                accessibilityLabel={`${cat}: Rs. ${amount}`}
+              >
+                {/* Vertical 3D Clay Pill Bar */}
+                <View style={styles.barTrack}>
+                  <View
+                    style={[
+                      styles.clayVerticalBar,
+                      {
+                        height: `${barHeightPct}%`,
+                        backgroundColor: isSelected ? colors.primary : '#FF8095',
+                        borderTopColor: 'rgba(255, 255, 255, 0.65)',
+                        borderLeftColor: 'rgba(255, 255, 255, 0.40)',
+                        borderRightColor: isSelected ? colors.primaryDark : '#E11D48',
+                        borderBottomColor: isSelected ? colors.primaryDark : '#E11D48',
+                        shadowColor: isSelected ? colors.primaryDark : '#E11D48'
+                      }
+                    ]}
+                  />
+                </View>
+
+                {/* Day / Category Initial */}
+                <Text
+                  style={[
+                    styles.barLabel,
+                    {
+                      color: isSelected ? colors.primary : colors.textSecondary,
+                      fontWeight: isSelected ? '900' : '700'
+                    }
+                  ]}
+                >
+                  {cat.slice(0, 2).toUpperCase()}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
 
-      {/* Clay Category Pills Slider */}
+      {/* Category Pills Slider */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillsScroll}>
         <TouchableOpacity
           onPress={() => onSelectCategory(null)}
@@ -118,7 +132,7 @@ export default function CategoryBreakdown({ onSelectCategory, activeCategory }) 
             activeCategory === null
               ? {
                   backgroundColor: colors.primary,
-                  borderTopColor: 'rgba(255, 255, 255, 0.45)',
+                  borderTopColor: 'rgba(255, 255, 255, 0.50)',
                   borderBottomColor: colors.primaryDark
                 }
               : {
@@ -143,8 +157,9 @@ export default function CategoryBreakdown({ onSelectCategory, activeCategory }) 
           const amount = categoryBreakdown[cat] || 0;
           const pct = Math.round((amount / totalExpense) * 100);
           const iconName = CATEGORY_ICONS[cat] || 'pricetag-outline';
-          const catColor = CATEGORY_COLORS[cat] || colors.primary;
-          const catDarkColor = CATEGORY_DARK_COLORS[cat] || colors.primaryDark;
+          const catConfig = categoryColors[cat] || categoryColors.General;
+          const catColor = catConfig.color;
+          const catDarkColor = catConfig.darkColor;
           const isSelected = activeCategory === cat;
 
           return (
@@ -157,7 +172,7 @@ export default function CategoryBreakdown({ onSelectCategory, activeCategory }) 
                 isSelected
                   ? {
                       backgroundColor: catColor,
-                      borderTopColor: 'rgba(255, 255, 255, 0.45)',
+                      borderTopColor: 'rgba(255, 255, 255, 0.50)',
                       borderBottomColor: catDarkColor
                     }
                   : {
@@ -165,7 +180,6 @@ export default function CategoryBreakdown({ onSelectCategory, activeCategory }) 
                     }
               ]}
             >
-              {!isSelected && <View style={[styles.dot, { backgroundColor: catColor }]} />}
               <Ionicons
                 name={iconName}
                 size={13}
@@ -203,53 +217,78 @@ export default function CategoryBreakdown({ onSelectCategory, activeCategory }) 
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 16,
-    marginTop: 12,
-    padding: 16
+    marginHorizontal: 20,
+    marginTop: 14,
+    padding: 18
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12
+    marginBottom: 16
   },
   headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8
-  },
-  headerIconCoin: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderTopWidth: 1.5,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 2.5,
-    alignItems: 'center',
-    justifyContent: 'center'
+    flex: 1
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: '800',
-    letterSpacing: -0.2
+    fontSize: 16,
+    fontWeight: '900',
+    letterSpacing: -0.3
   },
-  headerRight: {
+  sectionSubtitle: {
     fontSize: 11,
-    fontWeight: '600'
+    fontWeight: '600',
+    marginTop: 1
   },
-  segmentedBar: {
-    height: 10,
-    borderRadius: 5,
-    overflow: 'hidden',
+  totalBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 5
+  },
+  totalBadgeText: {
+    fontSize: 12,
+    fontWeight: '900'
+  },
+  chartBox: {
+    borderRadius: 20,
+    paddingVertical: 18,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+    borderTopWidth: 2,
+    borderBottomWidth: 3
+  },
+  barsContainer: {
     flexDirection: 'row',
-    marginBottom: 14,
-    borderWidth: 1.5
+    alignItems: 'flex-end',
+    justifyContent: 'space-around',
+    height: 120
   },
-  segment: {
+  barCol: {
+    alignItems: 'center',
+    flex: 1,
     height: '100%',
-    borderTopWidth: 1.5,
-    borderBottomWidth: 1.5
+    justifyContent: 'flex-end'
+  },
+  barTrack: {
+    width: 14,
+    height: 95,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
+  clayVerticalBar: {
+    width: 14,
+    borderRadius: 7,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 3.5,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.35,
+    shadowRadius: 5,
+    elevation: 3
+  },
+  barLabel: {
+    fontSize: 10,
+    marginTop: 8
   },
   pillsScroll: {
     gap: 8
@@ -260,11 +299,6 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     paddingHorizontal: 12,
     gap: 5
-  },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3
   },
   pillIcon: {
     marginLeft: 1

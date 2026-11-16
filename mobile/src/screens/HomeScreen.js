@@ -16,7 +16,6 @@ import { useBudget } from '../context/BudgetContext';
 import { palette, getClayPill } from '../theme/colors';
 
 import Header from '../components/Header';
-import MonthSelector from '../components/MonthSelector';
 import SummaryCards from '../components/SummaryCards';
 import BudgetAlertBanner from '../components/BudgetAlertBanner';
 import MonthComparisonCard from '../components/MonthComparisonCard';
@@ -30,12 +29,13 @@ import ExportModal from '../components/ExportModal';
 
 export default function HomeScreen() {
   const { themeMode } = useAuth();
-  const colors = palette[themeMode] || palette.dark;
+  const colors = palette[themeMode] || palette.light;
   const clayPill = getClayPill(themeMode);
   const { isLoading, refresh, errorMessage, clearError } = useBudget();
 
-  // Active Category Filter
+  // Active Category Filter & View Toggles
   const [activeCategory, setActiveCategory] = useState(null);
+  const [showCharts, setShowCharts] = useState(false);
 
   // Modal States
   const [showSetIncome, setShowSetIncome] = useState(false);
@@ -55,13 +55,13 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.brandViolet }]} edges={['top', 'left', 'right']}>
       <StatusBar
-        barStyle={themeMode === 'dark' ? 'light-content' : 'dark-content'}
-        backgroundColor={colors.surface}
+        barStyle="light-content"
+        backgroundColor={colors.brandViolet}
       />
 
-      {/* Header with Clay Avatar, Theme Toggle, Server Config & Logout */}
+      {/* 1. Header (Reference image top violet bar with grid, month pill, avatar) */}
       <Header onOpenSettings={() => setShowServerConfig(true)} />
 
       {/* Network or General Error Notice */}
@@ -71,7 +71,7 @@ export default function HomeScreen() {
             styles.errorNotice,
             clayPill,
             {
-              backgroundColor: colors.expenseLight,
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
               borderBottomColor: colors.expenseDark
             }
           ]}
@@ -93,79 +93,121 @@ export default function HomeScreen() {
           <RefreshControl
             refreshing={isLoading}
             onRefresh={refresh}
-            tintColor={colors.primary}
-            colors={[colors.primary]}
+            tintColor="#FFFFFF"
+            colors={['#FFFFFF']}
           />
         }
         showsVerticalScrollIndicator={false}
       >
-        {/* Month Selector (F9) */}
-        <MonthSelector />
-
-        {/* 3 Summary Cards (F8, F2, F4) */}
-        <SummaryCards onOpenSetIncome={() => setShowSetIncome(true)} />
-
-        {/* Budget Alert Banner (Bonus & Warnings) */}
-        <BudgetAlertBanner />
-
-        {/* Month Comparison Card (Bonus) */}
-        <MonthComparisonCard />
-
-        {/* Category Breakdown Bar & Filters (Bonus) */}
-        <CategoryBreakdown
-          activeCategory={activeCategory}
-          onSelectCategory={(cat) => setActiveCategory(cat)}
-        />
-
-        {/* Quick Export Action Bar */}
-        <View style={styles.utilityBar}>
-          <TouchableOpacity
-            style={[
-              styles.exportPill,
-              clayPill,
-              {
-                backgroundColor: colors.surface
-              }
-            ]}
-            onPress={() => setShowExport(true)}
-          >
-            <Ionicons name="share-outline" size={13} color={colors.primary} />
-            <Text style={[styles.exportPillText, { color: colors.text }]}>Export Statement (CSV)</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Expense Table / List (F5, F6, F7) */}
-        <ExpenseList
-          activeCategory={activeCategory}
-          onAddExpense={() => {
+        {/* 2. Top Violet Section: 3D Clay Bank Card & 4 Colorful Action Tiles (Reference image) */}
+        <SummaryCards
+          onOpenSetIncome={() => setShowSetIncome(true)}
+          onOpenAddExpense={() => {
             setEditingExpense(null);
             setShowAddExpense(true);
           }}
-          onEditExpense={handleOpenEdit}
+          onToggleCategoryBreakdown={() => setShowCharts(!showCharts)}
+          onOpenExport={() => setShowExport(true)}
         />
+
+        {/* 3. Bottom White/Porcelain Curved Clay Sheet (Reference image curved white body) */}
+        <View
+          style={[
+            styles.porcelainSheet,
+            {
+              backgroundColor: colors.sheetBackground,
+              borderTopColor: colors.clayBorderTop
+            }
+          ]}
+        >
+          {/* Subtle curved drag handle at top of sheet */}
+          <View style={styles.sheetHandleWrap}>
+            <View style={[styles.sheetHandle, { backgroundColor: colors.border }]} />
+          </View>
+
+          {/* Budget Alert Banner (When >= 80% or Deficit) */}
+          <BudgetAlertBanner />
+
+          {/* Month Comparison Card */}
+          <MonthComparisonCard />
+
+          {/* 3D Vertical Bar Chart & Category Filters (Reference image Screen 2) */}
+          {showCharts && (
+            <CategoryBreakdown
+              activeCategory={activeCategory}
+              onSelectCategory={(cat) => setActiveCategory(cat)}
+            />
+          )}
+
+          {/* "Recent" Transactions / Expenses List (Reference image Screen 1 bottom) */}
+          <ExpenseList
+            activeCategory={activeCategory}
+            onAddExpense={() => {
+              setEditingExpense(null);
+              setShowAddExpense(true);
+            }}
+            onEditExpense={handleOpenEdit}
+          />
+        </View>
       </ScrollView>
 
-      {/* Clay Floating Action Button (FAB) */}
-      <TouchableOpacity
+      {/* 4. Floating Violet Bottom Navigation Bar (Exact reference image dock) */}
+      <View
         style={[
-          styles.clayFab,
+          styles.bottomDock,
           {
-            backgroundColor: colors.primary,
-            borderTopColor: 'rgba(255, 255, 255, 0.45)',
-            borderLeftColor: 'rgba(255, 255, 255, 0.25)',
-            borderRightColor: colors.primaryDark,
-            borderBottomColor: colors.primaryDark,
-            shadowColor: colors.primaryDark
+            backgroundColor: colors.brandVioletDark,
+            borderTopColor: 'rgba(255, 255, 255, 0.35)',
+            borderBottomColor: colors.brandVioletDeep
           }
         ]}
-        onPress={() => {
-          setEditingExpense(null);
-          setShowAddExpense(true);
-        }}
-        accessibilityLabel="Add New Expense"
       >
-        <Ionicons name="add" size={28} color="#FFFFFF" />
-      </TouchableOpacity>
+        {/* Nav 1: Home */}
+        <TouchableOpacity style={styles.dockItem} onPress={() => setShowCharts(false)}>
+          <Ionicons name="home" size={22} color="#FFFFFF" />
+        </TouchableOpacity>
+
+        {/* Nav 2: Charts / Analytics */}
+        <TouchableOpacity style={styles.dockItem} onPress={() => setShowCharts(!showCharts)}>
+          <Ionicons
+            name="pie-chart"
+            size={22}
+            color={showCharts ? '#FFD166' : 'rgba(255, 255, 255, 0.7)'}
+          />
+        </TouchableOpacity>
+
+        {/* Center Raised 3D Clay Button (Reference image floating puck) */}
+        <TouchableOpacity
+          style={[
+            styles.dockCenterPuck,
+            {
+              backgroundColor: colors.primary,
+              borderTopColor: 'rgba(255, 255, 255, 0.70)',
+              borderLeftColor: 'rgba(255, 255, 255, 0.40)',
+              borderRightColor: colors.primaryDark,
+              borderBottomColor: colors.primaryDark,
+              shadowColor: colors.primaryDark
+            }
+          ]}
+          onPress={() => {
+            setEditingExpense(null);
+            setShowAddExpense(true);
+          }}
+          accessibilityLabel="Add New Expense"
+        >
+          <Ionicons name="add" size={28} color="#FFFFFF" />
+        </TouchableOpacity>
+
+        {/* Nav 4: Export Statement */}
+        <TouchableOpacity style={styles.dockItem} onPress={() => setShowExport(true)}>
+          <Ionicons name="document-text" size={22} color="rgba(255, 255, 255, 0.7)" />
+        </TouchableOpacity>
+
+        {/* Nav 5: Settings */}
+        <TouchableOpacity style={styles.dockItem} onPress={() => setShowServerConfig(true)}>
+          <Ionicons name="settings" size={22} color="rgba(255, 255, 255, 0.7)" />
+        </TouchableOpacity>
+      </View>
 
       {/* Modals */}
       <SetIncomeModal visible={showSetIncome} onClose={() => setShowSetIncome(false)} />
@@ -185,8 +227,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
+    flex: 1
   },
   mainScroll: {
     flex: 1
@@ -197,8 +238,9 @@ const styles = StyleSheet.create({
   errorNotice: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 16,
-    marginTop: 8,
+    marginHorizontal: 20,
+    marginTop: 6,
+    marginBottom: 8,
     paddingHorizontal: 14,
     paddingVertical: 10,
     gap: 8
@@ -206,44 +248,72 @@ const styles = StyleSheet.create({
   errorNoticeText: {
     flex: 1,
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '800',
     lineHeight: 15
   },
   errorCloseBtn: {
     padding: 2
   },
-  utilityBar: {
-    marginHorizontal: 16,
-    marginTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
+  porcelainSheet: {
+    borderTopLeftRadius: 36,
+    borderTopRightRadius: 36,
+    borderTopWidth: 2.5,
+    paddingTop: 12,
+    minHeight: 500,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: -6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    elevation: 8
   },
-  exportPill: {
+  sheetHandleWrap: {
+    alignItems: 'center',
+    paddingVertical: 8
+  },
+  sheetHandle: {
+    width: 44,
+    height: 5,
+    borderRadius: 2.5
+  },
+  bottomDock: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 68,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    borderTopWidth: 2,
+    borderBottomWidth: 3,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 7
+    justifyContent: 'space-around',
+    paddingHorizontal: 16,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: -6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 10
   },
-  exportPillText: {
-    fontSize: 11,
-    fontWeight: '700'
+  dockItem: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  clayFab: {
-    position: 'absolute',
-    bottom: 24,
-    right: 20,
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    borderTopWidth: 2,
-    borderLeftWidth: 1.5,
+  dockCenterPuck: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    marginTop: -28,
+    borderTopWidth: 2.5,
+    borderLeftWidth: 2,
     borderRightWidth: 1.5,
     borderBottomWidth: 4.5,
     alignItems: 'center',
     justifyContent: 'center',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.40,
     shadowRadius: 10,
     elevation: 8
   }
