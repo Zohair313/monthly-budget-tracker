@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput } from 'reac
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette, categoryColors } from '../theme/colors';
+import { palette, categoryColors, getClayCard, getClayButton, getClayPill, getClayInput } from '../theme/colors';
 
 const CATEGORY_ICONS = {
   Food: 'restaurant-outline',
@@ -14,6 +14,28 @@ const CATEGORY_ICONS = {
   Entertainment: 'film-outline',
   Education: 'book-outline',
   General: 'pricetag-outline'
+};
+
+const CATEGORY_COLORS = {
+  Food: '#F59E0B',
+  Bills: '#6366F1',
+  Travel: '#14B8A6',
+  Shopping: '#EC4899',
+  Health: '#10B981',
+  Entertainment: '#8B5CF6',
+  Education: '#EAB308',
+  General: '#64748B'
+};
+
+const CATEGORY_DARK_COLORS = {
+  Food: '#B45309',
+  Bills: '#4338CA',
+  Travel: '#0F766E',
+  Shopping: '#BE185D',
+  Health: '#047857',
+  Entertainment: '#6D28D9',
+  Education: '#A16207',
+  General: '#334155'
 };
 
 const formatCurrency = (amount) => {
@@ -34,7 +56,11 @@ const formatDate = (dateStr) => {
 export default function ExpenseList({ onEditExpense, onAddExpense, activeCategory }) {
   const { expenses, deleteExpense, isLoading } = useBudget();
   const { themeMode } = useAuth();
-  const colors = palette[themeMode];
+  const colors = palette[themeMode] || palette.dark;
+  const clayCard = getClayCard(themeMode);
+  const clayButton = getClayButton(themeMode, colors.primary, colors.primaryDark);
+  const clayPill = getClayPill(themeMode);
+  const clayInput = getClayInput(themeMode);
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -72,7 +98,15 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
       <View style={styles.headerRow}>
         <View style={styles.titleArea}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Expenses</Text>
-          <View style={[styles.countTag, { backgroundColor: colors.surfaceSubtle }]}>
+          <View
+            style={[
+              styles.countTag,
+              clayPill,
+              {
+                backgroundColor: colors.surfaceSubtle
+              }
+            ]}
+          >
             <Text style={[styles.countTagText, { color: colors.textSecondary }]}>
               {filteredExpenses.length}
             </Text>
@@ -80,19 +114,19 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
         </View>
 
         <TouchableOpacity
-          style={[styles.addButton, { backgroundColor: colors.primary }]}
+          style={[styles.addButton, clayButton]}
           onPress={onAddExpense}
           accessibilityLabel="Add New Expense"
         >
-          <Ionicons name="add" size={16} color="#FFFFFF" />
+          <Ionicons name="add" size={17} color="#FFFFFF" />
           <Text style={styles.addButtonText}>Add Expense</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Search Input */}
+      {/* Debossed Clay Search Input */}
       {expenses.length > 3 && (
-        <View style={[styles.searchBox, { backgroundColor: colors.surface, borderColor: colors.borderSubtle }]}>
-          <Ionicons name="search-outline" size={15} color={colors.textTertiary} />
+        <View style={[styles.searchBox, clayInput]}>
+          <Ionicons name="search-outline" size={16} color={colors.textTertiary} />
           <TextInput
             style={[styles.searchInput, { color: colors.text }]}
             placeholder="Search expenses by name..."
@@ -110,8 +144,17 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
 
       {/* Table / List View */}
       {filteredExpenses.length === 0 ? (
-        <View style={[styles.emptyContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          <View style={[styles.emptyIconCircle, { backgroundColor: colors.surfaceSubtle }]}>
+        <View style={[styles.emptyContainer, clayCard]}>
+          <View
+            style={[
+              styles.emptyIconCircle,
+              {
+                backgroundColor: colors.surfaceSubtle,
+                borderTopColor: colors.clayBorderTop,
+                borderBottomColor: colors.clayBorderBottom
+              }
+            ]}
+          >
             <Ionicons name="receipt-outline" size={32} color={colors.textTertiary} />
           </View>
           <Text style={[styles.emptyTitle, { color: colors.text }]}>
@@ -120,40 +163,60 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
           <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
             {expenses.length === 0
               ? 'Tap "+ Add Expense" above to record your first expense for this month.'
-              : 'Try clearing your search query or category filter.'}
+              : 'Try selecting another category or clearing your search term.'}
           </Text>
           {expenses.length === 0 && (
             <TouchableOpacity
-              style={[styles.emptyAddBtn, { backgroundColor: colors.primaryLight, borderColor: colors.primary }]}
               onPress={onAddExpense}
+              style={[
+                styles.emptyAddBtn,
+                clayButton,
+                { marginTop: 16 }
+              ]}
             >
-              <Ionicons name="add-circle-outline" size={16} color={colors.primary} />
-              <Text style={[styles.emptyAddBtnText, { color: colors.primary }]}>Add First Expense</Text>
+              <Ionicons name="add-circle-outline" size={16} color="#FFFFFF" />
+              <Text style={styles.emptyAddBtnText}>Add Expense Now</Text>
             </TouchableOpacity>
           )}
         </View>
       ) : (
         <View style={styles.listContainer}>
-          {filteredExpenses.map((item, index) => {
-            const iconName = CATEGORY_ICONS[item.category] || 'pricetag-outline';
+          {filteredExpenses.map((item) => {
+            const cat = item.category || 'General';
+            const catColor = CATEGORY_COLORS[cat] || colors.primary;
+            const catDarkColor = CATEGORY_DARK_COLORS[cat] || colors.primaryDark;
+            const iconName = CATEGORY_ICONS[cat] || 'pricetag-outline';
 
             return (
               <View
-                key={item.id || index}
+                key={item.id}
                 style={[
-                  styles.expenseRow,
+                  styles.clayExpenseRow,
+                  clayCard,
                   {
-                    backgroundColor: colors.surface,
-                    borderColor: colors.border
+                    padding: 14,
+                    borderRadius: 20
                   }
                 ]}
               >
-                {/* Left: Category Icon */}
-                <View style={[styles.categoryIconWrap, { backgroundColor: colors.surfaceSubtle }]}>
-                  <Ionicons name={iconName} size={18} color={colors.primary} />
+                {/* Left: Tactile Clay Category Icon Coin */}
+                <View
+                  style={[
+                    styles.categoryIconWrap,
+                    {
+                      backgroundColor: `${catColor}20`,
+                      borderTopColor: 'rgba(255, 255, 255, 0.45)',
+                      borderLeftColor: 'rgba(255, 255, 255, 0.25)',
+                      borderRightColor: catDarkColor,
+                      borderBottomColor: catDarkColor,
+                      shadowColor: catDarkColor
+                    }
+                  ]}
+                >
+                  <Ionicons name={iconName} size={20} color={catColor} />
                 </View>
 
-                {/* Center: Name & Date & Category */}
+                {/* Middle: Name, Date & Category */}
                 <View style={styles.expenseInfo}>
                   <Text style={[styles.expenseName, { color: colors.text }]} numberOfLines={1}>
                     {item.name}
@@ -163,13 +226,25 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                       {formatDate(item.date)}
                     </Text>
                     <View style={[styles.metaDot, { backgroundColor: colors.border }]} />
-                    <Text style={[styles.expenseCategory, { color: colors.textSecondary }]}>
-                      {item.category || 'General'}
-                    </Text>
+                    <View
+                      style={[
+                        styles.categoryPill,
+                        clayPill,
+                        {
+                          backgroundColor: colors.surfaceSubtle,
+                          paddingHorizontal: 7,
+                          paddingVertical: 1
+                        }
+                      ]}
+                    >
+                      <Text style={[styles.expenseCategory, { color: catColor }]}>
+                        {cat}
+                      </Text>
+                    </View>
                   </View>
                 </View>
 
-                {/* Right: Amount & Actions */}
+                {/* Right: Amount & Tactile Clay Actions */}
                 <View style={styles.expenseRight}>
                   <Text style={[styles.expenseAmount, { color: colors.expense }]}>
                     -{formatCurrency(item.amount)}
@@ -178,7 +253,17 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                   <View style={styles.actionButtonsRow}>
                     <TouchableOpacity
                       onPress={() => onEditExpense(item)}
-                      style={[styles.miniActionBtn, { backgroundColor: colors.surfaceSubtle }]}
+                      style={[
+                        styles.clayMiniActionBtn,
+                        {
+                          backgroundColor: colors.surfaceSubtle,
+                          borderTopColor: colors.clayBorderTop,
+                          borderLeftColor: colors.clayBorderLeft,
+                          borderRightColor: colors.clayBorderRight,
+                          borderBottomColor: colors.clayBorderBottom,
+                          shadowColor: colors.clayShadowColor
+                        }
+                      ]}
                       accessibilityLabel={`Edit ${item.name}`}
                     >
                       <Ionicons name="pencil" size={13} color={colors.textSecondary} />
@@ -186,7 +271,17 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
 
                     <TouchableOpacity
                       onPress={() => handleDelete(item)}
-                      style={[styles.miniActionBtn, { backgroundColor: colors.expenseLight }]}
+                      style={[
+                        styles.clayMiniActionBtn,
+                        {
+                          backgroundColor: colors.expenseLight,
+                          borderTopColor: 'rgba(255, 255, 255, 0.35)',
+                          borderLeftColor: 'rgba(255, 255, 255, 0.2)',
+                          borderRightColor: colors.expenseDark,
+                          borderBottomColor: colors.expenseDark,
+                          shadowColor: colors.expenseDark
+                        }
+                      ]}
                       accessibilityLabel={`Delete ${item.name}`}
                     >
                       <Ionicons name="trash-outline" size={13} color={colors.expense} />
@@ -212,7 +307,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10
+    marginBottom: 12
   },
   titleArea: {
     flexDirection: 'row',
@@ -220,41 +315,37 @@ const styles = StyleSheet.create({
     gap: 8
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-    letterSpacing: -0.3
+    fontSize: 20,
+    fontWeight: '900',
+    letterSpacing: -0.4
   },
   countTag: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 10
+    paddingHorizontal: 10,
+    paddingVertical: 2
   },
   countTagText: {
     fontSize: 11,
-    fontWeight: '700'
+    fontWeight: '800'
   },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 12
+    gap: 5,
+    paddingHorizontal: 14,
+    paddingVertical: 8
   },
   addButtonText: {
     color: '#FFFFFF',
     fontSize: 12,
-    fontWeight: '700'
+    fontWeight: '800'
   },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 10
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 12
   },
   searchInput: {
     flex: 1,
@@ -264,107 +355,130 @@ const styles = StyleSheet.create({
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 32,
-    borderRadius: 18,
-    borderWidth: 1,
+    padding: 36,
     marginTop: 6
   },
   emptyIconCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12
+    marginBottom: 14,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4
   },
   emptyTitle: {
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '800',
     marginBottom: 4
   },
   emptySubtitle: {
     fontSize: 12,
     textAlign: 'center',
-    lineHeight: 17,
-    maxWidth: 240
+    lineHeight: 18,
+    maxWidth: 250
   },
   emptyAddBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginTop: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 10,
-    borderWidth: 1
+    paddingHorizontal: 16,
+    paddingVertical: 10
   },
   emptyAddBtnText: {
+    color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '600'
+    fontWeight: '700'
   },
   listContainer: {
-    gap: 8
+    gap: 10
   },
-  expenseRow: {
+  clayExpenseRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: 14,
-    borderWidth: 1
+    alignItems: 'center'
   },
   categoryIconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
+    width: 44,
+    height: 44,
+    borderRadius: 16,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 3.5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12
+    marginRight: 12,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 3
   },
   expenseInfo: {
     flex: 1,
     marginRight: 8
   },
   expenseName: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
     letterSpacing: -0.2,
-    marginBottom: 3
+    marginBottom: 4
   },
   expenseMeta: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    gap: 4
   },
   expenseDate: {
-    fontSize: 11
+    fontSize: 11,
+    fontWeight: '500'
   },
   metaDot: {
     width: 3,
     height: 3,
     borderRadius: 1.5,
-    marginHorizontal: 6
+    marginHorizontal: 4
+  },
+  categoryPill: {
+    borderRadius: 8
   },
   expenseCategory: {
-    fontSize: 11
+    fontSize: 10,
+    fontWeight: '700'
   },
   expenseRight: {
     alignItems: 'flex-end'
   },
   expenseAmount: {
-    fontSize: 14,
-    fontWeight: '800',
+    fontSize: 15,
+    fontWeight: '900',
     letterSpacing: -0.3,
-    marginBottom: 4
+    marginBottom: 6
   },
   actionButtonsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6
   },
-  miniActionBtn: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+  clayMiniActionBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderTopWidth: 1.5,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 2.5,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2
   }
 });

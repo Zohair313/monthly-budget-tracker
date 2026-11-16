@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, Alert, Pla
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette } from '../theme/colors';
+import { palette, getClayCard, getClayButton, getClayPill } from '../theme/colors';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -11,9 +11,12 @@ const MONTH_NAMES = [
 ];
 
 export default function ExportModal({ visible, onClose }) {
-  const { selectedMonth, selectedYear, summary, expenses, categoryBreakdown } = useBudget();
+  const { selectedMonth, selectedYear, summary, expenses } = useBudget();
   const { user, themeMode } = useAuth();
-  const colors = palette[themeMode];
+  const colors = palette[themeMode] || palette.dark;
+  const clayCard = getClayCard(themeMode);
+  const clayButton = getClayButton(themeMode, colors.primary, colors.primaryDark);
+  const clayPill = getClayPill(themeMode);
 
   const [copied, setCopied] = useState(false);
 
@@ -36,25 +39,33 @@ export default function ExportModal({ visible, onClose }) {
   const csvContent = generateCsv();
 
   const handleCopy = () => {
-    // For Web / React Native clipboard handling
     if (Platform.OS === 'web' && typeof navigator !== 'undefined' && navigator.clipboard) {
       navigator.clipboard.writeText(csvContent);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } else {
-      Alert.alert('CSV Ready', 'The CSV report has been generated. You can view or share the contents below.');
+      Alert.alert('CSV Ready', 'The CSV report has been generated. You can view or copy the contents below.');
     }
   };
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <View style={[styles.modalCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+        <View style={[styles.modalCard, clayCard]}>
           {/* Header */}
           <View style={styles.headerRow}>
             <View style={styles.titleWrap}>
-              <View style={[styles.iconWrap, { backgroundColor: colors.primaryLight }]}>
-                <Ionicons name="document-text-outline" size={18} color={colors.primary} />
+              <View
+                style={[
+                  styles.iconWrap,
+                  {
+                    backgroundColor: colors.primaryLight,
+                    borderTopColor: 'rgba(255, 255, 255, 0.45)',
+                    borderBottomColor: colors.primaryDark
+                  }
+                ]}
+              >
+                <Ionicons name="document-text-outline" size={20} color={colors.primary} />
               </View>
               <View>
                 <Text style={[styles.modalTitle, { color: colors.text }]}>Export Report</Text>
@@ -63,13 +74,32 @@ export default function ExportModal({ visible, onClose }) {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={20} color={colors.textSecondary} />
+            <TouchableOpacity
+              onPress={onClose}
+              style={[
+                styles.closeBtn,
+                {
+                  backgroundColor: colors.surfaceSubtle,
+                  borderTopColor: colors.clayBorderTop,
+                  borderBottomColor: colors.clayBorderBottom
+                }
+              ]}
+            >
+              <Ionicons name="close" size={18} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
 
-          {/* Quick Metrics */}
-          <View style={[styles.metricsBox, { backgroundColor: colors.surfaceSubtle }]}>
+          {/* Quick Metrics Clay Tablet */}
+          <View
+            style={[
+              styles.metricsBox,
+              clayPill,
+              {
+                backgroundColor: colors.surfaceSubtle,
+                borderRadius: 16
+              }
+            ]}
+          >
             <View style={styles.metricItem}>
               <Text style={[styles.metricLabel, { color: colors.textSecondary }]}>INCOME</Text>
               <Text style={[styles.metricVal, { color: colors.income }]}>
@@ -90,21 +120,39 @@ export default function ExportModal({ visible, onClose }) {
             </View>
           </View>
 
-          {/* CSV Preview */}
+          {/* CSV Preview Debossed Box */}
           <Text style={[styles.previewLabel, { color: colors.textSecondary }]}>CSV FORMAT PREVIEW</Text>
-          <ScrollView style={[styles.csvPreview, { backgroundColor: colors.background, borderColor: colors.borderSubtle }]}>
+          <ScrollView
+            style={[
+              styles.csvPreview,
+              {
+                backgroundColor: colors.background,
+                borderTopColor: themeMode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(148,163,184,0.4)',
+                borderBottomColor: themeMode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)'
+              }
+            ]}
+          >
             <Text style={[styles.csvText, { color: colors.text }]}>{csvContent}</Text>
           </ScrollView>
 
           {/* Buttons */}
           <View style={styles.buttonRow}>
-            <TouchableOpacity onPress={onClose} style={[styles.cancelBtn, { borderColor: colors.border }]}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={[
+                styles.cancelBtn,
+                clayPill,
+                {
+                  backgroundColor: colors.surfaceSubtle
+                }
+              ]}
+            >
               <Text style={[styles.cancelBtnText, { color: colors.textSecondary }]}>Close</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={handleCopy}
-              style={[styles.copyBtn, { backgroundColor: colors.primary }]}
+              style={[styles.copyBtn, clayButton]}
             >
               <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={14} color="#FFFFFF" />
               <Text style={styles.copyBtnText}>
@@ -121,7 +169,7 @@ export default function ExportModal({ visible, onClose }) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20
@@ -130,45 +178,53 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 440,
     maxHeight: '90%',
-    borderRadius: 20,
-    borderWidth: 1,
-    padding: 20
+    padding: 22
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12
+    marginBottom: 14
   },
   titleWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10
+    gap: 12
   },
   iconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 3.5,
     alignItems: 'center',
     justifyContent: 'center'
   },
   modalTitle: {
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: 17,
+    fontWeight: '900',
     letterSpacing: -0.3
   },
   modalSubtitle: {
-    fontSize: 11,
-    marginTop: 1
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 2
   },
   closeBtn: {
-    padding: 4
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderTopWidth: 1.5,
+    borderBottomWidth: 2.5,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   metricsBox: {
     flexDirection: 'row',
-    borderRadius: 12,
-    padding: 10,
-    marginBottom: 12,
+    padding: 12,
+    marginBottom: 14,
     justifyContent: 'space-around'
   },
   metricItem: {
@@ -176,26 +232,26 @@ const styles = StyleSheet.create({
   },
   metricLabel: {
     fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.6,
+    fontWeight: '800',
+    letterSpacing: 0.7,
     marginBottom: 2
   },
   metricVal: {
-    fontSize: 13,
-    fontWeight: '800'
+    fontSize: 14,
+    fontWeight: '900'
   },
   previewLabel: {
     fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.6,
+    fontWeight: '800',
+    letterSpacing: 0.7,
     marginBottom: 6
   },
   csvPreview: {
     maxHeight: 180,
-    borderRadius: 10,
-    borderWidth: 1,
-    padding: 10,
-    marginBottom: 16
+    borderRadius: 14,
+    borderWidth: 1.5,
+    padding: 12,
+    marginBottom: 18
   },
   csvText: {
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
@@ -206,29 +262,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    gap: 10
+    gap: 12
   },
   cancelBtn: {
     paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderRadius: 10,
-    borderWidth: 1
+    paddingVertical: 10
   },
   cancelBtnText: {
     fontSize: 13,
-    fontWeight: '600'
+    fontWeight: '700'
   },
   copyBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderRadius: 10
+    paddingHorizontal: 18,
+    paddingVertical: 10
   },
   copyBtnText: {
     color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '700'
+    fontWeight: '800'
   }
 });

@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '../components/Icon';
 import { useAuth } from '../context/AuthContext';
 import { useBudget } from '../context/BudgetContext';
-import { palette } from '../theme/colors';
+import { palette, getClayPill } from '../theme/colors';
 
 import Header from '../components/Header';
 import MonthSelector from '../components/MonthSelector';
@@ -31,6 +31,7 @@ import ExportModal from '../components/ExportModal';
 export default function HomeScreen() {
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.dark;
+  const clayPill = getClayPill(themeMode);
   const { isLoading, refresh, errorMessage, clearError } = useBudget();
 
   // Active Category Filter
@@ -57,15 +58,24 @@ export default function HomeScreen() {
     <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
       <StatusBar
         barStyle={themeMode === 'dark' ? 'light-content' : 'dark-content'}
-        backgroundColor={colors.background}
+        backgroundColor={colors.surface}
       />
 
-      {/* Header with User Info, Theme Toggle, Server Config & Logout */}
+      {/* Header with Clay Avatar, Theme Toggle, Server Config & Logout */}
       <Header onOpenSettings={() => setShowServerConfig(true)} />
 
       {/* Network or General Error Notice */}
       {errorMessage && (
-        <View style={[styles.errorNotice, { backgroundColor: colors.expenseLight, borderColor: colors.expense }]}>
+        <View
+          style={[
+            styles.errorNotice,
+            clayPill,
+            {
+              backgroundColor: colors.expenseLight,
+              borderBottomColor: colors.expenseDark
+            }
+          ]}
+        >
           <Ionicons name="cloud-offline-outline" size={16} color={colors.expense} />
           <Text style={[styles.errorNoticeText, { color: colors.expense }]} numberOfLines={2}>
             {errorMessage}
@@ -110,11 +120,17 @@ export default function HomeScreen() {
         {/* Quick Export Action Bar */}
         <View style={styles.utilityBar}>
           <TouchableOpacity
-            style={[styles.exportPill, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            style={[
+              styles.exportPill,
+              clayPill,
+              {
+                backgroundColor: colors.surface
+              }
+            ]}
             onPress={() => setShowExport(true)}
           >
-            <Ionicons name="share-outline" size={13} color={colors.textSecondary} />
-            <Text style={[styles.exportPillText, { color: colors.textSecondary }]}>Export Statement (CSV)</Text>
+            <Ionicons name="share-outline" size={13} color={colors.primary} />
+            <Text style={[styles.exportPillText, { color: colors.text }]}>Export Statement (CSV)</Text>
           </TouchableOpacity>
         </View>
 
@@ -129,16 +145,26 @@ export default function HomeScreen() {
         />
       </ScrollView>
 
-      {/* Floating Action Button for Quick Add */}
+      {/* Clay Floating Action Button (FAB) */}
       <TouchableOpacity
-        style={[styles.fab, { backgroundColor: colors.primary, shadowColor: colors.shadow }]}
+        style={[
+          styles.clayFab,
+          {
+            backgroundColor: colors.primary,
+            borderTopColor: 'rgba(255, 255, 255, 0.45)',
+            borderLeftColor: 'rgba(255, 255, 255, 0.25)',
+            borderRightColor: colors.primaryDark,
+            borderBottomColor: colors.primaryDark,
+            shadowColor: colors.primaryDark
+          }
+        ]}
         onPress={() => {
           setEditingExpense(null);
           setShowAddExpense(true);
         }}
         accessibilityLabel="Add New Expense"
       >
-        <Ionicons name="add" size={26} color="#FFFFFF" />
+        <Ionicons name="add" size={28} color="#FFFFFF" />
       </TouchableOpacity>
 
       {/* Modals */}
@@ -166,21 +192,21 @@ const styles = StyleSheet.create({
     flex: 1
   },
   scrollContent: {
-    paddingBottom: 80
+    paddingBottom: 90
   },
   errorNotice: {
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 16,
     marginTop: 8,
-    padding: 10,
-    borderRadius: 12,
-    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     gap: 8
   },
   errorNoticeText: {
     flex: 1,
     fontSize: 11,
+    fontWeight: '700',
     lineHeight: 15
   },
   errorCloseBtn: {
@@ -188,35 +214,37 @@ const styles = StyleSheet.create({
   },
   utilityBar: {
     marginHorizontal: 16,
-    marginTop: 8,
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'flex-end'
   },
   exportPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-    borderWidth: 1
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 7
   },
   exportPillText: {
     fontSize: 11,
-    fontWeight: '600'
+    fontWeight: '700'
   },
-  fab: {
+  clayFab: {
     position: 'absolute',
     bottom: 24,
     right: 20,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 4.5,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 6
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 8
   }
 });

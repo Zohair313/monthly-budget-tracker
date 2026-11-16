@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette } from '../theme/colors';
+import { palette, getClayCard, getClayPill } from '../theme/colors';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -13,7 +13,9 @@ const MONTH_NAMES = [
 export default function MonthSelector() {
   const { selectedMonth, selectedYear, nextMonth, prevMonth, changeMonth } = useBudget();
   const { themeMode } = useAuth();
-  const colors = palette[themeMode];
+  const colors = palette[themeMode] || palette.dark;
+  const clayCard = getClayCard(themeMode);
+  const clayPill = getClayPill(themeMode);
 
   const currentDate = new Date();
   const isCurrentMonth = selectedMonth === (currentDate.getMonth() + 1) && selectedYear === currentDate.getFullYear();
@@ -23,9 +25,19 @@ export default function MonthSelector() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+    <View style={[styles.container, clayCard]}>
       <TouchableOpacity
-        style={[styles.arrowButton, { backgroundColor: colors.surfaceSubtle }]}
+        style={[
+          styles.clayArrowBtn,
+          {
+            backgroundColor: colors.surfaceSubtle,
+            borderTopColor: colors.clayBorderTop,
+            borderLeftColor: colors.clayBorderLeft,
+            borderRightColor: colors.clayBorderRight,
+            borderBottomColor: colors.clayBorderBottom,
+            shadowColor: colors.clayShadowColor
+          }
+        ]}
         onPress={prevMonth}
         accessibilityLabel="Previous Month"
       >
@@ -38,11 +50,29 @@ export default function MonthSelector() {
             {MONTH_NAMES[selectedMonth - 1]} {selectedYear}
           </Text>
           {isCurrentMonth ? (
-            <View style={[styles.currentBadge, { backgroundColor: colors.primaryLight }]}>
+            <View
+              style={[
+                styles.currentBadge,
+                clayPill,
+                {
+                  backgroundColor: colors.primaryLight,
+                  borderBottomColor: colors.primaryDark
+                }
+              ]}
+            >
               <Text style={[styles.currentBadgeText, { color: colors.primary }]}>Current</Text>
             </View>
           ) : (
-            <TouchableOpacity onPress={handleJumpToCurrent} style={[styles.jumpBadge, { backgroundColor: colors.surfaceSubtle }]}>
+            <TouchableOpacity
+              onPress={handleJumpToCurrent}
+              style={[
+                styles.jumpBadge,
+                clayPill,
+                {
+                  backgroundColor: colors.surfaceSubtle
+                }
+              ]}
+            >
               <Text style={[styles.jumpBadgeText, { color: colors.textSecondary }]}>Jump to Today</Text>
             </TouchableOpacity>
           )}
@@ -50,7 +80,17 @@ export default function MonthSelector() {
       </View>
 
       <TouchableOpacity
-        style={[styles.arrowButton, { backgroundColor: colors.surfaceSubtle }]}
+        style={[
+          styles.clayArrowBtn,
+          {
+            backgroundColor: colors.surfaceSubtle,
+            borderTopColor: colors.clayBorderTop,
+            borderLeftColor: colors.clayBorderLeft,
+            borderRightColor: colors.clayBorderRight,
+            borderBottomColor: colors.clayBorderBottom,
+            shadowColor: colors.clayShadowColor
+          }
+        ]}
         onPress={nextMonth}
         accessibilityLabel="Next Month"
       >
@@ -64,21 +104,27 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 16,
     marginTop: 14,
-    marginBottom: 6,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 14,
-    borderWidth: 1,
+    marginBottom: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  arrowButton: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+  clayArrowBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 3,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 3
   },
   centerInfo: {
     alignItems: 'center'
@@ -89,26 +135,24 @@ const styles = StyleSheet.create({
     gap: 8
   },
   monthText: {
-    fontSize: 16,
-    fontWeight: '700',
-    letterSpacing: -0.2
+    fontSize: 17,
+    fontWeight: '800',
+    letterSpacing: -0.3
   },
   currentBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 10
+    paddingHorizontal: 10,
+    paddingVertical: 3
   },
   currentBadgeText: {
     fontSize: 11,
-    fontWeight: '600'
+    fontWeight: '700'
   },
   jumpBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 10
+    paddingHorizontal: 10,
+    paddingVertical: 3
   },
   jumpBadgeText: {
     fontSize: 11,
-    fontWeight: '500'
+    fontWeight: '600'
   }
 });

@@ -12,12 +12,16 @@ import {
 } from 'react-native';
 import Ionicons from '../components/Icon';
 import { useAuth } from '../context/AuthContext';
-import { palette } from '../theme/colors';
+import { palette, getClayCard, getClayButton, getClayInput, getClayPill } from '../theme/colors';
 import ServerConfigModal from '../components/ServerConfigModal';
 
 export default function AuthScreen() {
   const { login, register, themeMode, toggleTheme, demoMode, toggleDemoMode } = useAuth();
   const colors = palette[themeMode] || palette.dark;
+  const clayCard = getClayCard(themeMode);
+  const clayButton = getClayButton(themeMode, colors.primary, colors.primaryDark);
+  const clayInput = getClayInput(themeMode);
+  const clayPill = getClayPill(themeMode);
 
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState('');
@@ -70,8 +74,19 @@ export default function AuthScreen() {
         {/* Top bar with Theme and Server Config */}
         <View style={styles.topBar}>
           <TouchableOpacity
-            style={[styles.topIconBtn, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            style={[
+              styles.clayTopIconBtn,
+              {
+                backgroundColor: colors.surfaceSubtle,
+                borderTopColor: colors.clayBorderTop,
+                borderLeftColor: colors.clayBorderLeft,
+                borderRightColor: colors.clayBorderRight,
+                borderBottomColor: colors.clayBorderBottom,
+                shadowColor: colors.clayShadowColor
+              }
+            ]}
             onPress={toggleTheme}
+            accessibilityLabel="Toggle Theme"
           >
             <Ionicons
               name={themeMode === 'dark' ? 'sunny-outline' : 'moon-outline'}
@@ -81,8 +96,19 @@ export default function AuthScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.topIconBtn, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            style={[
+              styles.clayTopIconBtn,
+              {
+                backgroundColor: colors.surfaceSubtle,
+                borderTopColor: colors.clayBorderTop,
+                borderLeftColor: colors.clayBorderLeft,
+                borderRightColor: colors.clayBorderRight,
+                borderBottomColor: colors.clayBorderBottom,
+                shadowColor: colors.clayShadowColor
+              }
+            ]}
             onPress={() => setShowServerConfig(true)}
+            accessibilityLabel="Server Settings"
           >
             <Ionicons name="server-outline" size={18} color={colors.textSecondary} />
           </TouchableOpacity>
@@ -90,8 +116,20 @@ export default function AuthScreen() {
 
         {/* Brand / Hero */}
         <View style={styles.heroSection}>
-          <View style={[styles.brandIconWrap, { backgroundColor: colors.primaryLight, borderColor: colors.primary }]}>
-            <Ionicons name="wallet" size={32} color={colors.primary} />
+          <View
+            style={[
+              styles.brandIconWrap,
+              {
+                backgroundColor: colors.primary,
+                borderTopColor: 'rgba(255, 255, 255, 0.45)',
+                borderLeftColor: 'rgba(255, 255, 255, 0.25)',
+                borderRightColor: colors.primaryDark,
+                borderBottomColor: colors.primaryDark,
+                shadowColor: colors.primaryDark
+              }
+            ]}
+          >
+            <Ionicons name="wallet" size={36} color="#FFFFFF" />
           </View>
           <Text style={[styles.heroTitle, { color: colors.text }]}>Budget Tracker</Text>
           <Text style={[styles.heroSubtitle, { color: colors.textSecondary }]}>
@@ -99,14 +137,33 @@ export default function AuthScreen() {
           </Text>
         </View>
 
-        {/* Card */}
-        <View style={[styles.authCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          {/* Tabs: Sign In / Register */}
-          <View style={[styles.tabsWrap, { backgroundColor: colors.surfaceSubtle }]}>
+        {/* Clay Auth Card */}
+        <View style={[styles.authCard, clayCard]}>
+          {/* Debossed Tabs Track: Sign In / Register */}
+          <View
+            style={[
+              styles.tabsWrap,
+              {
+                backgroundColor: colors.surfaceSubtle,
+                borderTopColor: themeMode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(148,163,184,0.4)',
+                borderBottomColor: themeMode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)'
+              }
+            ]}
+          >
             <TouchableOpacity
               style={[
                 styles.tabBtn,
-                !isRegister && [styles.tabBtnActive, { backgroundColor: colors.surface }]
+                !isRegister && [
+                  styles.tabBtnActive,
+                  {
+                    backgroundColor: colors.surface,
+                    borderTopColor: colors.clayBorderTop,
+                    borderLeftColor: colors.clayBorderLeft,
+                    borderRightColor: colors.clayBorderRight,
+                    borderBottomColor: colors.clayBorderBottom,
+                    shadowColor: colors.clayShadowColor
+                  }
+                ]
               ]}
               onPress={() => {
                 setIsRegister(false);
@@ -116,7 +173,10 @@ export default function AuthScreen() {
               <Text
                 style={[
                   styles.tabBtnText,
-                  { color: !isRegister ? colors.text : colors.textSecondary, fontWeight: !isRegister ? '700' : '500' }
+                  {
+                    color: !isRegister ? colors.text : colors.textSecondary,
+                    fontWeight: !isRegister ? '800' : '600'
+                  }
                 ]}
               >
                 Sign In
@@ -126,7 +186,17 @@ export default function AuthScreen() {
             <TouchableOpacity
               style={[
                 styles.tabBtn,
-                isRegister && [styles.tabBtnActive, { backgroundColor: colors.surface }]
+                isRegister && [
+                  styles.tabBtnActive,
+                  {
+                    backgroundColor: colors.surface,
+                    borderTopColor: colors.clayBorderTop,
+                    borderLeftColor: colors.clayBorderLeft,
+                    borderRightColor: colors.clayBorderRight,
+                    borderBottomColor: colors.clayBorderBottom,
+                    shadowColor: colors.clayShadowColor
+                  }
+                ]
               ]}
               onPress={() => {
                 setIsRegister(true);
@@ -136,21 +206,24 @@ export default function AuthScreen() {
               <Text
                 style={[
                   styles.tabBtnText,
-                  { color: isRegister ? colors.text : colors.textSecondary, fontWeight: isRegister ? '700' : '500' }
+                  {
+                    color: isRegister ? colors.text : colors.textSecondary,
+                    fontWeight: isRegister ? '800' : '600'
+                  }
                 ]}
               >
-                Register
+                Create Account
               </Text>
             </TouchableOpacity>
           </View>
 
-          {/* Form */}
+          {/* Form Fields */}
           <View style={styles.formArea}>
             {isRegister && (
               <View style={styles.inputGroup}>
                 <Text style={[styles.label, { color: colors.textSecondary }]}>FULL NAME</Text>
-                <View style={[styles.inputField, { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }]}>
-                  <Ionicons name="person-outline" size={16} color={colors.textTertiary} style={styles.fieldIcon} />
+                <View style={[styles.inputField, clayInput]}>
+                  <Ionicons name="person-outline" size={18} color={colors.textTertiary} style={styles.fieldIcon} />
                   <TextInput
                     style={[styles.input, { color: colors.text }]}
                     placeholder="e.g. John Doe"
@@ -165,8 +238,8 @@ export default function AuthScreen() {
 
             <View style={styles.inputGroup}>
               <Text style={[styles.label, { color: colors.textSecondary }]}>EMAIL ADDRESS</Text>
-              <View style={[styles.inputField, { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }]}>
-                <Ionicons name="mail-outline" size={16} color={colors.textTertiary} style={styles.fieldIcon} />
+              <View style={[styles.inputField, clayInput]}>
+                <Ionicons name="mail-outline" size={18} color={colors.textTertiary} style={styles.fieldIcon} />
                 <TextInput
                   style={[styles.input, { color: colors.text }]}
                   placeholder="name@example.com"
@@ -181,8 +254,8 @@ export default function AuthScreen() {
 
             <View style={styles.inputGroup}>
               <Text style={[styles.label, { color: colors.textSecondary }]}>PASSWORD</Text>
-              <View style={[styles.inputField, { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }]}>
-                <Ionicons name="lock-closed-outline" size={16} color={colors.textTertiary} style={styles.fieldIcon} />
+              <View style={[styles.inputField, clayInput]}>
+                <Ionicons name="lock-closed-outline" size={18} color={colors.textTertiary} style={styles.fieldIcon} />
                 <TextInput
                   style={[styles.input, { color: colors.text }]}
                   placeholder="••••••••"
@@ -202,14 +275,24 @@ export default function AuthScreen() {
             </View>
 
             {errorMsg.length > 0 && (
-              <View style={[styles.errorBox, { backgroundColor: colors.expenseLight, borderColor: colors.expense }]}>
+              <View
+                style={[
+                  styles.errorBox,
+                  clayPill,
+                  {
+                    backgroundColor: colors.expenseLight,
+                    borderBottomColor: colors.expenseDark
+                  }
+                ]}
+              >
                 <Ionicons name="alert-circle" size={16} color={colors.expense} />
                 <Text style={[styles.errorMsgText, { color: colors.expense }]}>{errorMsg}</Text>
               </View>
             )}
 
+            {/* Chunky Clay Submit Button */}
             <TouchableOpacity
-              style={[styles.submitButton, { backgroundColor: colors.primary }]}
+              style={[styles.submitButton, clayButton]}
               onPress={handleSubmit}
               disabled={isLoading}
             >
@@ -224,12 +307,36 @@ export default function AuthScreen() {
 
             {/* Quick Demo Fill Button */}
             <TouchableOpacity
-              style={[styles.demoFillBtn, { backgroundColor: colors.surfaceSubtle, borderColor: colors.borderSubtle }]}
+              style={[
+                styles.demoFillBtn,
+                clayPill,
+                {
+                  backgroundColor: colors.surfaceSubtle
+                }
+              ]}
               onPress={handleFillDemo}
             >
               <Ionicons name="flash-outline" size={14} color={colors.primary} />
               <Text style={[styles.demoFillText, { color: colors.primary }]}>
                 Fill Demo Credentials (demo@budgettracker.com)
+              </Text>
+            </TouchableOpacity>
+
+            {/* Offline Demo Mode Toggle */}
+            <TouchableOpacity
+              style={[
+                styles.offlineDemoBtn,
+                clayPill,
+                {
+                  backgroundColor: colors.incomeLight,
+                  borderBottomColor: colors.incomeDark
+                }
+              ]}
+              onPress={toggleDemoMode}
+            >
+              <Ionicons name="leaf-outline" size={14} color={colors.income} />
+              <Text style={[styles.offlineDemoText, { color: colors.income }]}>
+                {demoMode ? 'Switch to Live Database' : '⚡ Try Instant Offline Demo Mode'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -255,72 +362,89 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 48,
+    paddingTop: 44,
     paddingBottom: 40,
     alignItems: 'center'
   },
   topBar: {
     width: '100%',
-    maxWidth: 400,
+    maxWidth: 420,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     gap: 8,
-    marginBottom: 20
+    marginBottom: 16
   },
-  topIconBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
+  clayTopIconBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 3,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 3
   },
   heroSection: {
     alignItems: 'center',
-    marginBottom: 24
+    marginBottom: 20
   },
   brandIconWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    borderWidth: 2,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    borderTopWidth: 2.5,
+    borderLeftWidth: 2,
+    borderRightWidth: 2,
+    borderBottomWidth: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12
+    marginBottom: 12,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 8
   },
   heroTitle: {
-    fontSize: 26,
-    fontWeight: '800',
-    letterSpacing: -0.5
+    fontSize: 28,
+    fontWeight: '900',
+    letterSpacing: -0.6
   },
   heroSubtitle: {
     fontSize: 13,
+    fontWeight: '500',
     marginTop: 4
   },
   authCard: {
     width: '100%',
-    maxWidth: 400,
-    borderRadius: 22,
-    borderWidth: 1,
-    padding: 20
+    maxWidth: 420,
+    padding: 22
   },
   tabsWrap: {
     flexDirection: 'row',
-    borderRadius: 12,
-    padding: 3,
-    marginBottom: 20
+    borderRadius: 16,
+    padding: 4,
+    marginBottom: 20,
+    borderWidth: 1.5
   },
   tabBtn: {
     flex: 1,
-    paddingVertical: 9,
+    paddingVertical: 10,
     alignItems: 'center',
-    borderRadius: 10
+    borderRadius: 12
   },
   tabBtnActive: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
     elevation: 2
   },
   tabBtnText: {
@@ -334,19 +458,17 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.6
+    fontWeight: '800',
+    letterSpacing: 0.7
   },
   inputField: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10
+    paddingHorizontal: 14,
+    paddingVertical: 12
   },
   fieldIcon: {
-    marginRight: 8
+    marginRight: 10
   },
   input: {
     flex: 1,
@@ -360,46 +482,54 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    padding: 10,
-    borderRadius: 10,
-    borderWidth: 1
+    paddingHorizontal: 12,
+    paddingVertical: 10
   },
   errorMsgText: {
     flex: 1,
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '700',
     lineHeight: 15
   },
   submitButton: {
-    paddingVertical: 13,
-    borderRadius: 12,
+    paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 4
   },
   submitButtonText: {
     color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '700'
+    fontSize: 15,
+    fontWeight: '800'
   },
   demoFillBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    paddingVertical: 9,
-    borderRadius: 10,
-    borderWidth: 1
+    paddingVertical: 10
   },
   demoFillText: {
     fontSize: 11,
-    fontWeight: '600'
+    fontWeight: '700'
+  },
+  offlineDemoBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 10
+  },
+  offlineDemoText: {
+    fontSize: 12,
+    fontWeight: '800'
   },
   footerNote: {
     marginTop: 24,
     alignItems: 'center'
   },
   footerText: {
-    fontSize: 11
+    fontSize: 11,
+    fontWeight: '500'
   }
 });

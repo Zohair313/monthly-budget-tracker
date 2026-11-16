@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Switch, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Switch, Alert } from 'react-native';
 import Ionicons from './Icon';
 import { useAuth } from '../context/AuthContext';
-import { palette } from '../theme/colors';
+import { palette, getClayCard, getClayButton, getClayInput, getClayPill } from '../theme/colors';
 
 export default function ServerConfigModal({ visible, onClose }) {
   const { apiUrl, updateApiUrl, demoMode, toggleDemoMode, themeMode } = useAuth();
-  const colors = palette[themeMode];
+  const colors = palette[themeMode] || palette.dark;
+  const clayCard = getClayCard(themeMode);
+  const clayButton = getClayButton(themeMode, colors.primary, colors.primaryDark);
+  const clayInput = getClayInput(themeMode);
+  const clayPill = getClayPill(themeMode);
 
   const [inputUrl, setInputUrl] = useState('');
   const [isPinging, setIsPinging] = useState(false);
@@ -57,12 +61,21 @@ export default function ServerConfigModal({ visible, onClose }) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <View style={[styles.modalCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+        <View style={[styles.modalCard, clayCard]}>
           {/* Header */}
           <View style={styles.headerRow}>
             <View style={styles.titleWrap}>
-              <View style={[styles.iconWrap, { backgroundColor: colors.primaryLight }]}>
-                <Ionicons name="server-outline" size={18} color={colors.primary} />
+              <View
+                style={[
+                  styles.iconWrap,
+                  {
+                    backgroundColor: colors.primaryLight,
+                    borderTopColor: 'rgba(255, 255, 255, 0.45)',
+                    borderBottomColor: colors.primaryDark
+                  }
+                ]}
+              >
+                <Ionicons name="server-outline" size={20} color={colors.primary} />
               </View>
               <View>
                 <Text style={[styles.modalTitle, { color: colors.text }]}>Backend Configuration</Text>
@@ -71,8 +84,18 @@ export default function ServerConfigModal({ visible, onClose }) {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={20} color={colors.textSecondary} />
+            <TouchableOpacity
+              onPress={onClose}
+              style={[
+                styles.closeBtn,
+                {
+                  backgroundColor: colors.surfaceSubtle,
+                  borderTopColor: colors.clayBorderTop,
+                  borderBottomColor: colors.clayBorderBottom
+                }
+              ]}
+            >
+              <Ionicons name="close" size={18} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
 
@@ -84,7 +107,7 @@ export default function ServerConfigModal({ visible, onClose }) {
           {/* Backend URL Input */}
           <View style={styles.inputGroup}>
             <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>BACKEND API URL</Text>
-            <View style={[styles.inputBox, { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }]}>
+            <View style={[styles.inputBox, clayInput]}>
               <TextInput
                 style={[styles.textInput, { color: colors.text }]}
                 placeholder="http://localhost:5000"
@@ -101,7 +124,13 @@ export default function ServerConfigModal({ visible, onClose }) {
           <View style={styles.pingRow}>
             <TouchableOpacity
               onPress={handlePing}
-              style={[styles.pingBtn, { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }]}
+              style={[
+                styles.pingBtn,
+                clayPill,
+                {
+                  backgroundColor: colors.surfaceSubtle
+                }
+              ]}
               disabled={isPinging}
             >
               <Ionicons
@@ -118,7 +147,7 @@ export default function ServerConfigModal({ visible, onClose }) {
               <View style={styles.pingResult}>
                 <Ionicons
                   name={pingStatus.ok ? 'checkmark-circle' : 'close-circle'}
-                  size={14}
+                  size={15}
                   color={pingStatus.ok ? colors.income : colors.expense}
                 />
                 <Text
@@ -135,7 +164,16 @@ export default function ServerConfigModal({ visible, onClose }) {
           </View>
 
           {/* Offline Demo Mode Toggle */}
-          <View style={[styles.demoSwitchBox, { backgroundColor: colors.surfaceSubtle, borderColor: colors.borderSubtle }]}>
+          <View
+            style={[
+              styles.demoSwitchBox,
+              clayPill,
+              {
+                backgroundColor: colors.surfaceSubtle,
+                borderRadius: 16
+              }
+            ]}
+          >
             <View style={styles.demoSwitchText}>
               <Text style={[styles.demoSwitchTitle, { color: colors.text }]}>Built-in Offline Demo Engine</Text>
               <Text style={[styles.demoSwitchSub, { color: colors.textSecondary }]}>
@@ -152,11 +190,20 @@ export default function ServerConfigModal({ visible, onClose }) {
 
           {/* Actions */}
           <View style={styles.buttonRow}>
-            <TouchableOpacity onPress={onClose} style={[styles.cancelBtn, { borderColor: colors.border }]}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={[
+                styles.cancelBtn,
+                clayPill,
+                {
+                  backgroundColor: colors.surfaceSubtle
+                }
+              ]}
+            >
               <Text style={[styles.cancelBtnText, { color: colors.textSecondary }]}>Cancel</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleSave} style={[styles.saveBtn, { backgroundColor: colors.primary }]}>
+            <TouchableOpacity onPress={handleSave} style={[styles.saveBtn, clayButton]}>
               <Text style={styles.saveBtnText}>Save URL</Text>
             </TouchableOpacity>
           </View>
@@ -169,67 +216,75 @@ export default function ServerConfigModal({ visible, onClose }) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20
   },
   modalCard: {
     width: '100%',
-    maxWidth: 420,
-    borderRadius: 20,
-    borderWidth: 1,
-    padding: 20
+    maxWidth: 440,
+    padding: 22
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12
+    marginBottom: 14
   },
   titleWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10
+    gap: 12
   },
   iconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 3.5,
     alignItems: 'center',
     justifyContent: 'center'
   },
   modalTitle: {
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: 17,
+    fontWeight: '900',
     letterSpacing: -0.3
   },
   modalSubtitle: {
-    fontSize: 11,
-    marginTop: 1
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 2
   },
   closeBtn: {
-    padding: 4
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderTopWidth: 1.5,
+    borderBottomWidth: 2.5,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   descText: {
     fontSize: 11,
+    fontWeight: '500',
     lineHeight: 16,
-    marginBottom: 14
+    marginBottom: 16
   },
   inputGroup: {
-    marginBottom: 10
+    marginBottom: 12
   },
   inputLabel: {
     fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.6,
+    fontWeight: '800',
+    letterSpacing: 0.7,
     marginBottom: 6
   },
   inputBox: {
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 9
+    paddingHorizontal: 14,
+    paddingVertical: 11
   },
   textInput: {
     fontSize: 13,
@@ -238,78 +293,73 @@ const styles = StyleSheet.create({
   pingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginBottom: 14
+    gap: 10,
+    marginBottom: 16
   },
   pingBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
-    borderWidth: 1
+    paddingHorizontal: 12,
+    paddingVertical: 8
   },
   pingBtnText: {
     fontSize: 11,
-    fontWeight: '600'
+    fontWeight: '700'
   },
   pingResult: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 5,
     flex: 1
   },
   pingResultText: {
     fontSize: 11,
+    fontWeight: '600',
     flex: 1
   },
   demoSwitchBox: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 18
+    padding: 14,
+    marginBottom: 20
   },
   demoSwitchText: {
     flex: 1,
     marginRight: 10
   },
   demoSwitchTitle: {
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 13,
+    fontWeight: '800',
     marginBottom: 2
   },
   demoSwitchSub: {
-    fontSize: 10,
-    lineHeight: 14
+    fontSize: 11,
+    fontWeight: '500',
+    lineHeight: 15
   },
   buttonRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    gap: 10
+    gap: 12
   },
   cancelBtn: {
     paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderRadius: 10,
-    borderWidth: 1
+    paddingVertical: 10
   },
   cancelBtnText: {
     fontSize: 13,
-    fontWeight: '600'
+    fontWeight: '700'
   },
   saveBtn: {
-    paddingHorizontal: 18,
-    paddingVertical: 9,
-    borderRadius: 10
+    paddingHorizontal: 20,
+    paddingVertical: 10
   },
   saveBtnText: {
     color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '700'
+    fontWeight: '800'
   }
 });

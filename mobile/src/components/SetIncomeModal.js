@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette } from '../theme/colors';
+import { palette, getClayCard, getClayButton, getClayInput, getClayPill } from '../theme/colors';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -13,7 +13,11 @@ const MONTH_NAMES = [
 export default function SetIncomeModal({ visible, onClose }) {
   const { selectedMonth, selectedYear, incomeData, updateIncome } = useBudget();
   const { themeMode } = useAuth();
-  const colors = palette[themeMode];
+  const colors = palette[themeMode] || palette.dark;
+  const clayCard = getClayCard(themeMode);
+  const clayButton = getClayButton(themeMode, colors.primary, colors.primaryDark);
+  const clayInput = getClayInput(themeMode);
+  const clayPill = getClayPill(themeMode);
 
   const [amountStr, setAmountStr] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,12 +56,21 @@ export default function SetIncomeModal({ visible, onClose }) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.overlay}
       >
-        <View style={[styles.modalCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+        <View style={[styles.modalCard, clayCard]}>
           {/* Header */}
           <View style={styles.headerRow}>
             <View style={styles.titleWrap}>
-              <View style={[styles.iconWrap, { backgroundColor: colors.incomeLight }]}>
-                <Ionicons name="wallet-outline" size={18} color={colors.income} />
+              <View
+                style={[
+                  styles.iconWrap,
+                  {
+                    backgroundColor: colors.incomeLight,
+                    borderTopColor: 'rgba(255, 255, 255, 0.45)',
+                    borderBottomColor: colors.incomeDark
+                  }
+                ]}
+              >
+                <Ionicons name="wallet-outline" size={20} color={colors.income} />
               </View>
               <View>
                 <Text style={[styles.modalTitle, { color: colors.text }]}>Set Monthly Income</Text>
@@ -66,13 +79,32 @@ export default function SetIncomeModal({ visible, onClose }) {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={20} color={colors.textSecondary} />
+            <TouchableOpacity
+              onPress={onClose}
+              style={[
+                styles.closeBtn,
+                {
+                  backgroundColor: colors.surfaceSubtle,
+                  borderTopColor: colors.clayBorderTop,
+                  borderBottomColor: colors.clayBorderBottom
+                }
+              ]}
+            >
+              <Ionicons name="close" size={18} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
 
           {/* Quick Explanatory Note */}
-          <View style={[styles.infoBanner, { backgroundColor: colors.surfaceSubtle, borderColor: colors.borderSubtle }]}>
+          <View
+            style={[
+              styles.infoBanner,
+              clayPill,
+              {
+                backgroundColor: colors.surfaceSubtle,
+                borderRadius: 14
+              }
+            ]}
+          >
             <Ionicons name="information-circle-outline" size={16} color={colors.primary} />
             <Text style={[styles.infoBannerText, { color: colors.textSecondary }]}>
               Setting your income will automatically recalculate your remaining balance for {MONTH_NAMES[selectedMonth - 1]}.
@@ -82,7 +114,7 @@ export default function SetIncomeModal({ visible, onClose }) {
           {/* Amount Input */}
           <View style={styles.inputGroup}>
             <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>INCOME AMOUNT (PKR / RS)</Text>
-            <View style={[styles.inputBox, { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }]}>
+            <View style={[styles.inputBox, clayInput]}>
               <Text style={[styles.currencyPrefix, { color: colors.textSecondary }]}>Rs.</Text>
               <TextInput
                 style={[styles.textInput, { color: colors.text }]}
@@ -97,7 +129,16 @@ export default function SetIncomeModal({ visible, onClose }) {
           </View>
 
           {errorText.length > 0 && (
-            <View style={[styles.errorBox, { backgroundColor: colors.expenseLight }]}>
+            <View
+              style={[
+                styles.errorBox,
+                clayPill,
+                {
+                  backgroundColor: colors.expenseLight,
+                  borderBottomColor: colors.expenseDark
+                }
+              ]}
+            >
               <Ionicons name="alert-circle-outline" size={14} color={colors.expense} />
               <Text style={[styles.errorText, { color: colors.expense }]}>{errorText}</Text>
             </View>
@@ -107,7 +148,13 @@ export default function SetIncomeModal({ visible, onClose }) {
           <View style={styles.buttonRow}>
             <TouchableOpacity
               onPress={onClose}
-              style={[styles.cancelBtn, { borderColor: colors.border }]}
+              style={[
+                styles.cancelBtn,
+                clayPill,
+                {
+                  backgroundColor: colors.surfaceSubtle
+                }
+              ]}
               disabled={isSubmitting}
             >
               <Text style={[styles.cancelBtnText, { color: colors.textSecondary }]}>Cancel</Text>
@@ -115,7 +162,7 @@ export default function SetIncomeModal({ visible, onClose }) {
 
             <TouchableOpacity
               onPress={handleSubmit}
-              style={[styles.submitBtn, { backgroundColor: colors.primary }]}
+              style={[styles.submitBtn, clayButton]}
               disabled={isSubmitting}
             >
               <Text style={styles.submitBtnText}>
@@ -132,126 +179,129 @@ export default function SetIncomeModal({ visible, onClose }) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20
   },
   modalCard: {
     width: '100%',
-    maxWidth: 400,
-    borderRadius: 20,
-    borderWidth: 1,
-    padding: 20
+    maxWidth: 420,
+    padding: 22
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 14
+    marginBottom: 16
   },
   titleWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10
+    gap: 12
   },
   iconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 3.5,
     alignItems: 'center',
     justifyContent: 'center'
   },
   modalTitle: {
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: 17,
+    fontWeight: '900',
     letterSpacing: -0.3
   },
   modalSubtitle: {
     fontSize: 12,
-    marginTop: 1
+    fontWeight: '500',
+    marginTop: 2
   },
   closeBtn: {
-    padding: 4
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderTopWidth: 1.5,
+    borderBottomWidth: 2.5,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   infoBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    padding: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 16
+    padding: 12,
+    marginBottom: 18
   },
   infoBannerText: {
     flex: 1,
     fontSize: 11,
-    lineHeight: 15
+    fontWeight: '500',
+    lineHeight: 16
   },
   inputGroup: {
-    marginBottom: 16
+    marginBottom: 18
   },
   inputLabel: {
     fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.6,
+    fontWeight: '800',
+    letterSpacing: 0.7,
     marginBottom: 6
   },
   inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10
+    paddingHorizontal: 14,
+    paddingVertical: 12
   },
   currencyPrefix: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
     marginRight: 6
   },
   textInput: {
     flex: 1,
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: '900',
     padding: 0
   },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    padding: 8,
-    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     marginBottom: 14
   },
   errorText: {
     fontSize: 11,
-    fontWeight: '600'
+    fontWeight: '700'
   },
   buttonRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    gap: 10
+    gap: 12
   },
   cancelBtn: {
     paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1
+    paddingVertical: 10
   },
   cancelBtnText: {
     fontSize: 13,
-    fontWeight: '600'
+    fontWeight: '700'
   },
   submitBtn: {
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 10
+    paddingHorizontal: 20,
+    paddingVertical: 10
   },
   submitBtnText: {
     color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '700'
+    fontWeight: '800'
   }
 });
