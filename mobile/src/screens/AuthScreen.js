@@ -10,7 +10,7 @@ import {
   ScrollView,
   ActivityIndicator
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from '../components/Icon';
 import { useAuth } from '../context/AuthContext';
 import { palette } from '../theme/colors';
 import ServerConfigModal from '../components/ServerConfigModal';
