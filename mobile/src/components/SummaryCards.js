@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette, getClayPill } from '../theme/colors';
+import { palette } from '../theme/colors';
 
 const formatCurrency = (amount) => {
   const num = Number(amount) || 0;
@@ -17,9 +17,8 @@ export default function SummaryCards({
   onOpenExport
 }) {
   const { summary, incomeData, expenses, selectedMonth, selectedYear } = useBudget();
-  const { themeMode } = useAuth();
+  const { user, themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
-  const clayPill = getClayPill(themeMode);
 
   const totalIncome = summary.total_income || 0;
   const totalExpense = summary.total_expense || 0;
@@ -28,197 +27,151 @@ export default function SummaryCards({
   const isOverBudget = remainingBalance < 0;
   const isBudgetAlert = summary.is_budget_alert || burnRate >= 80;
 
-  // Dynamic card tone for deficit / alert / healthy
-  let cardBg = '#5A44E3';
-  let cardBottom = '#3D2BB8';
+  // Executive card background tone
+  let cardBg = '#1E1B4B'; // Deep Executive Midnight Indigo
+  let accentPillBg = 'rgba(255, 255, 255, 0.12)';
+  let accentPillText = '#A5B4FC';
 
   if (isOverBudget) {
-    cardBg = '#E11D48';
-    cardBottom = '#9F1239';
+    cardBg = '#881337'; // Executive Crimson Velvet
+    accentPillBg = 'rgba(0, 0, 0, 0.3)';
+    accentPillText = '#FDA4AF';
   } else if (isBudgetAlert) {
-    cardBg = '#D97706';
-    cardBottom = '#92400E';
+    cardBg = '#78350F'; // Executive Cognac Amber
+    accentPillBg = 'rgba(0, 0, 0, 0.3)';
+    accentPillText = '#FDE68A';
   }
-
-  const expDateStr = `${String(selectedMonth).padStart(2, '0')}/${String(selectedYear).slice(-2)}`;
 
   return (
     <View style={styles.container}>
-      {/* 1. Signature 3D Inflated Clay Bank Card (Exact reference image style) */}
-      <View
-        style={[
-          styles.clayBankCard,
-          {
-            backgroundColor: cardBg,
-            borderTopColor: 'rgba(255, 255, 255, 0.65)',
-            borderLeftColor: 'rgba(255, 255, 255, 0.40)',
-            borderRightColor: cardBottom,
-            borderBottomColor: cardBottom,
-            shadowColor: cardBottom
-          }
-        ]}
-      >
-        {/* Subtle decorative clay background curve */}
-        <View style={styles.decorativeCurve} />
-
-        {/* Card Top: Balance & Overlapping Mastercard Clay Coins */}
-        <View style={styles.cardTopRow}>
-          <View>
-            <Text style={styles.cardBalanceLabel}>Balance</Text>
-            <Text style={styles.cardBalanceAmount}>{formatCurrency(remainingBalance)}</Text>
+      {/* 1. Executive Fintech Balance Card (Apple / Revolut Metal Standard) */}
+      <View style={[styles.executiveCard, { backgroundColor: cardBg }]}>
+        {/* Top Header Row: Label & Contactless Chip */}
+        <View style={styles.cardHeader}>
+          <View style={styles.labelWithDot}>
+            <View
+              style={[
+                styles.statusDot,
+                { backgroundColor: isOverBudget ? '#FB7185' : (isBudgetAlert ? '#FBBF24' : '#34D399') }
+              ]}
+            />
+            <Text style={styles.balanceOverline}>TOTAL AVAILABLE BALANCE</Text>
           </View>
 
-          {/* Overlapping 3D Mastercard Clay Coins (Exact reference image) */}
-          <View style={styles.mastercardWrap}>
-            <View style={[styles.coin, styles.coinOrange]} />
-            <View style={[styles.coin, styles.coinYellow]} />
-          </View>
-        </View>
-
-        {/* Card Middle: Card Number Dots */}
-        <View style={styles.cardNumberRow}>
-          <Text style={styles.cardDots}>••••   ••••   ••••</Text>
-          <Text style={styles.cardLastDigits}>{String(selectedYear)}</Text>
-        </View>
-
-        {/* Card Progress Line */}
-        <View style={styles.cardProgressTrack}>
-          <View
-            style={[
-              styles.cardProgressBar,
-              {
-                width: `${Math.min(burnRate, 100)}%`,
-                backgroundColor: isOverBudget ? '#FDA4AF' : (isBudgetAlert ? '#FDE68A' : '#6EE7B7')
-              }
-            ]}
-          />
-        </View>
-
-        {/* Card Bottom: Income, Cycle, Expense */}
-        <View style={styles.cardBottomRow}>
-          <View>
-            <View style={styles.metaRow}>
-              <View style={[styles.miniIndicator, { backgroundColor: '#34D399' }]} />
-              <Text style={styles.cardMetaLabel}>INCOME</Text>
+          <View style={styles.cardBadgeWrap}>
+            <View style={[styles.statusPill, { backgroundColor: accentPillBg }]}>
+              <Text style={[styles.statusPillText, { color: accentPillText }]}>
+                {isOverBudget ? 'Over Budget' : (isBudgetAlert ? '80% Spent' : 'Healthy')}
+              </Text>
             </View>
-            <Text style={styles.cardMetaValue}>{formatCurrency(totalIncome)}</Text>
           </View>
+        </View>
 
-          <View style={{ alignItems: 'center' }}>
-            <Text style={styles.cardMetaLabel}>EXP</Text>
-            <Text style={styles.cardMetaValue}>{expDateStr}</Text>
+        {/* Big Crisp Typography Balance */}
+        <Text style={styles.balanceAmount}>{formatCurrency(remainingBalance)}</Text>
+
+        {/* Burn Rate Track */}
+        <View style={styles.progressContainer}>
+          <View style={styles.progressTrack}>
+            <View
+              style={[
+                styles.progressBar,
+                {
+                  width: `${Math.min(burnRate, 100)}%`,
+                  backgroundColor: isOverBudget ? '#FB7185' : (isBudgetAlert ? '#FBBF24' : '#34D399')
+                }
+              ]}
+            />
           </View>
+          <Text style={styles.progressPercentText}>{burnRate}% used</Text>
+        </View>
 
-          <View style={{ alignItems: 'flex-end' }}>
-            <View style={styles.metaRow}>
-              <View style={[styles.miniIndicator, { backgroundColor: '#FB7185' }]} />
-              <Text style={styles.cardMetaLabel}>EXPENSE</Text>
+        {/* Card Divider */}
+        <View style={styles.cardDivider} />
+
+        {/* Bottom Metrics: Income & Expense */}
+        <View style={styles.metricsRow}>
+          <TouchableOpacity
+            style={styles.metricTouch}
+            onPress={onOpenSetIncome}
+            accessibilityLabel="Set Monthly Income"
+          >
+            <View style={styles.metricLabelRow}>
+              <View style={[styles.miniDot, { backgroundColor: '#34D399' }]} />
+              <Text style={styles.metricLabel}>MONTHLY INCOME</Text>
+              <Ionicons name="pencil-sharp" size={10} color="#94A3B8" style={{ marginLeft: 3 }} />
             </View>
-            <Text style={styles.cardMetaValue}>{formatCurrency(totalExpense)}</Text>
-          </View>
+            <Text style={[styles.metricValue, { color: '#34D399' }]}>
+              {formatCurrency(totalIncome)}
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.verticalDivider} />
+
+          <TouchableOpacity
+            style={styles.metricTouch}
+            onPress={onOpenAddExpense}
+            accessibilityLabel="View Expenses"
+          >
+            <View style={styles.metricLabelRow}>
+              <View style={[styles.miniDot, { backgroundColor: '#FB7185' }]} />
+              <Text style={styles.metricLabel}>TOTAL EXPENSE</Text>
+            </View>
+            <Text style={[styles.metricValue, { color: '#FB7185' }]}>
+              {formatCurrency(totalExpense)}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
 
-      {/* 2. Four Colorful 3D Squishy Clay Action Tiles (Exact reference image row) */}
-      <View style={styles.quickTilesRow}>
-        {/* Tile 1: Transfer / Set Income (Mint Green) */}
+      {/* 2. Sleek Quick Action Grid (Clean Executive Squircle Tiles) */}
+      <View style={styles.actionsGrid}>
+        {/* Action 1: Set Income */}
         <TouchableOpacity
-          style={styles.tileCol}
+          style={styles.actionCol}
           onPress={onOpenSetIncome}
-          accessibilityLabel="Set Monthly Income"
-          activeOpacity={0.85}
+          activeOpacity={0.8}
         >
-          <View
-            style={[
-              styles.clayTile,
-              {
-                backgroundColor: colors.tileMint,
-                borderTopColor: 'rgba(255, 255, 255, 0.70)',
-                borderLeftColor: 'rgba(255, 255, 255, 0.45)',
-                borderRightColor: colors.tileMintDark,
-                borderBottomColor: colors.tileMintDark,
-                shadowColor: colors.tileMintDark
-              }
-            ]}
-          >
-            <Ionicons name="arrow-down-circle" size={26} color="#FFFFFF" />
+          <View style={[styles.actionIconBox, { backgroundColor: '#ECFDF5' }]}>
+            <Ionicons name="wallet-outline" size={22} color="#059669" />
           </View>
-          <Text style={styles.tileLabel}>Transfer</Text>
+          <Text style={styles.actionLabel}>Set Income</Text>
         </TouchableOpacity>
 
-        {/* Tile 2: Pay Bill / Add Expense (Coral Rose) */}
+        {/* Action 2: Add Expense */}
         <TouchableOpacity
-          style={styles.tileCol}
+          style={styles.actionCol}
           onPress={onOpenAddExpense}
-          accessibilityLabel="Add New Expense"
-          activeOpacity={0.85}
+          activeOpacity={0.8}
         >
-          <View
-            style={[
-              styles.clayTile,
-              {
-                backgroundColor: colors.tileCoral,
-                borderTopColor: 'rgba(255, 255, 255, 0.70)',
-                borderLeftColor: 'rgba(255, 255, 255, 0.45)',
-                borderRightColor: colors.tileCoralDark,
-                borderBottomColor: colors.tileCoralDark,
-                shadowColor: colors.tileCoralDark
-              }
-            ]}
-          >
-            <Ionicons name="arrow-up-circle" size={26} color="#FFFFFF" />
+          <View style={[styles.actionIconBox, { backgroundColor: '#FFF1F2' }]}>
+            <Ionicons name="add-circle-outline" size={24} color="#E11D48" />
           </View>
-          <Text style={styles.tileLabel}>Pay Bill</Text>
+          <Text style={styles.actionLabel}>Add Expense</Text>
         </TouchableOpacity>
 
-        {/* Tile 3: Shop / Charts (Soft Violet) */}
+        {/* Action 3: Analytics / Categories */}
         <TouchableOpacity
-          style={styles.tileCol}
+          style={styles.actionCol}
           onPress={onToggleCategoryBreakdown}
-          accessibilityLabel="Category Charts"
-          activeOpacity={0.85}
+          activeOpacity={0.8}
         >
-          <View
-            style={[
-              styles.clayTile,
-              {
-                backgroundColor: colors.tileViolet,
-                borderTopColor: 'rgba(255, 255, 255, 0.70)',
-                borderLeftColor: 'rgba(255, 255, 255, 0.45)',
-                borderRightColor: colors.tileVioletDark,
-                borderBottomColor: colors.tileVioletDark,
-                shadowColor: colors.tileVioletDark
-              }
-            ]}
-          >
-            <Ionicons name="pie-chart" size={24} color="#FFFFFF" />
+          <View style={[styles.actionIconBox, { backgroundColor: '#EEF2FF' }]}>
+            <Ionicons name="bar-chart-outline" size={22} color="#4F46E5" />
           </View>
-          <Text style={styles.tileLabel}>Charts</Text>
+          <Text style={styles.actionLabel}>Analytics</Text>
         </TouchableOpacity>
 
-        {/* Tile 4: Saving / Export CSV (Cyan Aqua) */}
+        {/* Action 4: Statement Export */}
         <TouchableOpacity
-          style={styles.tileCol}
+          style={styles.actionCol}
           onPress={onOpenExport}
-          accessibilityLabel="Export Statement"
-          activeOpacity={0.85}
+          activeOpacity={0.8}
         >
-          <View
-            style={[
-              styles.clayTile,
-              {
-                backgroundColor: colors.tileCyan,
-                borderTopColor: 'rgba(255, 255, 255, 0.70)',
-                borderLeftColor: 'rgba(255, 255, 255, 0.45)',
-                borderRightColor: colors.tileCyanDark,
-                borderBottomColor: colors.tileCyanDark,
-                shadowColor: colors.tileCyanDark
-              }
-            ]}
-          >
-            <Ionicons name="download" size={24} color="#FFFFFF" />
+          <View style={[styles.actionIconBox, { backgroundColor: '#F0F9FF' }]}>
+            <Ionicons name="document-text-outline" size={22} color="#0284C7" />
           </View>
-          <Text style={styles.tileLabel}>Export</Text>
+          <Text style={styles.actionLabel}>Statement</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -228,164 +181,152 @@ export default function SummaryCards({
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingTop: 6,
+    paddingTop: 8,
     paddingBottom: 22
   },
-  clayBankCard: {
-    position: 'relative',
-    overflow: 'hidden',
+  executiveCard: {
+    borderRadius: 22,
     padding: 22,
-    borderRadius: 26,
-    borderTopWidth: 3,
-    borderLeftWidth: 2,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 5.5,
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.40,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
     shadowRadius: 20,
-    elevation: 10
+    elevation: 8
   },
-  decorativeCurve: {
-    position: 'absolute',
-    top: -50,
-    right: -40,
-    width: 170,
-    height: 170,
-    borderRadius: 85,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)'
-  },
-  cardTopRow: {
+  cardHeader: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16
+    marginBottom: 8
   },
-  cardBalanceLabel: {
-    color: '#D4CCFD',
-    fontSize: 13,
+  labelWithDot: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3
+  },
+  balanceOverline: {
+    color: '#CBD5E1',
+    fontSize: 10,
     fontWeight: '700',
-    letterSpacing: 0.3
+    letterSpacing: 1.1
   },
-  cardBalanceAmount: {
+  cardBadgeWrap: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  statusPill: {
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    borderRadius: 12
+  },
+  statusPillText: {
+    fontSize: 10,
+    fontWeight: '700'
+  },
+  balanceAmount: {
     color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: '900',
-    letterSpacing: -0.6,
-    marginTop: 4,
-    textShadowColor: 'rgba(0, 0, 0, 0.30)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 5
-  },
-  mastercardWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: 4
-  },
-  coin: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.45)'
-  },
-  coinOrange: {
-    backgroundColor: '#FF6B4A',
-    marginRight: -10,
-    zIndex: 1
-  },
-  coinYellow: {
-    backgroundColor: '#FFC837'
-  },
-  cardNumberRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12
-  },
-  cardDots: {
-    color: 'rgba(255, 255, 255, 0.80)',
-    fontSize: 15,
-    fontWeight: '700',
-    letterSpacing: 2
-  },
-  cardLastDigits: {
-    color: 'rgba(255, 255, 255, 0.95)',
-    fontSize: 14,
+    fontSize: 34,
     fontWeight: '800',
-    letterSpacing: 1
+    letterSpacing: -0.6,
+    marginVertical: 4
   },
-  cardProgressTrack: {
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(0, 0, 0, 0.22)',
-    borderTopWidth: 1.5,
-    borderBottomWidth: 1,
-    borderTopColor: 'rgba(0, 0, 0, 0.30)',
-    borderBottomColor: 'rgba(255, 255, 255, 0.20)',
-    overflow: 'hidden',
-    marginBottom: 16
-  },
-  cardProgressBar: {
-    height: '100%',
-    borderRadius: 4
-  },
-  cardBottomRow: {
+  progressContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 8,
+    marginBottom: 14
+  },
+  progressTrack: {
+    flex: 1,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    overflow: 'hidden'
+  },
+  progressBar: {
+    height: '100%',
+    borderRadius: 2.5
+  },
+  progressPercentText: {
+    color: '#CBD5E1',
+    fontSize: 11,
+    fontWeight: '600'
+  },
+  cardDivider: {
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    marginBottom: 14
+  },
+  metricsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between'
   },
-  metaRow: {
+  metricTouch: {
+    flex: 1
+  },
+  metricLabelRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    marginBottom: 2
+    marginBottom: 3
   },
-  miniIndicator: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5
+  miniDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2
   },
-  cardMetaLabel: {
-    color: '#D4CCFD',
+  metricLabel: {
+    color: '#94A3B8',
     fontSize: 9,
-    fontWeight: '800',
+    fontWeight: '700',
     letterSpacing: 0.8
   },
-  cardMetaValue: {
-    color: '#FFFFFF',
-    fontSize: 13,
+  metricValue: {
+    fontSize: 15,
     fontWeight: '800',
-    marginTop: 1
+    letterSpacing: -0.2
   },
-  quickTilesRow: {
+  verticalDivider: {
+    width: 1,
+    height: 28,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    marginHorizontal: 12
+  },
+  actionsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 20
   },
-  tileCol: {
+  actionCol: {
     alignItems: 'center',
     flex: 1
   },
-  clayTile: {
-    width: 64,
-    height: 64,
-    borderRadius: 22,
-    borderTopWidth: 3,
-    borderLeftWidth: 2,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 5,
+  actionIconBox: {
+    width: 54,
+    height: 54,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 6
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3
   },
-  tileLabel: {
+  actionLabel: {
     color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '800',
+    fontSize: 11,
+    fontWeight: '700',
     marginTop: 8,
     letterSpacing: 0.2
   }

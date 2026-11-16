@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput } from 'reac
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette, categoryColors, getClayCard, getClayButton, getClayPill, getClayInput } from '../theme/colors';
+import { palette, categoryColors } from '../theme/colors';
 
 const CATEGORY_ICONS = {
   Food: 'restaurant-outline',
@@ -35,10 +35,6 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
   const { expenses, deleteExpense } = useBudget();
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
-  const clayCard = getClayCard(themeMode);
-  const clayButton = getClayButton(themeMode, colors.primary, colors.primaryDark);
-  const clayPill = getClayPill(themeMode);
-  const clayInput = getClayInput(themeMode);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -73,20 +69,12 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
 
   return (
     <View style={styles.container}>
-      {/* Section Header: "Recent" and "View All / Search" (Exact reference image style) */}
+      {/* Section Header: "Recent Transactions" */}
       <View style={styles.headerRow}>
         <View style={styles.titleArea}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent</Text>
-          <View
-            style={[
-              styles.countTag,
-              clayPill,
-              {
-                backgroundColor: colors.surfaceSubtle
-              }
-            ]}
-          >
-            <Text style={[styles.countTagText, { color: colors.textSecondary }]}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent Transactions</Text>
+          <View style={[styles.countBadge, { backgroundColor: colors.surfaceSubtle }]}>
+            <Text style={[styles.countBadgeText, { color: colors.textSecondary }]}>
               {filteredExpenses.length}
             </Text>
           </View>
@@ -94,26 +82,30 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
 
         <View style={styles.headerActions}>
           <TouchableOpacity
-            style={styles.searchToggleBtn}
+            style={[styles.actionIconBtn, { backgroundColor: colors.surfaceSubtle }]}
             onPress={() => setShowSearch(!showSearch)}
             accessibilityLabel="Search expenses"
           >
-            <Ionicons name="search" size={17} color={colors.textSecondary} />
+            <Ionicons name="search" size={15} color={colors.textSecondary} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={onAddExpense} style={styles.viewAllBtn}>
-            <Text style={[styles.viewAllText, { color: colors.primary }]}>View All</Text>
+          <TouchableOpacity
+            onPress={onAddExpense}
+            style={[styles.addBtnPill, { backgroundColor: colors.primary }]}
+          >
+            <Ionicons name="add" size={15} color="#FFFFFF" />
+            <Text style={styles.addBtnText}>Add</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Debossed Clay Search Input (When toggled) */}
+      {/* Clean Search Input Bar */}
       {showSearch && (
-        <View style={[styles.searchBox, clayInput]}>
-          <Ionicons name="search-outline" size={17} color={colors.textTertiary} />
+        <View style={[styles.searchBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <Ionicons name="search-outline" size={16} color={colors.textTertiary} />
           <TextInput
             style={[styles.searchInput, { color: colors.text }]}
-            placeholder="Search recent transactions..."
+            placeholder="Search transactions..."
             placeholderTextColor={colors.textTertiary}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -121,48 +113,26 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Ionicons name="close-circle" size={18} color={colors.textTertiary} />
+              <Ionicons name="close-circle" size={16} color={colors.textTertiary} />
             </TouchableOpacity>
           )}
         </View>
       )}
 
-      {/* Table / List View */}
+      {/* Transaction List */}
       {filteredExpenses.length === 0 ? (
-        <View style={[styles.emptyContainer, clayCard]}>
-          <View
-            style={[
-              styles.emptyIconCircle,
-              {
-                backgroundColor: colors.surfaceSubtle,
-                borderTopColor: colors.clayBorderTop,
-                borderBottomColor: colors.clayBorderBottom
-              }
-            ]}
-          >
-            <Ionicons name="receipt-outline" size={34} color={colors.textTertiary} />
+        <View style={[styles.emptyContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <View style={[styles.emptyIconCircle, { backgroundColor: colors.surfaceSubtle }]}>
+            <Ionicons name="receipt-outline" size={30} color={colors.textTertiary} />
           </View>
           <Text style={[styles.emptyTitle, { color: colors.text }]}>
-            {expenses.length === 0 ? 'No recent transactions' : 'No matching expenses'}
+            {expenses.length === 0 ? 'No transactions yet' : 'No matching results'}
           </Text>
           <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
             {expenses.length === 0
-              ? 'Tap the Coral "Pay Bill" button above to record your first monthly transaction.'
-              : 'Try clearing your search query or selecting "All" categories.'}
+              ? 'Tap "+ Add" above to record your first monthly expense.'
+              : 'Try searching with a different term.'}
           </Text>
-          {expenses.length === 0 && (
-            <TouchableOpacity
-              onPress={onAddExpense}
-              style={[
-                styles.emptyAddBtn,
-                clayButton,
-                { marginTop: 16 }
-              ]}
-            >
-              <Ionicons name="add" size={18} color="#FFFFFF" />
-              <Text style={styles.emptyAddBtnText}>Add Expense</Text>
-            </TouchableOpacity>
-          )}
         </View>
       ) : (
         <View style={styles.listContainer}>
@@ -170,7 +140,6 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
             const cat = item.category || 'General';
             const catConfig = categoryColors[cat] || categoryColors.General;
             const catColor = catConfig.color;
-            const catDarkColor = catConfig.darkColor;
             const catBg = catConfig.bg;
             const iconName = CATEGORY_ICONS[cat] || 'pricetag-outline';
 
@@ -178,59 +147,44 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
               <View
                 key={item.id}
                 style={[
-                  styles.clayExpenseRow,
-                  clayCard,
+                  styles.transactionCard,
                   {
-                    paddingVertical: 14,
-                    paddingHorizontal: 16,
-                    borderRadius: 20
+                    backgroundColor: colors.surface,
+                    borderColor: colors.border
                   }
                 ]}
               >
-                {/* Left: 3D Rounded Square Icon Badge (Exact reference image icon style) */}
-                <View
-                  style={[
-                    styles.categorySquareBadge,
-                    {
-                      backgroundColor: catBg,
-                      borderTopColor: 'rgba(255, 255, 255, 0.90)',
-                      borderLeftColor: 'rgba(255, 255, 255, 0.70)',
-                      borderRightColor: catDarkColor,
-                      borderBottomColor: catDarkColor,
-                      shadowColor: catDarkColor
-                    }
-                  ]}
-                >
-                  <Ionicons name={iconName} size={22} color={catColor} />
+                {/* Left: Clean Squircle Icon Badge */}
+                <View style={[styles.iconBadge, { backgroundColor: catBg }]}>
+                  <Ionicons name={iconName} size={20} color={catColor} />
                 </View>
 
-                {/* Middle: Title & Date (Reference image) */}
-                <View style={styles.expenseInfo}>
-                  <Text style={[styles.expenseName, { color: colors.text }]} numberOfLines={1}>
+                {/* Middle: Title, Date, Category */}
+                <View style={styles.infoCol}>
+                  <Text style={[styles.transactionTitle, { color: colors.text }]} numberOfLines={1}>
                     {item.name}
                   </Text>
-                  <Text style={[styles.expenseDate, { color: colors.textTertiary }]}>
-                    {formatDate(item.date)}
-                  </Text>
+                  <View style={styles.metaRow}>
+                    <Text style={[styles.metaDate, { color: colors.textTertiary }]}>
+                      {formatDate(item.date)}
+                    </Text>
+                    <View style={styles.metaDot} />
+                    <Text style={[styles.metaCategory, { color: catColor }]}>
+                      {cat}
+                    </Text>
+                  </View>
                 </View>
 
-                {/* Right: Amount in Coral/Red and Mini Action Buttons */}
-                <View style={styles.expenseRight}>
-                  <Text style={[styles.expenseAmount, { color: colors.expense }]}>
-                    -${Number(item.amount).toLocaleString('en-US')}
+                {/* Right: Amount & Actions */}
+                <View style={styles.amountCol}>
+                  <Text style={[styles.amountText, { color: colors.expense }]}>
+                    -{formatCurrency(item.amount)}
                   </Text>
 
-                  <View style={styles.actionButtonsRow}>
+                  <View style={styles.actionGroup}>
                     <TouchableOpacity
                       onPress={() => onEditExpense(item)}
-                      style={[
-                        styles.clayMiniActionBtn,
-                        {
-                          backgroundColor: colors.surfaceSubtle,
-                          borderTopColor: colors.clayBorderTop,
-                          borderBottomColor: colors.clayBorderBottom
-                        }
-                      ]}
+                      style={[styles.miniBtn, { backgroundColor: colors.surfaceSubtle }]}
                       accessibilityLabel={`Edit ${item.name}`}
                     >
                       <Ionicons name="pencil" size={11} color={colors.textSecondary} />
@@ -238,14 +192,7 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
 
                     <TouchableOpacity
                       onPress={() => handleDelete(item)}
-                      style={[
-                        styles.clayMiniActionBtn,
-                        {
-                          backgroundColor: colors.expenseLight,
-                          borderTopColor: 'rgba(255, 255, 255, 0.40)',
-                          borderBottomColor: colors.expenseDark
-                        }
-                      ]}
+                      style={[styles.miniBtn, { backgroundColor: colors.expenseLight }]}
                       accessibilityLabel={`Delete ${item.name}`}
                     >
                       <Ionicons name="trash-outline" size={11} color={colors.expense} />
@@ -279,151 +226,157 @@ const styles = StyleSheet.create({
     gap: 8
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    letterSpacing: -0.4
+    fontSize: 18,
+    fontWeight: '800',
+    letterSpacing: -0.3
   },
-  countTag: {
-    paddingHorizontal: 9,
-    paddingVertical: 2
+  countBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10
   },
-  countTagText: {
+  countBadgeText: {
     fontSize: 11,
-    fontWeight: '800'
+    fontWeight: '700'
   },
   headerActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12
+    gap: 8
   },
-  searchToggleBtn: {
-    padding: 6
+  actionIconBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  viewAllBtn: {
-    paddingVertical: 4,
-    paddingHorizontal: 6
+  addBtnPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 11,
+    paddingVertical: 6,
+    borderRadius: 10
   },
-  viewAllText: {
-    fontSize: 13,
-    fontWeight: '800'
+  addBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700'
   },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    marginBottom: 14
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 12
   },
   searchInput: {
     flex: 1,
-    fontSize: 14,
+    fontSize: 13,
     padding: 0
   },
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 36,
+    padding: 32,
+    borderRadius: 16,
+    borderWidth: 1,
     marginTop: 4
   },
   emptyIconCircle: {
-    width: 66,
-    height: 66,
-    borderRadius: 33,
-    borderTopWidth: 2,
-    borderLeftWidth: 1.5,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 3.5,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 3
+    marginBottom: 10
   },
   emptyTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    marginBottom: 4
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 3
   },
   emptySubtitle: {
     fontSize: 12,
     textAlign: 'center',
-    lineHeight: 18,
-    maxWidth: 260
-  },
-  emptyAddBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 16,
-    paddingVertical: 10
-  },
-  emptyAddBtnText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '800'
+    lineHeight: 16
   },
   listContainer: {
     gap: 10
   },
-  clayExpenseRow: {
+  transactionCard: {
     flexDirection: 'row',
-    alignItems: 'center'
-  },
-  categorySquareBadge: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    borderTopWidth: 2,
-    borderLeftWidth: 1.5,
-    borderRightWidth: 1,
-    borderBottomWidth: 3.5,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 14,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.18,
-    shadowRadius: 5,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
     elevation: 2
   },
-  expenseInfo: {
+  iconBadge: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12
+  },
+  infoCol: {
     flex: 1,
     marginRight: 8
   },
-  expenseName: {
-    fontSize: 15,
-    fontWeight: '800',
+  transactionTitle: {
+    fontSize: 14,
+    fontWeight: '700',
     letterSpacing: -0.2,
     marginBottom: 3
   },
-  expenseDate: {
-    fontSize: 12,
-    fontWeight: '600'
-  },
-  expenseRight: {
-    alignItems: 'flex-end'
-  },
-  expenseAmount: {
-    fontSize: 16,
-    fontWeight: '900',
-    letterSpacing: -0.3,
-    marginBottom: 5
-  },
-  actionButtonsRow: {
+  metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6
+    gap: 4
   },
-  clayMiniActionBtn: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    borderTopWidth: 1.5,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 2,
+  metaDate: {
+    fontSize: 11,
+    fontWeight: '500'
+  },
+  metaDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: '#CBD5E1',
+    marginHorizontal: 3
+  },
+  metaCategory: {
+    fontSize: 11,
+    fontWeight: '700'
+  },
+  amountCol: {
+    alignItems: 'flex-end'
+  },
+  amountText: {
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: -0.3,
+    marginBottom: 4
+  },
+  actionGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5
+  },
+  miniBtn: {
+    width: 24,
+    height: 24,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center'
   }

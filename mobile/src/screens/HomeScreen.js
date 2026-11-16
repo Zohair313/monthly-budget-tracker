@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '../components/Icon';
 import { useAuth } from '../context/AuthContext';
 import { useBudget } from '../context/BudgetContext';
-import { palette, getClayPill } from '../theme/colors';
+import { palette } from '../theme/colors';
 
 import Header from '../components/Header';
 import SummaryCards from '../components/SummaryCards';
@@ -29,7 +29,6 @@ import ExportModal from '../components/ExportModal';
 export default function HomeScreen() {
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
-  const clayPill = getClayPill(themeMode);
   const { isLoading, refresh, errorMessage, clearError } = useBudget();
 
   // Active Category Filter & View Toggles
@@ -60,27 +59,18 @@ export default function HomeScreen() {
         backgroundColor={colors.brandViolet}
       />
 
-      {/* 1. Header (Reference image top violet bar with grid, month pill, avatar) */}
+      {/* 1. Header on Royal Indigo Canvas */}
       <Header onOpenSettings={() => setShowServerConfig(true)} />
 
       {/* Network or General Error Notice */}
       {errorMessage && (
-        <View
-          style={[
-            styles.errorNotice,
-            clayPill,
-            {
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              borderBottomColor: colors.expenseDark
-            }
-          ]}
-        >
-          <Ionicons name="cloud-offline-outline" size={16} color={colors.expense} />
-          <Text style={[styles.errorNoticeText, { color: colors.expense }]} numberOfLines={2}>
+        <View style={styles.errorNotice}>
+          <Ionicons name="cloud-offline-outline" size={15} color="#E11D48" />
+          <Text style={styles.errorNoticeText} numberOfLines={2}>
             {errorMessage}
           </Text>
           <TouchableOpacity onPress={clearError} style={styles.errorCloseBtn}>
-            <Ionicons name="close" size={16} color={colors.expense} />
+            <Ionicons name="close" size={15} color="#E11D48" />
           </TouchableOpacity>
         </View>
       )}
@@ -98,7 +88,7 @@ export default function HomeScreen() {
         }
         showsVerticalScrollIndicator={false}
       >
-        {/* 2. Top Violet Section: 3D Clay Bank Card & 4 Colorful Action Tiles (Reference image) */}
+        {/* 2. Executive Card & Clean Squircle Quick Tiles */}
         <SummaryCards
           onOpenSetIncome={() => setShowSetIncome(true)}
           onOpenAddExpense={() => {
@@ -109,28 +99,20 @@ export default function HomeScreen() {
           onOpenExport={() => setShowExport(true)}
         />
 
-        {/* 3. Bottom White Porcelain Curved Clay Sheet (Reference image curved white body) */}
-        <View
-          style={[
-            styles.porcelainSheet,
-            {
-              backgroundColor: colors.sheetBackground,
-              borderTopColor: '#FFFFFF'
-            }
-          ]}
-        >
-          {/* Subtle curved drag handle at top of sheet */}
+        {/* 3. Pristine Porcelain Sheet */}
+        <View style={[styles.porcelainSheet, { backgroundColor: colors.sheetBackground }]}>
+          {/* Subtle drag handle */}
           <View style={styles.sheetHandleWrap}>
             <View style={[styles.sheetHandle, { backgroundColor: colors.border }]} />
           </View>
 
-          {/* Budget Alert Banner (When >= 80% or Deficit) */}
+          {/* Budget Alert Banner */}
           <BudgetAlertBanner />
 
           {/* Month Comparison Card */}
           <MonthComparisonCard />
 
-          {/* 3D Vertical Bar Chart & Category Filters (Reference image Screen 2) */}
+          {/* Clean Analytics Bar Chart & Category Filters */}
           {showCharts && (
             <CategoryBreakdown
               activeCategory={activeCategory}
@@ -138,7 +120,7 @@ export default function HomeScreen() {
             />
           )}
 
-          {/* "Recent" Transactions / Expenses List (Reference image Screen 1 bottom) */}
+          {/* Recent Transactions List */}
           <ExpenseList
             activeCategory={activeCategory}
             onAddExpense={() => {
@@ -150,61 +132,42 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
-      {/* 4. Floating Violet Bottom Navigation Bar (Exact reference image dock) */}
-      <View
-        style={[
-          styles.bottomDock,
-          {
-            backgroundColor: colors.brandVioletDark,
-            borderTopColor: 'rgba(255, 255, 255, 0.40)',
-            borderBottomColor: colors.brandVioletDeep
-          }
-        ]}
-      >
+      {/* 4. Sleek Floating Bottom Dock */}
+      <View style={[styles.bottomDock, { backgroundColor: colors.brandVioletDark }]}>
         {/* Nav 1: Home */}
         <TouchableOpacity style={styles.dockItem} onPress={() => setShowCharts(false)}>
-          <Ionicons name="home" size={22} color="#FFFFFF" />
+          <Ionicons name="home" size={20} color="#FFFFFF" />
         </TouchableOpacity>
 
-        {/* Nav 2: Charts / Analytics */}
+        {/* Nav 2: Analytics */}
         <TouchableOpacity style={styles.dockItem} onPress={() => setShowCharts(!showCharts)}>
           <Ionicons
-            name="pie-chart"
-            size={22}
-            color={showCharts ? '#FFD166' : 'rgba(255, 255, 255, 0.75)'}
+            name="bar-chart"
+            size={20}
+            color={showCharts ? '#34D399' : 'rgba(255, 255, 255, 0.7)'}
           />
         </TouchableOpacity>
 
-        {/* Center Raised 3D Clay Button (Reference image floating puck) */}
+        {/* Center Raised Action Button */}
         <TouchableOpacity
-          style={[
-            styles.dockCenterPuck,
-            {
-              backgroundColor: colors.brandViolet,
-              borderTopColor: 'rgba(255, 255, 255, 0.75)',
-              borderLeftColor: 'rgba(255, 255, 255, 0.45)',
-              borderRightColor: colors.brandVioletDeep,
-              borderBottomColor: colors.brandVioletDeep,
-              shadowColor: colors.brandVioletDeep
-            }
-          ]}
+          style={[styles.dockCenterBtn, { backgroundColor: colors.primary }]}
           onPress={() => {
             setEditingExpense(null);
             setShowAddExpense(true);
           }}
           accessibilityLabel="Add New Expense"
         >
-          <Ionicons name="add" size={28} color="#FFFFFF" />
+          <Ionicons name="add" size={26} color="#FFFFFF" />
         </TouchableOpacity>
 
-        {/* Nav 4: Export Statement */}
+        {/* Nav 4: Statement */}
         <TouchableOpacity style={styles.dockItem} onPress={() => setShowExport(true)}>
-          <Ionicons name="document-text" size={22} color="rgba(255, 255, 255, 0.75)" />
+          <Ionicons name="document-text" size={20} color="rgba(255, 255, 255, 0.7)" />
         </TouchableOpacity>
 
         {/* Nav 5: Settings */}
         <TouchableOpacity style={styles.dockItem} onPress={() => setShowServerConfig(true)}>
-          <Ionicons name="settings" size={22} color="rgba(255, 255, 255, 0.75)" />
+          <Ionicons name="settings" size={20} color="rgba(255, 255, 255, 0.7)" />
         </TouchableOpacity>
       </View>
 
@@ -232,66 +195,68 @@ const styles = StyleSheet.create({
     flex: 1
   },
   scrollContent: {
-    paddingBottom: 90
+    paddingBottom: 88
   },
   errorNotice: {
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 20,
-    marginTop: 6,
+    marginTop: 4,
     marginBottom: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    backgroundColor: '#FFF1F2',
+    borderWidth: 1,
+    borderColor: '#FECDD3',
     gap: 8
   },
   errorNoticeText: {
     flex: 1,
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '700',
+    color: '#E11D48',
     lineHeight: 15
   },
   errorCloseBtn: {
     padding: 2
   },
   porcelainSheet: {
-    borderTopLeftRadius: 36,
-    borderTopRightRadius: 36,
-    borderTopWidth: 2.5,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
     paddingTop: 8,
     minHeight: 520,
-    shadowColor: '#2D1B78',
-    shadowOffset: { width: 0, height: -8 },
-    shadowOpacity: 0.16,
-    shadowRadius: 18,
-    elevation: 10
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 8
   },
   sheetHandleWrap: {
     alignItems: 'center',
     paddingVertical: 8
   },
   sheetHandle: {
-    width: 44,
-    height: 5,
-    borderRadius: 2.5
+    width: 38,
+    height: 4,
+    borderRadius: 2
   },
   bottomDock: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: 68,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    borderTopWidth: 2,
-    borderBottomWidth: 3,
+    height: 64,
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingHorizontal: 16,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: -6 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
     elevation: 10
   },
   dockItem: {
@@ -300,20 +265,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  dockCenterPuck: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    marginTop: -28,
-    borderTopWidth: 2.5,
-    borderLeftWidth: 2,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 4.5,
+  dockCenterBtn: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginTop: -22,
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.40,
-    shadowRadius: 10,
-    elevation: 8
+    shadowColor: '#4F46E5',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 6
   }
 });

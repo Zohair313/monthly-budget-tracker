@@ -12,16 +12,12 @@ import {
 } from 'react-native';
 import Ionicons from '../components/Icon';
 import { useAuth } from '../context/AuthContext';
-import { palette, getClayCard, getClayButton, getClayInput, getClayPill } from '../theme/colors';
+import { palette } from '../theme/colors';
 import ServerConfigModal from '../components/ServerConfigModal';
 
 export default function AuthScreen() {
   const { login, register, themeMode, toggleTheme, demoMode, toggleDemoMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
-  const clayCard = getClayCard(themeMode);
-  const clayButton = getClayButton(themeMode, colors.primary, colors.primaryDark);
-  const clayInput = getClayInput(themeMode);
-  const clayPill = getClayPill(themeMode);
 
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState('');
@@ -71,17 +67,10 @@ export default function AuthScreen() {
       style={[styles.container, { backgroundColor: colors.brandViolet }]}
     >
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Top bar with Theme and Server Config */}
+        {/* Top Action Bar */}
         <View style={styles.topBar}>
           <TouchableOpacity
-            style={[
-              styles.clayTopIconBtn,
-              {
-                backgroundColor: 'rgba(255, 255, 255, 0.22)',
-                borderTopColor: 'rgba(255, 255, 255, 0.50)',
-                borderBottomColor: 'rgba(0, 0, 0, 0.25)'
-              }
-            ]}
+            style={styles.frostedTopBtn}
             onPress={toggleTheme}
             accessibilityLabel="Toggle Theme"
           >
@@ -93,14 +82,7 @@ export default function AuthScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.clayTopIconBtn,
-              {
-                backgroundColor: 'rgba(255, 255, 255, 0.22)',
-                borderTopColor: 'rgba(255, 255, 255, 0.50)',
-                borderBottomColor: 'rgba(0, 0, 0, 0.25)'
-              }
-            ]}
+            style={styles.frostedTopBtn}
             onPress={() => setShowServerConfig(true)}
             accessibilityLabel="Server Settings"
           >
@@ -108,22 +90,10 @@ export default function AuthScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Brand Hero with 3D White Inflated Coin on Violet Canvas */}
+        {/* Brand Header */}
         <View style={styles.heroSection}>
-          <View
-            style={[
-              styles.brandIconWrap,
-              {
-                backgroundColor: '#FFFFFF',
-                borderTopColor: '#FFFFFF',
-                borderLeftColor: 'rgba(255, 255, 255, 0.9)',
-                borderRightColor: '#E2E8F0',
-                borderBottomColor: '#CBD5E1',
-                shadowColor: 'rgba(0, 0, 0, 0.35)'
-              }
-            ]}
-          >
-            <Ionicons name="wallet" size={42} color={colors.primary} />
+          <View style={styles.brandIconCircle}>
+            <Ionicons name="wallet" size={32} color={colors.primary} />
           </View>
           <Text style={styles.heroTitle}>Budget Tracker</Text>
           <Text style={styles.heroSubtitle}>
@@ -131,33 +101,14 @@ export default function AuthScreen() {
           </Text>
         </View>
 
-        {/* Porcelain White Curved Clay Card */}
-        <View style={[styles.authCard, clayCard]}>
-          {/* Debossed Tabs Track: Sign In / Register */}
-          <View
-            style={[
-              styles.tabsWrap,
-              {
-                backgroundColor: colors.surfaceSubtle,
-                borderTopColor: themeMode === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(160,174,192,0.45)',
-                borderBottomColor: themeMode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.95)'
-              }
-            ]}
-          >
+        {/* Executive White Card */}
+        <View style={[styles.authCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          {/* Segmented Switch */}
+          <View style={[styles.tabsWrap, { backgroundColor: colors.surfaceSubtle }]}>
             <TouchableOpacity
               style={[
                 styles.tabBtn,
-                !isRegister && [
-                  styles.tabBtnActive,
-                  {
-                    backgroundColor: colors.surface,
-                    borderTopColor: colors.clayBorderTop,
-                    borderLeftColor: colors.clayBorderLeft,
-                    borderRightColor: colors.clayBorderRight,
-                    borderBottomColor: colors.clayBorderBottom,
-                    shadowColor: colors.clayShadowColor
-                  }
-                ]
+                !isRegister && styles.tabBtnActive
               ]}
               onPress={() => {
                 setIsRegister(false);
@@ -169,7 +120,7 @@ export default function AuthScreen() {
                   styles.tabBtnText,
                   {
                     color: !isRegister ? colors.text : colors.textSecondary,
-                    fontWeight: !isRegister ? '900' : '600'
+                    fontWeight: !isRegister ? '800' : '600'
                   }
                 ]}
               >
@@ -180,17 +131,7 @@ export default function AuthScreen() {
             <TouchableOpacity
               style={[
                 styles.tabBtn,
-                isRegister && [
-                  styles.tabBtnActive,
-                  {
-                    backgroundColor: colors.surface,
-                    borderTopColor: colors.clayBorderTop,
-                    borderLeftColor: colors.clayBorderLeft,
-                    borderRightColor: colors.clayBorderRight,
-                    borderBottomColor: colors.clayBorderBottom,
-                    shadowColor: colors.clayShadowColor
-                  }
-                ]
+                isRegister && styles.tabBtnActive
               ]}
               onPress={() => {
                 setIsRegister(true);
@@ -202,7 +143,7 @@ export default function AuthScreen() {
                   styles.tabBtnText,
                   {
                     color: isRegister ? colors.text : colors.textSecondary,
-                    fontWeight: isRegister ? '900' : '600'
+                    fontWeight: isRegister ? '800' : '600'
                   }
                 ]}
               >
@@ -211,13 +152,13 @@ export default function AuthScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Form Fields */}
+          {/* Form Area */}
           <View style={styles.formArea}>
             {isRegister && (
               <View style={styles.inputGroup}>
                 <Text style={[styles.label, { color: colors.textSecondary }]}>FULL NAME</Text>
-                <View style={[styles.inputField, clayInput]}>
-                  <Ionicons name="person-outline" size={18} color={colors.textTertiary} style={styles.fieldIcon} />
+                <View style={[styles.inputField, { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }]}>
+                  <Ionicons name="person-outline" size={17} color={colors.textTertiary} style={styles.fieldIcon} />
                   <TextInput
                     style={[styles.input, { color: colors.text }]}
                     placeholder="e.g. John Doe"
@@ -232,8 +173,8 @@ export default function AuthScreen() {
 
             <View style={styles.inputGroup}>
               <Text style={[styles.label, { color: colors.textSecondary }]}>EMAIL ADDRESS</Text>
-              <View style={[styles.inputField, clayInput]}>
-                <Ionicons name="mail-outline" size={18} color={colors.textTertiary} style={styles.fieldIcon} />
+              <View style={[styles.inputField, { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }]}>
+                <Ionicons name="mail-outline" size={17} color={colors.textTertiary} style={styles.fieldIcon} />
                 <TextInput
                   style={[styles.input, { color: colors.text }]}
                   placeholder="name@example.com"
@@ -248,8 +189,8 @@ export default function AuthScreen() {
 
             <View style={styles.inputGroup}>
               <Text style={[styles.label, { color: colors.textSecondary }]}>PASSWORD</Text>
-              <View style={[styles.inputField, clayInput]}>
-                <Ionicons name="lock-closed-outline" size={18} color={colors.textTertiary} style={styles.fieldIcon} />
+              <View style={[styles.inputField, { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }]}>
+                <Ionicons name="lock-closed-outline" size={17} color={colors.textTertiary} style={styles.fieldIcon} />
                 <TextInput
                   style={[styles.input, { color: colors.text }]}
                   placeholder="••••••••"
@@ -261,7 +202,7 @@ export default function AuthScreen() {
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeBtn}>
                   <Ionicons
                     name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                    size={18}
+                    size={17}
                     color={colors.textTertiary}
                   />
                 </TouchableOpacity>
@@ -269,24 +210,15 @@ export default function AuthScreen() {
             </View>
 
             {errorMsg.length > 0 && (
-              <View
-                style={[
-                  styles.errorBox,
-                  clayPill,
-                  {
-                    backgroundColor: colors.expenseLight,
-                    borderBottomColor: colors.expenseDark
-                  }
-                ]}
-              >
-                <Ionicons name="alert-circle" size={16} color={colors.expense} />
-                <Text style={[styles.errorMsgText, { color: colors.expense }]}>{errorMsg}</Text>
+              <View style={styles.errorBox}>
+                <Ionicons name="alert-circle" size={15} color="#E11D48" />
+                <Text style={styles.errorMsgText}>{errorMsg}</Text>
               </View>
             )}
 
-            {/* Chunky Violet 3D Clay Submit Button */}
+            {/* Primary Action Button */}
             <TouchableOpacity
-              style={[styles.submitButton, clayButton]}
+              style={[styles.submitButton, { backgroundColor: colors.primary }]}
               onPress={handleSubmit}
               disabled={isLoading}
             >
@@ -299,44 +231,31 @@ export default function AuthScreen() {
               )}
             </TouchableOpacity>
 
-            {/* Quick Demo Fill Button */}
+            {/* Demo Fill Pill */}
             <TouchableOpacity
-              style={[
-                styles.demoFillBtn,
-                clayPill,
-                {
-                  backgroundColor: colors.surfaceSubtle
-                }
-              ]}
+              style={[styles.demoFillBtn, { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }]}
               onPress={handleFillDemo}
             >
-              <Ionicons name="flash-outline" size={15} color={colors.primary} />
+              <Ionicons name="flash-outline" size={14} color={colors.primary} />
               <Text style={[styles.demoFillText, { color: colors.primary }]}>
                 Fill Demo Credentials (demo@budgettracker.com)
               </Text>
             </TouchableOpacity>
 
-            {/* Offline Demo Mode Toggle */}
+            {/* Offline Demo Button */}
             <TouchableOpacity
-              style={[
-                styles.offlineDemoBtn,
-                clayPill,
-                {
-                  backgroundColor: colors.incomeLight,
-                  borderBottomColor: colors.incomeDark
-                }
-              ]}
+              style={styles.offlineDemoBtn}
               onPress={toggleDemoMode}
             >
-              <Ionicons name="leaf-outline" size={15} color={colors.income} />
-              <Text style={[styles.offlineDemoText, { color: colors.income }]}>
+              <Ionicons name="leaf-outline" size={14} color="#059669" />
+              <Text style={styles.offlineDemoText}>
                 {demoMode ? 'Switch to Live Database' : '⚡ Instant Offline Demo Mode'}
               </Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Footer Note */}
+        {/* Footer */}
         <View style={styles.footerNote}>
           <Text style={styles.footerText}>
             Secure JWT Authentication • Neon PostgreSQL
@@ -362,85 +281,81 @@ const styles = StyleSheet.create({
   },
   topBar: {
     width: '100%',
-    maxWidth: 420,
+    maxWidth: 400,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 10,
+    gap: 8,
     marginBottom: 16
   },
-  clayTopIconBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 16,
-    borderTopWidth: 2,
-    borderLeftWidth: 1.5,
-    borderRightWidth: 1,
-    borderBottomWidth: 3.5,
+  frostedTopBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 11,
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
     alignItems: 'center',
-    justifyContent: 'center',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 3
+    justifyContent: 'center'
   },
   heroSection: {
     alignItems: 'center',
-    marginBottom: 22
+    marginBottom: 20
   },
-  brandIconWrap: {
-    width: 84,
-    height: 84,
-    borderRadius: 42,
-    borderTopWidth: 3,
-    borderLeftWidth: 2,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 6,
+  brandIconCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 14,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 9
+    marginBottom: 12,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    elevation: 6
   },
   heroTitle: {
-    fontSize: 30,
+    fontSize: 26,
     fontWeight: '900',
-    letterSpacing: -0.8,
+    letterSpacing: -0.6,
     color: '#FFFFFF'
   },
   heroSubtitle: {
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '600',
     marginTop: 4,
     color: 'rgba(255, 255, 255, 0.85)'
   },
   authCard: {
     width: '100%',
-    maxWidth: 420,
-    padding: 24,
-    borderRadius: 28
+    maxWidth: 400,
+    padding: 22,
+    borderRadius: 22,
+    borderWidth: 1,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 8
   },
   tabsWrap: {
     flexDirection: 'row',
-    borderRadius: 18,
-    padding: 4,
-    marginBottom: 22,
-    borderWidth: 1.5
+    borderRadius: 14,
+    padding: 3,
+    marginBottom: 18
   },
   tabBtn: {
     flex: 1,
-    paddingVertical: 11,
+    paddingVertical: 9,
     alignItems: 'center',
-    borderRadius: 14
+    borderRadius: 11
   },
   tabBtnActive: {
-    borderTopWidth: 2,
-    borderLeftWidth: 1.5,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 3.5,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#0F172A',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2
   },
@@ -448,86 +363,100 @@ const styles = StyleSheet.create({
     fontSize: 13
   },
   formArea: {
-    gap: 16
+    gap: 14
   },
   inputGroup: {
-    gap: 7
+    gap: 5
   },
   label: {
     fontSize: 10,
-    fontWeight: '900',
-    letterSpacing: 0.8
+    fontWeight: '800',
+    letterSpacing: 0.7
   },
   inputField: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 13
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1
   },
   fieldIcon: {
-    marginRight: 10
+    marginRight: 8
   },
   input: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 14,
     padding: 0
   },
   eyeBtn: {
-    padding: 4
+    padding: 3
   },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 10
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    backgroundColor: '#FFF1F2',
+    borderWidth: 1,
+    borderColor: '#FECDD3'
   },
   errorMsgText: {
     flex: 1,
     fontSize: 11,
-    fontWeight: '800',
-    lineHeight: 16
+    fontWeight: '700',
+    color: '#E11D48'
   },
   submitButton: {
-    paddingVertical: 15,
+    paddingVertical: 13,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 6
+    marginTop: 4
   },
   submitButtonText: {
     color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '900'
+    fontSize: 14,
+    fontWeight: '800'
   },
   demoFillBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 7,
-    paddingVertical: 11
+    gap: 6,
+    paddingVertical: 9,
+    borderRadius: 11,
+    borderWidth: 1
   },
   demoFillText: {
-    fontSize: 12,
-    fontWeight: '800'
+    fontSize: 11,
+    fontWeight: '700'
   },
   offlineDemoBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 7,
-    paddingVertical: 11
+    gap: 6,
+    paddingVertical: 9,
+    borderRadius: 11,
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#A7F3D0'
   },
   offlineDemoText: {
-    fontSize: 12,
-    fontWeight: '900'
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#059669'
   },
   footerNote: {
-    marginTop: 26,
+    marginTop: 22,
     alignItems: 'center'
   },
   footerText: {
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 11,
+    fontWeight: '600',
     color: 'rgba(255, 255, 255, 0.75)'
   }
 });

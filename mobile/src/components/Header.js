@@ -3,18 +3,17 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Ionicons from './Icon';
 import { useAuth } from '../context/AuthContext';
 import { useBudget } from '../context/BudgetContext';
-import { palette, getClayPill } from '../theme/colors';
+import { palette } from '../theme/colors';
 
 const MONTH_NAMES = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-export default function Header({ onOpenSettings, onToggleMonthModal }) {
+export default function Header({ onOpenSettings }) {
   const { user, logout, themeMode, toggleTheme, demoMode } = useAuth();
   const { selectedMonth, selectedYear, nextMonth, prevMonth } = useBudget();
   const colors = palette[themeMode] || palette.light;
-  const clayPill = getClayPill(themeMode);
 
   const handleLogout = () => {
     Alert.alert(
@@ -33,58 +32,34 @@ export default function Header({ onOpenSettings, onToggleMonthModal }) {
 
   return (
     <View style={styles.container}>
-      {/* Left: Apps / Grid Button (Reference image top-left) */}
+      {/* Left: Settings / Quick Config Button */}
       <TouchableOpacity
-        style={[
-          styles.clayHeaderBtn,
-          {
-            backgroundColor: 'rgba(255, 255, 255, 0.22)',
-            borderTopColor: 'rgba(255, 255, 255, 0.50)',
-            borderBottomColor: 'rgba(0, 0, 0, 0.25)'
-          }
-        ]}
+        style={styles.frostedIconBtn}
         onPress={onOpenSettings}
         accessibilityLabel="App Settings"
       >
-        <Ionicons name="apps" size={18} color="#FFFFFF" />
+        <Ionicons name="grid-outline" size={18} color="#FFFFFF" />
       </TouchableOpacity>
 
-      {/* Center: Month Navigation Pill (Reference image top dropdown) */}
-      <View
-        style={[
-          styles.monthPill,
-          clayPill,
-          {
-            backgroundColor: 'rgba(255, 255, 255, 0.24)',
-            borderTopColor: 'rgba(255, 255, 255, 0.60)',
-            borderBottomColor: 'rgba(0, 0, 0, 0.30)'
-          }
-        ]}
-      >
-        <TouchableOpacity onPress={prevMonth} style={styles.monthArrow}>
+      {/* Center: Sleek Month Navigation Capsule */}
+      <View style={styles.monthCapsule}>
+        <TouchableOpacity onPress={prevMonth} style={styles.chevronTouch} accessibilityLabel="Previous month">
           <Ionicons name="chevron-back" size={14} color="#FFFFFF" />
         </TouchableOpacity>
 
-        <Text style={styles.monthPillText}>
+        <Text style={styles.monthText}>
           {MONTH_NAMES[selectedMonth - 1]} {selectedYear}
         </Text>
 
-        <TouchableOpacity onPress={nextMonth} style={styles.monthArrow}>
+        <TouchableOpacity onPress={nextMonth} style={styles.chevronTouch} accessibilityLabel="Next month">
           <Ionicons name="chevron-forward" size={14} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
-      {/* Right: Theme Toggle & Avatar (Reference image top-right) */}
+      {/* Right: Theme Toggle & Avatar */}
       <View style={styles.rightGroup}>
         <TouchableOpacity
-          style={[
-            styles.clayHeaderBtnSmall,
-            {
-              backgroundColor: 'rgba(255, 255, 255, 0.22)',
-              borderTopColor: 'rgba(255, 255, 255, 0.50)',
-              borderBottomColor: 'rgba(0, 0, 0, 0.25)'
-            }
-          ]}
+          style={styles.frostedIconBtnSmall}
           onPress={toggleTheme}
           accessibilityLabel="Toggle Theme"
         >
@@ -114,54 +89,51 @@ export default function Header({ onOpenSettings, onToggleMonthModal }) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingTop: 12,
     paddingBottom: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
   },
-  clayHeaderBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 16,
-    borderTopWidth: 2,
-    borderLeftWidth: 1.5,
-    borderRightWidth: 1,
-    borderBottomWidth: 3.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: 'rgba(0, 0, 0, 0.2)',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 3
-  },
-  clayHeaderBtnSmall: {
-    width: 36,
-    height: 36,
-    borderRadius: 14,
-    borderTopWidth: 1.5,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 3,
+  frostedIconBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
     alignItems: 'center',
     justifyContent: 'center'
   },
-  monthPill: {
+  frostedIconBtnSmall: {
+    width: 34,
+    height: 34,
+    borderRadius: 11,
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  monthCapsule: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
     paddingHorizontal: 12,
-    paddingVertical: 6,
-    gap: 6
+    paddingVertical: 7,
+    borderRadius: 20,
+    gap: 8
   },
-  monthArrow: {
-    padding: 3
+  chevronTouch: {
+    padding: 2
   },
-  monthPillText: {
+  monthText: {
     color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '800',
-    letterSpacing: 0.3
+    fontWeight: '700',
+    letterSpacing: 0.2
   },
   rightGroup: {
     flexDirection: 'row',
@@ -169,27 +141,22 @@ const styles = StyleSheet.create({
     gap: 8
   },
   avatarWrap: {
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.85)',
-    borderRadius: 20,
+    borderRadius: 18,
     padding: 1.5,
-    shadowColor: 'rgba(0, 0, 0, 0.3)',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.4,
-    shadowRadius: 5,
-    elevation: 4
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.8)'
   },
   avatarCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center'
   },
   avatarText: {
     fontSize: 14,
-    fontWeight: '900',
-    color: '#7B66FF'
+    fontWeight: '800',
+    color: '#4F46E5'
   }
 });
