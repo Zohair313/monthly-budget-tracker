@@ -17,27 +17,34 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const loadInitialState = async () => {
+    // 1-second timeout safeguard so it never hangs in loading state
+    const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 1000));
     try {
-      await api.init();
-      const storedToken = await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
-      const storedUser = await AsyncStorage.getItem(STORAGE_KEYS.USER);
-      const storedTheme = await AsyncStorage.getItem(STORAGE_KEYS.THEME);
-      const storedDemo = await AsyncStorage.getItem(STORAGE_KEYS.DEMO_MODE);
+      await Promise.race([
+        (async () => {
+          await api.init();
+          const storedToken = await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
+          const storedUser = await AsyncStorage.getItem(STORAGE_KEYS.USER);
+          const storedTheme = await AsyncStorage.getItem(STORAGE_KEYS.THEME);
+          const storedDemo = await AsyncStorage.getItem(STORAGE_KEYS.DEMO_MODE);
 
-      if (storedToken && storedUser) {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-      }
+          if (storedToken && storedUser) {
+            setToken(storedToken);
+            setUser(JSON.parse(storedUser));
+          }
 
-      if (storedTheme) {
-        setThemeMode(storedTheme);
-      }
+          if (storedTheme) {
+            setThemeMode(storedTheme);
+          }
 
-      if (storedDemo !== null) {
-        setDemoModeState(JSON.parse(storedDemo));
-      }
+          if (storedDemo !== null) {
+            setDemoModeState(JSON.parse(storedDemo));
+          }
 
-      setApiUrlState(api.getBaseUrl());
+          setApiUrlState(api.getBaseUrl());
+        })(),
+        timeoutPromise
+      ]);
     } catch (e) {
       console.warn('Failed to restore session:', e);
     } finally {
