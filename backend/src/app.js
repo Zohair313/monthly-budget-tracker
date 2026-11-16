@@ -16,6 +16,23 @@ app.use(cors({
 
 app.use(express.json());
 
+// Root Welcome Endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: 'Monthly Budget Tracker REST API',
+    status: 'online',
+    version: '1.0.0',
+    documentation: 'https://github.com/Zohair313/monthly-budget-tracker#readme',
+    endpoints: {
+      health: '/api/health',
+      auth: ['POST /api/auth/register', 'POST /api/auth/login', 'GET /api/auth/profile'],
+      income: ['POST /api/income', 'GET /api/income?month=&year='],
+      expenses: ['POST /api/expenses', 'GET /api/expenses?month=&year=', 'PUT /api/expenses/:id', 'DELETE /api/expenses/:id']
+    }
+  });
+});
+
 // API Health Check
 app.get('/api/health', (req, res) => {
   res.status(200).json({
