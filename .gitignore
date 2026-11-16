@@ -30,3 +30,6 @@ coverage/
 
 # Taste skill artifacts
 .taste-skill/
+
+# Agent skills
+.agents/
