@@ -30,7 +30,7 @@ import ExportModal from '../components/ExportModal';
 
 export default function HomeScreen() {
   const { themeMode } = useAuth();
-  const colors = palette[themeMode];
+  const colors = palette[themeMode] || palette.dark;
   const { isLoading, refresh, errorMessage, clearError } = useBudget();
 
   // Active Category Filter

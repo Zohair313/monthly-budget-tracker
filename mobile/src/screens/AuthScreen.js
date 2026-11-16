@@ -17,7 +17,7 @@ import ServerConfigModal from '../components/ServerConfigModal';
 
 export default function AuthScreen() {
   const { login, register, themeMode, toggleTheme, demoMode, toggleDemoMode } = useAuth();
-  const colors = palette[themeMode];
+  const colors = palette[themeMode] || palette.dark;
 
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState('');
