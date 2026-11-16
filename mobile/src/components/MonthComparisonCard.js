@@ -13,7 +13,7 @@ const formatCurrency = (amount) => {
 export default function MonthComparisonCard() {
   const { summary } = useBudget();
   const { themeMode } = useAuth();
-  const colors = palette[themeMode] || palette.dark;
+  const colors = palette[themeMode] || palette.light;
   const clayCard = getClayCard(themeMode);
   const clayPill = getClayPill(themeMode);
 
@@ -42,7 +42,7 @@ export default function MonthComparisonCard() {
             PREVIOUS MONTH COMPARISON
           </Text>
           <Text style={[styles.subtitle, { color: colors.textTertiary }]}>
-            Previous Month Expense: <Text style={{ color: colors.text, fontWeight: '700' }}>{formatCurrency(prevExpense)}</Text>
+            Previous Expense: <Text style={{ color: colors.text, fontWeight: '800' }}>{formatCurrency(prevExpense)}</Text>
           </Text>
         </View>
 
@@ -68,8 +68,8 @@ export default function MonthComparisonCard() {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 16,
-    marginTop: 12,
+    marginHorizontal: 20,
+    marginTop: 10,
     padding: 16
   },
   contentRow: {
@@ -82,23 +82,23 @@ const styles = StyleSheet.create({
   },
   overline: {
     fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.7,
+    fontWeight: '900',
+    letterSpacing: 0.8,
     marginBottom: 4
   },
   subtitle: {
     fontSize: 12,
-    fontWeight: '500'
+    fontWeight: '600'
   },
   trendPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingHorizontal: 11,
+    paddingHorizontal: 12,
     paddingVertical: 5
   },
   trendText: {
     fontSize: 12,
-    fontWeight: '800'
+    fontWeight: '900'
   }
 });

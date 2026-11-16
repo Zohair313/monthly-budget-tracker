@@ -31,7 +31,7 @@ const formatDate = (dateStr) => {
   }
 };
 
-export default function ExpenseList({ onEditExpense, onAddExpense, activeCategory, onToggleFilter }) {
+export default function ExpenseList({ onEditExpense, onAddExpense, activeCategory }) {
   const { expenses, deleteExpense } = useBudget();
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
@@ -102,7 +102,7 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onAddExpense} style={styles.viewAllBtn}>
-            <Text style={[styles.viewAllText, { color: colors.primary }]}>+ Add</Text>
+            <Text style={[styles.viewAllText, { color: colors.primary }]}>View All</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -147,7 +147,7 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
           </Text>
           <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
             {expenses.length === 0
-              ? 'Tap the Coral "Expense" button above to record your first monthly transaction.'
+              ? 'Tap the Coral "Pay Bill" button above to record your first monthly transaction.'
               : 'Try clearing your search query or selecting "All" categories.'}
           </Text>
           {expenses.length === 0 && (
@@ -183,7 +183,7 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                   {
                     paddingVertical: 14,
                     paddingHorizontal: 16,
-                    borderRadius: 22
+                    borderRadius: 20
                   }
                 ]}
               >
@@ -193,8 +193,8 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                     styles.categorySquareBadge,
                     {
                       backgroundColor: catBg,
-                      borderTopColor: 'rgba(255, 255, 255, 0.70)',
-                      borderLeftColor: 'rgba(255, 255, 255, 0.40)',
+                      borderTopColor: 'rgba(255, 255, 255, 0.90)',
+                      borderLeftColor: 'rgba(255, 255, 255, 0.70)',
                       borderRightColor: catDarkColor,
                       borderBottomColor: catDarkColor,
                       shadowColor: catDarkColor
@@ -210,14 +210,14 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                     {item.name}
                   </Text>
                   <Text style={[styles.expenseDate, { color: colors.textTertiary }]}>
-                    {formatDate(item.date)} • {cat}
+                    {formatDate(item.date)}
                   </Text>
                 </View>
 
                 {/* Right: Amount in Coral/Red and Mini Action Buttons */}
                 <View style={styles.expenseRight}>
                   <Text style={[styles.expenseAmount, { color: colors.expense }]}>
-                    -{formatCurrency(item.amount)}
+                    -${Number(item.amount).toLocaleString('en-US')}
                   </Text>
 
                   <View style={styles.actionButtonsRow}>
@@ -233,7 +233,7 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                       ]}
                       accessibilityLabel={`Edit ${item.name}`}
                     >
-                      <Ionicons name="pencil" size={12} color={colors.textSecondary} />
+                      <Ionicons name="pencil" size={11} color={colors.textSecondary} />
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -248,7 +248,7 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
                       ]}
                       accessibilityLabel={`Delete ${item.name}`}
                     >
-                      <Ionicons name="trash-outline" size={12} color={colors.expense} />
+                      <Ionicons name="trash-outline" size={11} color={colors.expense} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -264,7 +264,7 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    marginTop: 20,
+    marginTop: 18,
     marginBottom: 40
   },
   headerRow: {
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 12,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.15,
     shadowRadius: 6,
     elevation: 3
   },
@@ -366,27 +366,27 @@ const styles = StyleSheet.create({
     fontWeight: '800'
   },
   listContainer: {
-    gap: 12
+    gap: 10
   },
   clayExpenseRow: {
     flexDirection: 'row',
     alignItems: 'center'
   },
   categorySquareBadge: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
-    borderTopWidth: 2.5,
-    borderLeftWidth: 2,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 4,
+    width: 46,
+    height: 46,
+    borderRadius: 15,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1,
+    borderBottomWidth: 3.5,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 3
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 5,
+    elevation: 2
   },
   expenseInfo: {
     flex: 1,
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   expenseAmount: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '900',
     letterSpacing: -0.3,
     marginBottom: 5
@@ -417,13 +417,13 @@ const styles = StyleSheet.create({
     gap: 6
   },
   clayMiniActionBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     borderTopWidth: 1.5,
     borderLeftWidth: 1,
     borderRightWidth: 1,
-    borderBottomWidth: 2.5,
+    borderBottomWidth: 2,
     alignItems: 'center',
     justifyContent: 'center'
   }

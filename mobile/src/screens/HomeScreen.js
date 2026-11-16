@@ -6,7 +6,6 @@ import {
   ScrollView,
   RefreshControl,
   StatusBar,
-  Platform,
   TouchableOpacity
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -110,13 +109,13 @@ export default function HomeScreen() {
           onOpenExport={() => setShowExport(true)}
         />
 
-        {/* 3. Bottom White/Porcelain Curved Clay Sheet (Reference image curved white body) */}
+        {/* 3. Bottom White Porcelain Curved Clay Sheet (Reference image curved white body) */}
         <View
           style={[
             styles.porcelainSheet,
             {
               backgroundColor: colors.sheetBackground,
-              borderTopColor: colors.clayBorderTop
+              borderTopColor: '#FFFFFF'
             }
           ]}
         >
@@ -157,7 +156,7 @@ export default function HomeScreen() {
           styles.bottomDock,
           {
             backgroundColor: colors.brandVioletDark,
-            borderTopColor: 'rgba(255, 255, 255, 0.35)',
+            borderTopColor: 'rgba(255, 255, 255, 0.40)',
             borderBottomColor: colors.brandVioletDeep
           }
         ]}
@@ -172,7 +171,7 @@ export default function HomeScreen() {
           <Ionicons
             name="pie-chart"
             size={22}
-            color={showCharts ? '#FFD166' : 'rgba(255, 255, 255, 0.7)'}
+            color={showCharts ? '#FFD166' : 'rgba(255, 255, 255, 0.75)'}
           />
         </TouchableOpacity>
 
@@ -181,12 +180,12 @@ export default function HomeScreen() {
           style={[
             styles.dockCenterPuck,
             {
-              backgroundColor: colors.primary,
-              borderTopColor: 'rgba(255, 255, 255, 0.70)',
-              borderLeftColor: 'rgba(255, 255, 255, 0.40)',
-              borderRightColor: colors.primaryDark,
-              borderBottomColor: colors.primaryDark,
-              shadowColor: colors.primaryDark
+              backgroundColor: colors.brandViolet,
+              borderTopColor: 'rgba(255, 255, 255, 0.75)',
+              borderLeftColor: 'rgba(255, 255, 255, 0.45)',
+              borderRightColor: colors.brandVioletDeep,
+              borderBottomColor: colors.brandVioletDeep,
+              shadowColor: colors.brandVioletDeep
             }
           ]}
           onPress={() => {
@@ -200,12 +199,12 @@ export default function HomeScreen() {
 
         {/* Nav 4: Export Statement */}
         <TouchableOpacity style={styles.dockItem} onPress={() => setShowExport(true)}>
-          <Ionicons name="document-text" size={22} color="rgba(255, 255, 255, 0.7)" />
+          <Ionicons name="document-text" size={22} color="rgba(255, 255, 255, 0.75)" />
         </TouchableOpacity>
 
         {/* Nav 5: Settings */}
         <TouchableOpacity style={styles.dockItem} onPress={() => setShowServerConfig(true)}>
-          <Ionicons name="settings" size={22} color="rgba(255, 255, 255, 0.7)" />
+          <Ionicons name="settings" size={22} color="rgba(255, 255, 255, 0.75)" />
         </TouchableOpacity>
       </View>
 
@@ -258,13 +257,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 36,
     borderTopRightRadius: 36,
     borderTopWidth: 2.5,
-    paddingTop: 12,
-    minHeight: 500,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: -6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 14,
-    elevation: 8
+    paddingTop: 8,
+    minHeight: 520,
+    shadowColor: '#2D1B78',
+    shadowOffset: { width: 0, height: -8 },
+    shadowOpacity: 0.16,
+    shadowRadius: 18,
+    elevation: 10
   },
   sheetHandleWrap: {
     alignItems: 'center',
@@ -292,7 +291,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: -6 },
     shadowOpacity: 0.25,
-    shadowRadius: 10,
+    shadowRadius: 12,
     elevation: 10
   },
   dockItem: {
@@ -302,9 +301,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   dockCenterPuck: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     marginTop: -28,
     borderTopWidth: 2.5,
     borderLeftWidth: 2,

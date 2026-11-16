@@ -1,81 +1,91 @@
 export const palette = {
-  // Light Clay Fintech Theme (Exact Dribbble Reference: Signature Violet & Porcelain White)
+  // Light Clay Fintech Theme (Fine-tuned to match reference image)
   light: {
     name: 'light',
-    // Violet canvas for header and hero
-    brandViolet: '#7B66FF',
-    brandVioletDark: '#5E46EB',
-    brandVioletLight: '#9483FF',
-    brandVioletDeep: '#4932D8',
+    // Rich, luminous Dribbble violet canvas
+    brandViolet: '#755FE2',
+    brandVioletDark: '#5B44D4',
+    brandVioletLight: '#8F7CF6',
+    brandVioletDeep: '#452EBE',
     
-    // Bottom sheet
-    background: '#7B66FF',           // Root container carries violet header
-    sheetBackground: '#F4F6FC',      // Crisp, warm ceramic porcelain sheet
-    surface: '#FFFFFF',
+    // Bottom Porcelain Sheet
+    background: '#755FE2',
+    sheetBackground: '#F7F8FD',       // Ultra-clean, fresh porcelain sheet
+    surface: '#FFFFFF',              // Pure white puffy clay cards
     surfaceSubtle: '#F0F3FA',
-    surfaceHover: '#E8ECF5',
-    border: '#E2E8F0',
-    borderSubtle: '#EDF2F9',
+    surfaceHover: '#E9EDF7',
+    border: '#E8ECF5',
+    borderSubtle: '#F1F4FA',
     
-    text: '#1E1B4B',                 // Deep midnight violet text
+    text: '#171435',                 // Deep midnight violet text
     textWhite: '#FFFFFF',
     textSecondary: '#64748B',
     textTertiary: '#94A3B8',
     textMuted: '#CBD5E1',
     
-    primary: '#7B66FF',
-    primaryDark: '#553DE0',
-    primaryLight: 'rgba(123, 102, 255, 0.14)',
+    primary: '#755FE2',
+    primaryDark: '#553DD4',
+    primaryLight: 'rgba(117, 95, 226, 0.12)',
     
-    // Quick Tile Accent Colors (from reference image)
-    tileMint: '#48D597',
-    tileMintBg: '#E8FBF2',
-    tileMintDark: '#10B981',
+    // 4 Candy-Clay Action Tiles (Reference image: Mint, Coral, Violet, Cyan)
+    tileMint: '#34D399',
+    tileMintBg: '#ECFDF5',
+    tileMintDark: '#059669',
     
-    tileCoral: '#FF7B90',
-    tileCoralBg: '#FFF0F2',
+    tileCoral: '#FF758F',
+    tileCoralBg: '#FFF1F2',
     tileCoralDark: '#E11D48',
     
-    tileViolet: '#9483FF',
-    tileVioletBg: '#F3F0FF',
-    tileVioletDark: '#6C5CE7',
+    tileViolet: '#8F7CF6',
+    tileVioletBg: '#F5F3FF',
+    tileVioletDark: '#6D54E8',
     
-    tileCyan: '#4FD1C5',
-    tileCyanBg: '#E6FFFA',
-    tileCyanDark: '#0D9488',
+    tileCyan: '#38BDF8',
+    tileCyanBg: '#F0F9FF',
+    tileCyanDark: '#0284C7',
     
     // Status colors
     income: '#10B981',
     incomeDark: '#047857',
-    incomeLight: 'rgba(16, 185, 129, 0.14)',
+    incomeLight: 'rgba(16, 185, 129, 0.12)',
+    incomeSurface: '#ECFDF5',
+    incomeBorder: '#A7F3D0',
     
     expense: '#F43F5E',
     expenseDark: '#BE123C',
-    expenseLight: 'rgba(244, 63, 94, 0.14)',
+    expenseLight: 'rgba(244, 63, 94, 0.12)',
+    expenseSurface: '#FFF1F2',
+    expenseBorder: '#FECDD3',
     
     warning: '#F59E0B',
     warningDark: '#B45309',
-    warningLight: 'rgba(245, 158, 11, 0.14)',
+    warningLight: 'rgba(245, 158, 11, 0.12)',
+    warningSurface: '#FFFBEB',
+    warningBorder: '#FDE68A',
     
-    shadow: '#4932D8',
-    cardShadow: '#A0AEC0',
+    info: '#06B6D4',
+    infoDark: '#0E7490',
+    infoLight: 'rgba(6, 182, 212, 0.12)',
+    
+    shadow: '#452EBE',
+    cardShadow: '#8B98AD',
     
     clayBorderTop: 'rgba(255, 255, 255, 1.0)',
-    clayBorderLeft: 'rgba(255, 255, 255, 0.85)',
-    clayBorderRight: 'rgba(160, 174, 192, 0.35)',
-    clayBorderBottom: 'rgba(160, 174, 192, 0.60)',
-    clayShadowColor: '#A0AEC0'
+    clayBorderLeft: 'rgba(255, 255, 255, 0.90)',
+    clayBorderRight: 'rgba(170, 182, 200, 0.30)',
+    clayBorderBottom: 'rgba(170, 182, 200, 0.50)',
+    clayShadowColor: '#8C9BB0'
   },
 
   // Dark Clay Fintech Theme
   dark: {
     name: 'dark',
-    brandViolet: '#5B48D9',
-    brandVioletDark: '#3F2EA8',
-    brandVioletLight: '#7E6EFF',
-    brandVioletDeep: '#281B7E',
+    brandViolet: '#543FC7',
+    brandVioletDark: '#3C29A6',
+    brandVioletLight: '#7A67EE',
+    brandVioletDeep: '#261875',
     
-    background: '#141226',
+    background: '#131124',
     sheetBackground: '#0F0E1D',
     surface: '#1A182E',
     surfaceSubtle: '#22203A',
@@ -89,9 +99,9 @@ export const palette = {
     textTertiary: '#70708C',
     textMuted: '#4F4E68',
     
-    primary: '#8A78FF',
+    primary: '#8572FF',
     primaryDark: '#553DE0',
-    primaryLight: 'rgba(138, 120, 255, 0.22)',
+    primaryLight: 'rgba(133, 114, 255, 0.22)',
     
     tileMint: '#34D399',
     tileMintBg: '#0F2F24',
@@ -112,14 +122,24 @@ export const palette = {
     income: '#34D399',
     incomeDark: '#059669',
     incomeLight: 'rgba(52, 211, 153, 0.20)',
+    incomeSurface: '#0E271F',
+    incomeBorder: '#16533F',
     
     expense: '#FB7185',
     expenseDark: '#E11D48',
     expenseLight: 'rgba(251, 113, 133, 0.20)',
+    expenseSurface: '#2B121C',
+    expenseBorder: '#5B192F',
     
     warning: '#FBBF24',
     warningDark: '#D97706',
     warningLight: 'rgba(251, 191, 36, 0.20)',
+    warningSurface: '#2B1D0B',
+    warningBorder: '#5E3D12',
+    
+    info: '#38BDF8',
+    infoDark: '#0284C7',
+    infoLight: 'rgba(56, 189, 248, 0.20)',
     
     shadow: '#000000',
     cardShadow: '#000000',
@@ -133,11 +153,11 @@ export const palette = {
 };
 
 export const categoryColors = {
-  Food: { bg: '#FFF0F2', darkBg: '#38161E', color: '#FB7185', darkColor: '#BE123C', icon: 'restaurant-outline' },
-  Bills: { bg: '#F3F0FF', darkBg: '#251D42', color: '#8B5CF6', darkColor: '#6D28D9', icon: 'receipt-outline' },
-  Travel: { bg: '#E6FFFA', darkBg: '#0F2C29', color: '#14B8A6', darkColor: '#0F766E', icon: 'car-outline' },
+  Food: { bg: '#FFF1F2', darkBg: '#38161E', color: '#FF637E', darkColor: '#BE123C', icon: 'restaurant-outline' },
+  Bills: { bg: '#F5F3FF', darkBg: '#251D42', color: '#8B5CF6', darkColor: '#6D28D9', icon: 'receipt-outline' },
+  Travel: { bg: '#ECFDF5', darkBg: '#0F2C29', color: '#10B981', darkColor: '#047857', icon: 'car-outline' },
   Shopping: { bg: '#FDF2F8', darkBg: '#351629', color: '#EC4899', darkColor: '#BE185D', icon: 'bag-handle-outline' },
-  Health: { bg: '#ECFDF5', darkBg: '#0E2F23', color: '#10B981', darkColor: '#047857', icon: 'medkit-outline' },
+  Health: { bg: '#ECFDF5', darkBg: '#0E2F23', color: '#059669', darkColor: '#047857', icon: 'medkit-outline' },
   Entertainment: { bg: '#FAF5FF', darkBg: '#2D1B44', color: '#A855F7', darkColor: '#7E22CE', icon: 'film-outline' },
   Education: { bg: '#FEFCE8', darkBg: '#332E0E', color: '#EAB308', darkColor: '#A16207', icon: 'book-outline' },
   General: { bg: '#F1F5F9', darkBg: '#1E2333', color: '#64748B', darkColor: '#334155', icon: 'pricetag-outline' }
@@ -151,21 +171,21 @@ export const getClayCard = (theme = 'light') => {
     borderRadius: 24,
     borderTopWidth: 2,
     borderLeftWidth: 1.5,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 4,
+    borderRightWidth: 1,
+    borderBottomWidth: 3.5,
     borderTopColor: c.clayBorderTop,
     borderLeftColor: c.clayBorderLeft,
     borderRightColor: c.clayBorderRight,
     borderBottomColor: c.clayBorderBottom,
     shadowColor: c.clayShadowColor,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: theme === 'dark' ? 0.5 : 0.28,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: theme === 'dark' ? 0.5 : 0.16,
     shadowRadius: 14,
-    elevation: 6
+    elevation: 4
   };
 };
 
-export const getClayButton = (theme = 'light', baseColor = '#7B66FF', bottomColor = '#5E46EB') => {
+export const getClayButton = (theme = 'light', baseColor = '#755FE2', bottomColor = '#553DD4') => {
   return {
     backgroundColor: baseColor,
     borderRadius: 18,
@@ -179,7 +199,7 @@ export const getClayButton = (theme = 'light', baseColor = '#7B66FF', bottomColo
     borderBottomColor: bottomColor,
     shadowColor: bottomColor,
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.32,
     shadowRadius: 10,
     elevation: 6
   };
@@ -191,17 +211,17 @@ export const getClayPill = (theme = 'light') => {
     borderRadius: 999,
     borderTopWidth: 2,
     borderLeftWidth: 1.5,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 3,
+    borderRightWidth: 1,
+    borderBottomWidth: 2.5,
     borderTopColor: c.clayBorderTop,
     borderLeftColor: c.clayBorderLeft,
     borderRightColor: c.clayBorderRight,
     borderBottomColor: c.clayBorderBottom,
     shadowColor: c.clayShadowColor,
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.22,
-    shadowRadius: 6,
-    elevation: 3
+    shadowOpacity: 0.14,
+    shadowRadius: 5,
+    elevation: 2
   };
 };
 
@@ -214,13 +234,13 @@ export const getClayInput = (theme = 'light') => {
     borderLeftWidth: 1.5,
     borderRightWidth: 1,
     borderBottomWidth: 1.5,
-    borderTopColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(160, 174, 192, 0.45)',
-    borderLeftColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.4)' : 'rgba(160, 174, 192, 0.35)',
+    borderTopColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(160, 174, 192, 0.40)',
+    borderLeftColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.4)' : 'rgba(160, 174, 192, 0.30)',
     borderRightColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.95)',
     borderBottomColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 1.0)',
     shadowColor: c.clayShadowColor,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 3,
     elevation: 2
   };

@@ -17,7 +17,7 @@ export default function SummaryCards({
   onOpenExport
 }) {
   const { summary, incomeData, expenses, selectedMonth, selectedYear } = useBudget();
-  const { user, themeMode } = useAuth();
+  const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
   const clayPill = getClayPill(themeMode);
 
@@ -29,31 +29,28 @@ export default function SummaryCards({
   const isBudgetAlert = summary.is_budget_alert || burnRate >= 80;
 
   // Dynamic card tone for deficit / alert / healthy
-  let cardBg = '#5A45ED';
-  let cardBottom = '#3D2BC2';
-  let cardStatus = 'Active';
+  let cardBg = '#5A44E3';
+  let cardBottom = '#3D2BB8';
 
   if (isOverBudget) {
-    cardBg = '#DC2626';
-    cardBottom = '#991B1B';
-    cardStatus = 'Deficit';
+    cardBg = '#E11D48';
+    cardBottom = '#9F1239';
   } else if (isBudgetAlert) {
     cardBg = '#D97706';
     cardBottom = '#92400E';
-    cardStatus = 'Alert 80%';
   }
 
   const expDateStr = `${String(selectedMonth).padStart(2, '0')}/${String(selectedYear).slice(-2)}`;
 
   return (
     <View style={styles.container}>
-      {/* 1. The Signature 3D Inflated Clay Bank Card (Exact reference image style) */}
+      {/* 1. Signature 3D Inflated Clay Bank Card (Exact reference image style) */}
       <View
         style={[
           styles.clayBankCard,
           {
             backgroundColor: cardBg,
-            borderTopColor: 'rgba(255, 255, 255, 0.60)',
+            borderTopColor: 'rgba(255, 255, 255, 0.65)',
             borderLeftColor: 'rgba(255, 255, 255, 0.40)',
             borderRightColor: cardBottom,
             borderBottomColor: cardBottom,
@@ -67,20 +64,20 @@ export default function SummaryCards({
         {/* Card Top: Balance & Overlapping Mastercard Clay Coins */}
         <View style={styles.cardTopRow}>
           <View>
-            <Text style={styles.cardBalanceLabel}>Remaining Balance</Text>
+            <Text style={styles.cardBalanceLabel}>Balance</Text>
             <Text style={styles.cardBalanceAmount}>{formatCurrency(remainingBalance)}</Text>
           </View>
 
-          {/* Overlapping 3D Mastercard Clay Coins (Reference image) */}
+          {/* Overlapping 3D Mastercard Clay Coins (Exact reference image) */}
           <View style={styles.mastercardWrap}>
             <View style={[styles.coin, styles.coinOrange]} />
             <View style={[styles.coin, styles.coinYellow]} />
           </View>
         </View>
 
-        {/* Card Middle: Card Number Masking */}
+        {/* Card Middle: Card Number Dots */}
         <View style={styles.cardNumberRow}>
-          <Text style={styles.cardDots}>••••  ••••  ••••</Text>
+          <Text style={styles.cardDots}>••••   ••••   ••••</Text>
           <Text style={styles.cardLastDigits}>{String(selectedYear)}</Text>
         </View>
 
@@ -97,20 +94,26 @@ export default function SummaryCards({
           />
         </View>
 
-        {/* Card Bottom: Exp & Name */}
+        {/* Card Bottom: Income, Cycle, Expense */}
         <View style={styles.cardBottomRow}>
           <View>
-            <Text style={styles.cardMetaLabel}>TOTAL INCOME</Text>
+            <View style={styles.metaRow}>
+              <View style={[styles.miniIndicator, { backgroundColor: '#34D399' }]} />
+              <Text style={styles.cardMetaLabel}>INCOME</Text>
+            </View>
             <Text style={styles.cardMetaValue}>{formatCurrency(totalIncome)}</Text>
           </View>
 
           <View style={{ alignItems: 'center' }}>
-            <Text style={styles.cardMetaLabel}>CYCLE</Text>
+            <Text style={styles.cardMetaLabel}>EXP</Text>
             <Text style={styles.cardMetaValue}>{expDateStr}</Text>
           </View>
 
           <View style={{ alignItems: 'flex-end' }}>
-            <Text style={styles.cardMetaLabel}>TOTAL EXPENSE</Text>
+            <View style={styles.metaRow}>
+              <View style={[styles.miniIndicator, { backgroundColor: '#FB7185' }]} />
+              <Text style={styles.cardMetaLabel}>EXPENSE</Text>
+            </View>
             <Text style={styles.cardMetaValue}>{formatCurrency(totalExpense)}</Text>
           </View>
         </View>
@@ -123,14 +126,15 @@ export default function SummaryCards({
           style={styles.tileCol}
           onPress={onOpenSetIncome}
           accessibilityLabel="Set Monthly Income"
+          activeOpacity={0.85}
         >
           <View
             style={[
               styles.clayTile,
               {
                 backgroundColor: colors.tileMint,
-                borderTopColor: 'rgba(255, 255, 255, 0.65)',
-                borderLeftColor: 'rgba(255, 255, 255, 0.40)',
+                borderTopColor: 'rgba(255, 255, 255, 0.70)',
+                borderLeftColor: 'rgba(255, 255, 255, 0.45)',
                 borderRightColor: colors.tileMintDark,
                 borderBottomColor: colors.tileMintDark,
                 shadowColor: colors.tileMintDark
@@ -139,7 +143,7 @@ export default function SummaryCards({
           >
             <Ionicons name="arrow-down-circle" size={26} color="#FFFFFF" />
           </View>
-          <Text style={styles.tileLabel}>Income</Text>
+          <Text style={styles.tileLabel}>Transfer</Text>
         </TouchableOpacity>
 
         {/* Tile 2: Pay Bill / Add Expense (Coral Rose) */}
@@ -147,14 +151,15 @@ export default function SummaryCards({
           style={styles.tileCol}
           onPress={onOpenAddExpense}
           accessibilityLabel="Add New Expense"
+          activeOpacity={0.85}
         >
           <View
             style={[
               styles.clayTile,
               {
                 backgroundColor: colors.tileCoral,
-                borderTopColor: 'rgba(255, 255, 255, 0.65)',
-                borderLeftColor: 'rgba(255, 255, 255, 0.40)',
+                borderTopColor: 'rgba(255, 255, 255, 0.70)',
+                borderLeftColor: 'rgba(255, 255, 255, 0.45)',
                 borderRightColor: colors.tileCoralDark,
                 borderBottomColor: colors.tileCoralDark,
                 shadowColor: colors.tileCoralDark
@@ -163,22 +168,23 @@ export default function SummaryCards({
           >
             <Ionicons name="arrow-up-circle" size={26} color="#FFFFFF" />
           </View>
-          <Text style={styles.tileLabel}>Expense</Text>
+          <Text style={styles.tileLabel}>Pay Bill</Text>
         </TouchableOpacity>
 
-        {/* Tile 3: Shop / Categories (Soft Violet) */}
+        {/* Tile 3: Shop / Charts (Soft Violet) */}
         <TouchableOpacity
           style={styles.tileCol}
           onPress={onToggleCategoryBreakdown}
-          accessibilityLabel="Category Breakdown"
+          accessibilityLabel="Category Charts"
+          activeOpacity={0.85}
         >
           <View
             style={[
               styles.clayTile,
               {
                 backgroundColor: colors.tileViolet,
-                borderTopColor: 'rgba(255, 255, 255, 0.65)',
-                borderLeftColor: 'rgba(255, 255, 255, 0.40)',
+                borderTopColor: 'rgba(255, 255, 255, 0.70)',
+                borderLeftColor: 'rgba(255, 255, 255, 0.45)',
                 borderRightColor: colors.tileVioletDark,
                 borderBottomColor: colors.tileVioletDark,
                 shadowColor: colors.tileVioletDark
@@ -195,14 +201,15 @@ export default function SummaryCards({
           style={styles.tileCol}
           onPress={onOpenExport}
           accessibilityLabel="Export Statement"
+          activeOpacity={0.85}
         >
           <View
             style={[
               styles.clayTile,
               {
                 backgroundColor: colors.tileCyan,
-                borderTopColor: 'rgba(255, 255, 255, 0.65)',
-                borderLeftColor: 'rgba(255, 255, 255, 0.40)',
+                borderTopColor: 'rgba(255, 255, 255, 0.70)',
+                borderLeftColor: 'rgba(255, 255, 255, 0.45)',
                 borderRightColor: colors.tileCyanDark,
                 borderBottomColor: colors.tileCyanDark,
                 shadowColor: colors.tileCyanDark
@@ -221,22 +228,22 @@ export default function SummaryCards({
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingTop: 4,
+    paddingTop: 6,
     paddingBottom: 22
   },
   clayBankCard: {
     position: 'relative',
     overflow: 'hidden',
     padding: 22,
-    borderRadius: 28,
+    borderRadius: 26,
     borderTopWidth: 3,
     borderLeftWidth: 2,
     borderRightWidth: 1.5,
-    borderBottomWidth: 6,
-    shadowOffset: { width: 0, height: 14 },
-    shadowOpacity: 0.45,
-    shadowRadius: 22,
-    elevation: 12
+    borderBottomWidth: 5.5,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.40,
+    shadowRadius: 20,
+    elevation: 10
   },
   decorativeCurve: {
     position: 'absolute',
@@ -254,20 +261,20 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   cardBalanceLabel: {
-    color: 'rgba(255, 255, 255, 0.85)',
-    fontSize: 12,
+    color: '#D4CCFD',
+    fontSize: 13,
     fontWeight: '700',
-    letterSpacing: 0.4
+    letterSpacing: 0.3
   },
   cardBalanceAmount: {
     color: '#FFFFFF',
     fontSize: 32,
     fontWeight: '900',
-    letterSpacing: -0.8,
+    letterSpacing: -0.6,
     marginTop: 4,
-    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowColor: 'rgba(0, 0, 0, 0.30)',
     textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6
+    textShadowRadius: 5
   },
   mastercardWrap: {
     flexDirection: 'row',
@@ -275,19 +282,19 @@ const styles = StyleSheet.create({
     paddingTop: 4
   },
   coin: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.4)'
+    borderColor: 'rgba(255, 255, 255, 0.45)'
   },
   coinOrange: {
-    backgroundColor: '#FF5722',
+    backgroundColor: '#FF6B4A',
     marginRight: -10,
     zIndex: 1
   },
   coinYellow: {
-    backgroundColor: '#FFC107'
+    backgroundColor: '#FFC837'
   },
   cardNumberRow: {
     flexDirection: 'row',
@@ -296,13 +303,13 @@ const styles = StyleSheet.create({
     marginBottom: 12
   },
   cardDots: {
-    color: 'rgba(255, 255, 255, 0.75)',
-    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.80)',
+    fontSize: 15,
     fontWeight: '700',
     letterSpacing: 2
   },
   cardLastDigits: {
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: 'rgba(255, 255, 255, 0.95)',
     fontSize: 14,
     fontWeight: '800',
     letterSpacing: 1
@@ -310,11 +317,11 @@ const styles = StyleSheet.create({
   cardProgressTrack: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    backgroundColor: 'rgba(0, 0, 0, 0.22)',
     borderTopWidth: 1.5,
     borderBottomWidth: 1,
-    borderTopColor: 'rgba(0, 0, 0, 0.35)',
-    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+    borderTopColor: 'rgba(0, 0, 0, 0.30)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.20)',
     overflow: 'hidden',
     marginBottom: 16
   },
@@ -327,17 +334,28 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'space-between'
   },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 2
+  },
+  miniIndicator: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5
+  },
   cardMetaLabel: {
-    color: 'rgba(255, 255, 255, 0.65)',
+    color: '#D4CCFD',
     fontSize: 9,
     fontWeight: '800',
-    letterSpacing: 0.8,
-    marginBottom: 2
+    letterSpacing: 0.8
   },
   cardMetaValue: {
     color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '800'
+    fontWeight: '800',
+    marginTop: 1
   },
   quickTilesRow: {
     flexDirection: 'row',
@@ -350,8 +368,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   clayTile: {
-    width: 62,
-    height: 62,
+    width: 64,
+    height: 64,
     borderRadius: 22,
     borderTopWidth: 3,
     borderLeftWidth: 2,
