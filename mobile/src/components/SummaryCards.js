@@ -208,14 +208,14 @@ const styles = StyleSheet.create({
     paddingBottom: 16
   },
   executiveCard: {
-    borderRadius: 24,
-    padding: 22,
+    borderRadius: 22,
+    padding: 18,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.14)',
     shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 16,
     elevation: 8,
     position: 'relative',
     overflow: 'hidden'
