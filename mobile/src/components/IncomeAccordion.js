@@ -14,7 +14,7 @@ import {
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette, getClayCard, getClayButton, getClayInput, getClayPill } from '../theme/colors';
+import { palette, getClayCard, getClayInput, getClayPill } from '../theme/colors';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -34,6 +34,7 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
   const { summary, incomeData, updateIncome, selectedMonth, selectedYear } = useBudget();
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
+  const isDark = themeMode === 'dark';
   const clayCard = getClayCard(themeMode);
   const clayPill = getClayPill(themeMode);
   const clayInput = getClayInput(themeMode);
@@ -42,13 +43,12 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
   const [isSaving, setIsSaving] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState('');
 
-  // Chevron rotation animation
   const rotateAnim = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
 
   useEffect(() => {
     Animated.timing(rotateAnim, {
       toValue: isExpanded ? 1 : 0,
-      duration: 300,
+      duration: 250,
       useNativeDriver: true
     }).start();
   }, [isExpanded]);
@@ -106,12 +106,13 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
         styles.container,
         clayCard,
         {
+          backgroundColor: colors.surface,
           borderColor: isExpanded ? colors.income : colors.border,
-          borderWidth: isExpanded ? 1.5 : 1
+          borderWidth: 1.5
         }
       ]}
     >
-      {/* Accordion Header (Clickable) */}
+      {/* Accordion Header (Clickable) - Standard 74px Height */}
       <TouchableOpacity
         style={styles.headerTouch}
         onPress={handleToggle}
@@ -119,18 +120,17 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
         accessibilityLabel="Toggle Monthly Income Accordion"
       >
         <View style={styles.headerLeft}>
-          {/* 3D Mint Clay Icon Coin */}
+          {/* Uniform 46x46 Squircle Mint Coin */}
           <View
             style={[
               styles.iconCoin,
               {
-                backgroundColor: colors.incomeSurface,
-                borderColor: colors.incomeBorder,
-                borderTopColor: 'rgba(255, 255, 255, 0.8)'
+                backgroundColor: colors.incomeLight,
+                borderColor: colors.incomeBorder
               }
             ]}
           >
-            <Ionicons name="arrow-down-circle" size={24} color={colors.income} />
+            <Ionicons name="arrow-down-circle" size={22} color={colors.income} />
           </View>
 
           <View style={styles.headerTextGroup}>
@@ -139,7 +139,6 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
               <View
                 style={[
                   styles.badgePill,
-                  clayPill,
                   {
                     backgroundColor: isIncomeSet ? colors.incomeLight : colors.surfaceSubtle,
                     borderColor: isIncomeSet ? colors.incomeBorder : colors.border
@@ -157,7 +156,7 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
               </View>
             </View>
 
-            <Text style={[styles.accordionSubtitle, { color: colors.textSecondary }]}>
+            <Text style={[styles.accordionSubtitle, { color: colors.textSecondary }]} numberOfLines={1}>
               {MONTH_NAMES[selectedMonth - 1]} {selectedYear}
             </Text>
           </View>
@@ -182,7 +181,7 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
           <View style={[styles.policyNotice, { backgroundColor: colors.incomeLight, borderColor: colors.incomeBorder }]}>
             <Ionicons name="information-circle" size={16} color={colors.income} />
             <Text style={[styles.policyNoticeText, { color: colors.incomeDark }]}>
-              Income is never hardcoded. Changing your income automatically recalculates your remaining balance for {MONTH_NAMES[selectedMonth - 1]}.
+              Income is dynamic. Changing your income automatically recalculates your remaining balance for {MONTH_NAMES[selectedMonth - 1]}.
             </Text>
           </View>
 
@@ -205,7 +204,7 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
               ENTER OR UPDATE INCOME AMOUNT (PKR)
             </Text>
 
-            <View style={[styles.inputRow, clayInput]}>
+            <View style={[styles.inputRow, clayInput, { backgroundColor: colors.surfaceSubtle }]}>
               <Text style={[styles.currencyPrefix, { color: colors.income }]}>Rs.</Text>
               <TextInput
                 style={[styles.textInput, { color: colors.text }]}
@@ -217,15 +216,30 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
               />
             </View>
 
-            {/* Quick Presets */}
+            {/* Quick Presets: 4 Equal Boxes */}
             <View style={styles.presetRow}>
               {[50000, 100000, 150000, 200000].map((preset) => (
                 <TouchableOpacity
                   key={preset}
-                  style={[styles.presetChip, clayPill, { backgroundColor: colors.surface }]}
+                  style={[
+                    styles.presetChip,
+                    {
+                      backgroundColor: inputAmount === String(preset) ? colors.income : colors.surfaceSubtle,
+                      borderColor: inputAmount === String(preset) ? colors.income : colors.border
+                    }
+                  ]}
                   onPress={() => handlePreset(preset)}
+                  activeOpacity={0.7}
                 >
-                  <Text style={[styles.presetText, { color: colors.textSecondary }]}>
+                  <Text
+                    style={[
+                      styles.presetText,
+                      {
+                        color: inputAmount === String(preset) ? '#FFFFFF' : colors.textSecondary,
+                        fontWeight: inputAmount === String(preset) ? '800' : '600'
+                      }
+                    ]}
+                  >
                     Rs. {(preset / 1000)}k
                   </Text>
                 </TouchableOpacity>
@@ -254,26 +268,22 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
               </View>
             )}
 
-            {/* Save Income Button */}
+            {/* Full Width Submit Button */}
             <TouchableOpacity
               style={[
                 styles.saveButton,
-                {
-                  backgroundColor: colors.income,
-                  borderTopColor: 'rgba(255, 255, 255, 0.4)',
-                  borderBottomColor: colors.incomeDark
-                }
+                { backgroundColor: colors.income }
               ]}
               onPress={handleSaveIncome}
               disabled={isSaving}
-              activeOpacity={0.8}
+              activeOpacity={0.85}
             >
               {isSaving ? (
-                <ActivityIndicator color="#FFFFFF" size="small" />
+                <ActivityIndicator size="small" color="#FFFFFF" />
               ) : (
                 <View style={styles.saveBtnContent}>
-                  <Ionicons name="checkmark-circle-outline" size={18} color="#FFFFFF" />
-                  <Text style={styles.saveButtonText}>Save Income Amount</Text>
+                  <Ionicons name="checkmark-circle" size={18} color="#FFFFFF" />
+                  <Text style={styles.saveButtonText}>Save Monthly Income</Text>
                 </View>
               )}
             </TouchableOpacity>
@@ -286,31 +296,32 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
-    marginTop: 14,
-    borderRadius: 22,
+    width: '100%',
+    borderRadius: 20,
+    marginBottom: 12,
     overflow: 'hidden'
   },
   headerTouch: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 16
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    minHeight: 74
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1
+    flex: 1,
+    gap: 12
   },
   iconCoin: {
     width: 46,
     height: 46,
-    borderRadius: 16,
-    borderWidth: 1.5,
+    borderRadius: 15,
+    borderWidth: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12
+    justifyContent: 'center'
   },
   headerTextGroup: {
     flex: 1
@@ -318,25 +329,27 @@ const styles = StyleSheet.create({
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8
+    gap: 6
   },
   accordionTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
-    letterSpacing: -0.3
+    letterSpacing: -0.2
   },
   badgePill: {
-    paddingHorizontal: 8,
-    paddingVertical: 2
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 8,
+    borderWidth: 1
   },
   badgeText: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: '800'
   },
   accordionSubtitle: {
     fontSize: 12,
     fontWeight: '500',
-    marginTop: 2
+    marginTop: 3
   },
   headerRight: {
     flexDirection: 'row',
@@ -359,60 +372,66 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 12,
     borderWidth: 1,
-    marginBottom: 14
+    marginBottom: 12
   },
   policyNoticeText: {
     flex: 1,
     fontSize: 11,
-    fontWeight: '600',
-    lineHeight: 15
+    lineHeight: 15,
+    fontWeight: '500'
   },
   metricsBar: {
     flexDirection: 'row',
-    borderRadius: 14,
+    alignItems: 'center',
+    borderRadius: 12,
     padding: 12,
-    justifyContent: 'space-around',
-    marginBottom: 16
+    marginBottom: 14
   },
   metricItem: {
+    flex: 1,
     alignItems: 'center'
+  },
+  metricDivider: {
+    width: 1,
+    height: 24,
+    backgroundColor: 'rgba(148, 163, 184, 0.25)'
   },
   metricLabel: {
     fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.8,
+    fontWeight: '800',
+    letterSpacing: 0.5,
     marginBottom: 2
   },
   metricVal: {
     fontSize: 14,
     fontWeight: '800'
   },
-  metricDivider: {
-    width: 1,
-    backgroundColor: '#CBD5E1'
-  },
   formSection: {
-    gap: 10
+    marginTop: 2
   },
   inputLabel: {
     fontSize: 10,
     fontWeight: '800',
-    letterSpacing: 0.7
+    letterSpacing: 0.6,
+    marginBottom: 6
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 14,
-    paddingVertical: 12
+    height: 48,
+    borderRadius: 14,
+    borderWidth: 1,
+    marginBottom: 10
   },
   currencyPrefix: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
     marginRight: 8
   },
   textInput: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
     padding: 0
   },
@@ -420,36 +439,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     justifyContent: 'space-between',
-    marginVertical: 4
+    marginBottom: 12
   },
   presetChip: {
     flex: 1,
     height: 38,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 12
+    borderRadius: 10,
+    borderWidth: 1
   },
   presetText: {
-    fontSize: 11,
-    fontWeight: '700'
+    fontSize: 11
   },
   feedbackBox: {
     padding: 10,
     borderRadius: 10,
-    borderWidth: 1
+    borderWidth: 1,
+    marginBottom: 12
   },
   feedbackText: {
     fontSize: 11,
-    fontWeight: '700'
+    fontWeight: '700',
+    textAlign: 'center'
   },
   saveButton: {
-    paddingVertical: 13,
+    width: '100%',
+    height: 48,
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 4,
-    borderTopWidth: 1.5,
-    borderBottomWidth: 3
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 3
   },
   saveBtnContent: {
     flexDirection: 'row',
