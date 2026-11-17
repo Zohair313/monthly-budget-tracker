@@ -133,10 +133,10 @@ export default function HomeScreen() {
               onToggle={() => setExpandedAccordion(expandedAccordion === 'expense' ? null : 'expense')}
               onEditExpense={handleOpenEdit}
             />
-          </View>
 
-          {/* Month Comparison Card */}
-          <MonthComparisonCard />
+            {/* Month Comparison Card */}
+            <MonthComparisonCard />
+          </View>
 
           {/* Analytics Bar Chart & Category Filters */}
           {showCharts && (
