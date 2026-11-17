@@ -1,0 +1,12 @@
+{
+  "name": "monthly-budget-tracker",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm --prefix mobile run build",
+    "test": "npm --prefix backend test"
+  },
+  "dependencies": {
+    "@neon/config": "^1.14.1",
+    "@neon/env": "^2.1.4"
+  }
+}

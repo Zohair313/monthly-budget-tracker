@@ -1,8 +1,12 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
 const crypto = require('crypto');
+const path = require('path');
 
 dotenv.config();
+if (!process.env.DATABASE_URL) {
+  dotenv.config({ path: path.resolve(__dirname, '../../../.env.local') });
+}
 
 let pool = null;
 let useMemoryStore = false;

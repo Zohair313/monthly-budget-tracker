@@ -4,18 +4,24 @@ const dotenv = require('dotenv');
 const { Pool } = require('pg');
 
 dotenv.config();
+// Also load root .env.local if available
+if (!process.env.DATABASE_URL) {
+  dotenv.config({ path: path.resolve(__dirname, '../../../.env.local') });
+}
 
 async function runMigration() {
-  if (!process.env.DATABASE_URL) {
+  const connectionString = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
+
+  if (!connectionString) {
     console.error('❌ Error: DATABASE_URL is not defined in .env file.');
     console.log('Please provide a valid Neon PostgreSQL connection string:');
     console.log('Example: DATABASE_URL="postgresql://user:password@ep-xyz.us-east-2.aws.neon.tech/neondb?sslmode=require"');
     process.exit(1);
   }
 
-  console.log('🚀 Connecting to Neon PostgreSQL...');
+  console.log('🚀 Connecting to Neon PostgreSQL (direct unpooled for migration)...');
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString,
     ssl: { rejectUnauthorized: false }
   });
 
