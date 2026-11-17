@@ -376,29 +376,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 18
+    marginTop: 14
   },
   actionCol: {
     alignItems: 'center',
     flex: 1
   },
   actionIconBox: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
+    width: 50,
+    height: 50,
+    borderRadius: 16,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
-    shadowRadius: 6,
+    shadowRadius: 5,
     elevation: 2
   },
   actionLabel: {
     fontSize: 11,
     fontWeight: '700',
-    marginTop: 7,
+    marginTop: 5,
     letterSpacing: 0.1
   }
 });
