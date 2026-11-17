@@ -60,25 +60,9 @@ export default function MonthComparisonCard() {
           </View>
 
           <View style={styles.cardTextGroup}>
-            <View style={styles.titleRow}>
-              <Text style={[styles.cardTitle, { color: colors.text }]}>Previous Month</Text>
-              <View
-                style={[
-                  styles.badgePill,
-                  {
-                    backgroundColor: trendBg,
-                    borderColor: trendColor
-                  }
-                ]}
-              >
-                <Text style={[styles.badgeText, { color: trendColor }]}>
-                  {isIncrease ? `+${changePercent}%` : `${changePercent}%`}
-                </Text>
-              </View>
-            </View>
-
+            <Text style={[styles.cardTitle, { color: colors.text }]}>Previous Month</Text>
             <Text style={[styles.cardSubtitle, { color: colors.textSecondary }]} numberOfLines={1}>
-              Last Month's Spending
+              {isIncrease ? `+${changePercent}% vs last month` : `${changePercent}% vs last month`}
             </Text>
           </View>
         </View>

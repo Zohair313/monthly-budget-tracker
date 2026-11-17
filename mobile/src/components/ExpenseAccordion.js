@@ -192,30 +192,9 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
           </View>
 
           <View style={styles.headerTextGroup}>
-            <View style={styles.titleRow}>
-              <Text style={[styles.accordionTitle, { color: colors.text }]}>Monthly Expenses</Text>
-              <View
-                style={[
-                  styles.badgePill,
-                  {
-                    backgroundColor: isOverBudget ? '#FFE4E6' : (isBudgetAlert ? '#FEF3C7' : colors.expenseLight),
-                    borderColor: isOverBudget ? '#FDA4AF' : (isBudgetAlert ? '#FDE68A' : colors.expenseBorder)
-                  }
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.badgeText,
-                    { color: isOverBudget ? '#E11D48' : (isBudgetAlert ? '#D97706' : colors.expense) }
-                  ]}
-                >
-                  {expenses.length} {expenses.length === 1 ? 'Item' : 'Items'}
-                </Text>
-              </View>
-            </View>
-
+            <Text style={[styles.accordionTitle, { color: colors.text }]}>Monthly Expenses</Text>
             <Text style={[styles.accordionSubtitle, { color: colors.textSecondary }]} numberOfLines={1}>
-              {MONTH_NAMES[selectedMonth - 1]} {selectedYear} • {burnRate}% of income
+              {expenses.length} {expenses.length === 1 ? 'item' : 'items'} recorded
             </Text>
           </View>
         </View>
