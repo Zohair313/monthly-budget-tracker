@@ -134,28 +134,7 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
           </View>
 
           <View style={styles.headerTextGroup}>
-            <View style={styles.titleRow}>
-              <Text style={[styles.accordionTitle, { color: colors.text }]}>Monthly Income</Text>
-              <View
-                style={[
-                  styles.badgePill,
-                  {
-                    backgroundColor: isIncomeSet ? colors.incomeLight : colors.surfaceSubtle,
-                    borderColor: isIncomeSet ? colors.incomeBorder : colors.border
-                  }
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.badgeText,
-                    { color: isIncomeSet ? colors.income : colors.textSecondary }
-                  ]}
-                >
-                  {isIncomeSet ? 'Target Set' : 'Not Set'}
-                </Text>
-              </View>
-            </View>
-
+            <Text style={[styles.accordionTitle, { color: colors.text }]}>Monthly Income</Text>
             <Text style={[styles.accordionSubtitle, { color: colors.textSecondary }]} numberOfLines={1}>
               {MONTH_NAMES[selectedMonth - 1]} {selectedYear}
             </Text>
