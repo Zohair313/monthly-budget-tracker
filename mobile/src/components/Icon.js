@@ -1,96 +1,103 @@
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-const ICON_MAP = {
-  // Navigation & Chevrons
+// Comprehensive glyph fallback map in case vector font is pending or offline
+const FALLBACK_GLYPHS = {
+  // Navigation & Tabs
+  'home': '🏠',
+  'home-outline': '🏠',
+  'grid': '▦',
+  'grid-outline': '▦',
+  'bar-chart': '📊',
+  'bar-chart-outline': '📊',
+  'pie-chart': '🥧',
+  'pie-chart-outline': '🥧',
+  'settings': '⚙',
+  'settings-outline': '⚙',
+  'document-text': '📄',
+  'document-text-outline': '📄',
+  
+  // Controls & Chevrons
   'chevron-back': '‹',
   'chevron-forward': '›',
+  'chevron-down': '⌄',
+  'chevron-up': '⌃',
   'close': '✕',
   'close-circle': '✕',
   
   // Actions
   'add': '+',
+  'add-circle': '+',
   'add-circle-outline': '+',
   'pencil': '✎',
-  'create-outline': '✎',
+  'pencil-sharp': '✎',
   'trash-outline': '🗑',
-  'share-outline': '↗',
-  'copy-outline': '📋',
   'checkmark': '✓',
   'checkmark-circle': '✓',
-  'search-outline': '⌕',
+  'search': '🔍',
+  'search-outline': '🔍',
   
-  // Theme & Status
-  'sunny-outline': '☀',
-  'moon-outline': '☾',
-  'warning': '⚠',
-  'alert-circle': '⚠',
-  'alert-circle-outline': '⚠',
-  'notifications': '🔔',
-  'hourglass-outline': '⏳',
-  'radio-outline': '◉',
-  'cloud-offline-outline': '⚡',
-  
-  // Finance & System
+  // Finance & Badges
   'wallet': '💳',
   'wallet-outline': '💳',
   'receipt': '🧾',
   'receipt-outline': '🧾',
-  'server-outline': '⚙',
-  'settings-outline': '⚙',
-  'log-out-outline': '⎋',
+  'arrow-down-circle': '↓',
   'arrow-down-circle-outline': '↓',
+  'arrow-up-circle': '↑',
   'arrow-up-circle-outline': '↑',
   'trending-up': '↗',
   'trending-down': '↘',
-  'pie-chart-outline': '📊',
-  'document-text-outline': '📄',
-  'calendar-outline': '📅',
-  'information-circle-outline': 'ⓘ',
+  'pricetag': '🏷',
+  'pricetag-outline': '🏷',
   
-  // Auth
-  'person-outline': '👤',
-  'mail-outline': '✉',
-  'lock-closed-outline': '🔒',
-  'eye-outline': '👁',
-  'eye-off-outline': '⊘',
-  'flash-outline': '⚡',
+  // Theme & Status
+  'sunny': '☀',
+  'sunny-outline': '☀',
+  'moon': '☾',
+  'moon-outline': '☾',
+  'warning': '⚠',
+  'alert-circle': '⚠',
+  'alert-circle-outline': '⚠',
+  'information-circle': 'ⓘ',
+  'information-circle-outline': 'ⓘ',
+  'cloud-offline-outline': '⚡',
   
   // Categories
+  'fast-food': '🍕',
+  'fast-food-outline': '🍕',
+  'restaurant': '🍲',
   'restaurant-outline': '🍲',
+  'car-sport': '🚗',
   'car-outline': '🚗',
+  'flash': '⚡',
+  'flash-outline': '⚡',
+  'bag-handle': '🛍',
   'bag-handle-outline': '🛍',
-  'medkit-outline': '💊',
+  'game-controller': '🎮',
   'film-outline': '🎬',
-  'book-outline': '📚',
-  'pricetag-outline': '🏷',
-  'pricetag': '🏷',
-  'airplane': '✈',
-  'cart': '🛒',
-  'fitness': '🏃',
-  'school': '🎓',
-  'fast-food': '🍔'
+  'medkit': '🩺',
+  'medkit-outline': '🩺',
+  'cube': '📦',
+  'cube-outline': '📦'
 };
 
-export default function Icon({ name, size = 16, color = '#FFFFFF', style }) {
-  const glyph = ICON_MAP[name] || '•';
-
-  return (
-    <View style={[styles.wrap, { width: size, height: size }, style]}>
-      <Text
-        style={[
-          styles.glyph,
-          {
-            fontSize: size * 0.9,
-            color,
-            lineHeight: size
-          }
-        ]}
-      >
-        {glyph}
-      </Text>
-    </View>
-  );
+export default function Icon({ name, size = 18, color = '#FFFFFF', style }) {
+  // 1. Try rendering with native @expo/vector-icons Ionicons
+  try {
+    return <Ionicons name={name} size={size} color={color} style={style} />;
+  } catch (err) {
+    // 2. Guaranteed fallback with beautiful Unicode/emoji glyphs (Never a blank dot)
+    const glyph = FALLBACK_GLYPHS[name] || '✦';
+    return (
+      <View style={[styles.wrap, { width: size, height: size }, style]}>
+        <Text style={[styles.glyph, { fontSize: size * 0.85, color, lineHeight: size }]}>
+          {glyph}
+        </Text>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -99,7 +106,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   glyph: {
-    textAlign: 'center',
-    fontWeight: '700'
+    textAlign: 'center'
   }
 });

@@ -74,9 +74,9 @@ export default function App() {
 
   if (showSplash) {
     return (
-      <SafeAreaProvider style={styles.rootFill}>
+      <View style={{ flex: 1, backgroundColor: '#0F172A' }}>
         <AnimatedSplashScreen onFinish={() => setShowSplash(false)} />
-      </SafeAreaProvider>
+      </View>
     );
   }
 

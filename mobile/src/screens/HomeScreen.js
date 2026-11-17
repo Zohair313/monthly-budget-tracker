@@ -31,6 +31,7 @@ import ExportModal from '../components/ExportModal';
 export default function HomeScreen() {
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
+  const isDark = themeMode === 'dark';
   const { isLoading, refresh, errorMessage, clearError } = useBudget();
 
   // Active Category Filter & View Toggles
@@ -58,24 +59,27 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.brandViolet }]} edges={['top', 'left', 'right']}>
+    <SafeAreaView
+      style={[styles.safeArea, { backgroundColor: colors.background }]}
+      edges={['top', 'left', 'right']}
+    >
       <StatusBar
-        barStyle="light-content"
-        backgroundColor={colors.brandViolet}
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={colors.background}
       />
 
-      {/* 1. Header on Royal Indigo Canvas */}
+      {/* 1. Seamless Top Header */}
       <Header onOpenSettings={() => setShowServerConfig(true)} />
 
       {/* Network or General Error Notice */}
       {errorMessage && (
         <View style={styles.errorNotice}>
-          <Ionicons name="cloud-offline-outline" size={15} color="#E11D48" />
+          <Ionicons name="cloud-offline-outline" size={15} color="#EF4444" />
           <Text style={styles.errorNoticeText} numberOfLines={2}>
             {errorMessage}
           </Text>
           <TouchableOpacity onPress={clearError} style={styles.errorCloseBtn}>
-            <Ionicons name="close" size={15} color="#E11D48" />
+            <Ionicons name="close" size={15} color="#EF4444" />
           </TouchableOpacity>
         </View>
       )}
@@ -87,13 +91,13 @@ export default function HomeScreen() {
           <RefreshControl
             refreshing={isLoading}
             onRefresh={refresh}
-            tintColor="#FFFFFF"
-            colors={['#FFFFFF']}
+            tintColor={colors.primary}
+            colors={[colors.primary]}
           />
         }
         showsVerticalScrollIndicator={false}
       >
-        {/* 2. Executive Card & Clean Squircle Quick Tiles */}
+        {/* 2. Executive Balance Card & Action Tiles */}
         <SummaryCards
           onOpenSetIncome={() => {
             setExpandedAccordion(prev => (prev === 'income' ? null : 'income'));
@@ -105,13 +109,8 @@ export default function HomeScreen() {
           onOpenExport={() => setShowExport(true)}
         />
 
-        {/* 3. Pristine Porcelain Sheet */}
-        <View style={[styles.porcelainSheet, { backgroundColor: colors.sheetBackground }]}>
-          {/* Subtle drag handle */}
-          <View style={styles.sheetHandleWrap}>
-            <View style={[styles.sheetHandle, { backgroundColor: colors.border }]} />
-          </View>
-
+        {/* 3. Main Budget Content Area */}
+        <View style={[styles.mainContentSheet, { backgroundColor: colors.background }]}>
           {/* Budget Alert Banner */}
           <BudgetAlertBanner />
 
@@ -122,17 +121,17 @@ export default function HomeScreen() {
                 Budget Breakdown
               </Text>
               <Text style={[styles.accordionsSubtitle, { color: colors.textSecondary }]}>
-                Tap to expand, record & review
+                Tap to expand & record
               </Text>
             </View>
 
-            {/* Income Accordion (Clickable with smooth spring animation) */}
+            {/* Income Accordion */}
             <IncomeAccordion
               isExpanded={expandedAccordion === 'income'}
               onToggle={() => setExpandedAccordion(expandedAccordion === 'income' ? null : 'income')}
             />
 
-            {/* Expense Accordion (Clickable with smooth spring animation) */}
+            {/* Expense Accordion */}
             <ExpenseAccordion
               isExpanded={expandedAccordion === 'expense'}
               onToggle={() => setExpandedAccordion(expandedAccordion === 'expense' ? null : 'expense')}
@@ -143,7 +142,7 @@ export default function HomeScreen() {
           {/* Month Comparison Card */}
           <MonthComparisonCard />
 
-          {/* Clean Analytics Bar Chart & Category Filters */}
+          {/* Analytics Bar Chart & Category Filters */}
           {showCharts && (
             <CategoryBreakdown
               activeCategory={activeCategory}
@@ -162,42 +161,102 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
-      {/* 4. Sleek Floating Bottom Dock */}
-      <View style={[styles.bottomDock, { backgroundColor: colors.brandVioletDark }]}>
-        {/* Nav 1: Home */}
-        <TouchableOpacity style={styles.dockItem} onPress={() => setShowCharts(false)}>
-          <Ionicons name="home" size={20} color="#FFFFFF" />
+      {/* 4. Sleek Floating Bottom Dock with Real Icons & Labels */}
+      <View
+        style={[
+          styles.bottomDock,
+          {
+            backgroundColor: colors.dockBg,
+            borderColor: isDark ? '#1E293B' : 'rgba(255, 255, 255, 0.15)'
+          }
+        ]}
+      >
+        {/* Nav 1: All Data / Overview ("Saara Data Dekhe") */}
+        <TouchableOpacity
+          style={styles.dockItem}
+          onPress={() => {
+            setShowCharts(false);
+            setActiveCategory(null);
+          }}
+          accessibilityLabel="Overview / All Data"
+        >
+          <Ionicons
+            name="home"
+            size={20}
+            color={!showCharts ? '#FFFFFF' : colors.dockInactive}
+          />
+          <Text
+            style={[
+              styles.dockLabel,
+              { color: !showCharts ? '#FFFFFF' : colors.dockInactive }
+            ]}
+          >
+            Data
+          </Text>
         </TouchableOpacity>
 
-        {/* Nav 2: Analytics */}
-        <TouchableOpacity style={styles.dockItem} onPress={() => setShowCharts(!showCharts)}>
+        {/* Nav 2: Analytics ("Analytics / Charts") */}
+        <TouchableOpacity
+          style={styles.dockItem}
+          onPress={() => setShowCharts(!showCharts)}
+          accessibilityLabel="Analytics & Charts"
+        >
           <Ionicons
             name="bar-chart"
             size={20}
-            color={showCharts ? '#34D399' : 'rgba(255, 255, 255, 0.7)'}
+            color={showCharts ? '#10B981' : colors.dockInactive}
           />
+          <Text
+            style={[
+              styles.dockLabel,
+              { color: showCharts ? '#10B981' : colors.dockInactive }
+            ]}
+          >
+            Charts
+          </Text>
         </TouchableOpacity>
 
-        {/* Center Raised Action Button */}
+        {/* Center Raised Action Button: Add ("Add Kare") */}
         <TouchableOpacity
           style={[styles.dockCenterBtn, { backgroundColor: colors.primary }]}
           onPress={() => {
-            setEditingExpense(null);
-            setShowAddExpense(true);
+            setExpandedAccordion('expense');
           }}
           accessibilityLabel="Add New Expense"
         >
           <Ionicons name="add" size={26} color="#FFFFFF" />
         </TouchableOpacity>
 
-        {/* Nav 4: Statement */}
-        <TouchableOpacity style={styles.dockItem} onPress={() => setShowExport(true)}>
-          <Ionicons name="document-text" size={20} color="rgba(255, 255, 255, 0.7)" />
+        {/* Nav 4: Statement / Report ("Report") */}
+        <TouchableOpacity
+          style={styles.dockItem}
+          onPress={() => setShowExport(true)}
+          accessibilityLabel="Export Statement"
+        >
+          <Ionicons
+            name="document-text"
+            size={20}
+            color={colors.dockInactive}
+          />
+          <Text style={[styles.dockLabel, { color: colors.dockInactive }]}>
+            Report
+          </Text>
         </TouchableOpacity>
 
-        {/* Nav 5: Settings */}
-        <TouchableOpacity style={styles.dockItem} onPress={() => setShowServerConfig(true)}>
-          <Ionicons name="settings" size={20} color="rgba(255, 255, 255, 0.7)" />
+        {/* Nav 5: Settings ("Setting") */}
+        <TouchableOpacity
+          style={styles.dockItem}
+          onPress={() => setShowServerConfig(true)}
+          accessibilityLabel="Settings"
+        >
+          <Ionicons
+            name="settings"
+            size={20}
+            color={colors.dockInactive}
+          />
+          <Text style={[styles.dockLabel, { color: colors.dockInactive }]}>
+            Setting
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -225,7 +284,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   scrollContent: {
-    paddingBottom: 88
+    paddingBottom: 95
   },
   errorNotice: {
     flexDirection: 'row',
@@ -236,7 +295,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 12,
-    backgroundColor: '#FFF1F2',
+    backgroundColor: '#FEF2F2',
     borderWidth: 1,
     borderColor: '#FECDD3',
     gap: 8
@@ -245,31 +304,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 11,
     fontWeight: '700',
-    color: '#E11D48',
+    color: '#EF4444',
     lineHeight: 15
   },
   errorCloseBtn: {
     padding: 2
   },
-  porcelainSheet: {
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    paddingTop: 8,
-    minHeight: 520,
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 8
-  },
-  sheetHandleWrap: {
-    alignItems: 'center',
-    paddingVertical: 8
-  },
-  sheetHandle: {
-    width: 38,
-    height: 4,
-    borderRadius: 2
+  mainContentSheet: {
+    paddingTop: 4
   },
   accordionsSection: {
     paddingHorizontal: 20,
@@ -293,33 +335,39 @@ const styles = StyleSheet.create({
   },
   bottomDock: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+    bottom: 12,
+    left: 16,
+    right: 16,
     height: 64,
-    borderTopLeftRadius: 22,
-    borderTopRightRadius: 22,
+    borderRadius: 24,
+    borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 14,
     elevation: 10
   },
   dockItem: {
-    width: 44,
-    height: 44,
+    width: 52,
+    height: 48,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    gap: 2
+  },
+  dockLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.2
   },
   dockCenterBtn: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginTop: -22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    marginTop: -20,
     borderWidth: 3,
     borderColor: '#FFFFFF',
     alignItems: 'center',

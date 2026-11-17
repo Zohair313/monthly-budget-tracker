@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Animated, Easing, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Animated, Easing, Dimensions, StatusBar } from 'react-native';
 import Ionicons from './Icon';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 
 export default function AnimatedSplashScreen({ onFinish }) {
-  const scaleAnim = useRef(new Animated.Value(0.7)).current;
+  const scaleAnim = useRef(new Animated.Value(0.75)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
   const exitAnim = useRef(new Animated.Value(1)).current;
 
-  const [loadingStep, setLoadingStep] = useState('Initializing secure vault...');
+  const [loadingStep, setLoadingStep] = useState('Securing financial vault...');
   const [percentText, setPercentText] = useState('0%');
 
   useEffect(() => {
@@ -19,13 +19,13 @@ export default function AnimatedSplashScreen({ onFinish }) {
     Animated.parallel([
       Animated.timing(scaleAnim, {
         toValue: 1,
-        duration: 700,
-        easing: Easing.out(Easing.back(1.5)),
+        duration: 650,
+        easing: Easing.out(Easing.back(1.4)),
         useNativeDriver: true
       }),
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 600,
+        duration: 550,
         useNativeDriver: true
       })
     ]).start();
@@ -34,14 +34,14 @@ export default function AnimatedSplashScreen({ onFinish }) {
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
-          toValue: 1.08,
-          duration: 900,
+          toValue: 1.06,
+          duration: 800,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true
         }),
         Animated.timing(pulseAnim, {
           toValue: 1,
-          duration: 900,
+          duration: 800,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true
         })
@@ -51,38 +51,38 @@ export default function AnimatedSplashScreen({ onFinish }) {
     // 3. Progress bar animation
     Animated.timing(progressAnim, {
       toValue: 1,
-      duration: 1600,
+      duration: 1500,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: false
     }).start();
 
     // Status step messages
     const t1 = setTimeout(() => {
-      setLoadingStep('Syncing income & expense engine...');
+      setLoadingStep('Connecting to Neon PostgreSQL...');
       setPercentText('45%');
-    }, 500);
+    }, 450);
 
     const t2 = setTimeout(() => {
-      setLoadingStep('Activating Claymorphism interface...');
+      setLoadingStep('Calculating real-time balances...');
       setPercentText('85%');
-    }, 1100);
+    }, 1000);
 
     const t3 = setTimeout(() => {
       setLoadingStep('Ready!');
       setPercentText('100%');
-    }, 1600);
+    }, 1500);
 
     // 4. Smooth exit fade out
     const t4 = setTimeout(() => {
       Animated.timing(exitAnim, {
         toValue: 0,
-        duration: 400,
+        duration: 350,
         easing: Easing.in(Easing.ease),
         useNativeDriver: true
       }).start(() => {
         if (onFinish) onFinish();
       });
-    }, 1900);
+    }, 1800);
 
     return () => {
       clearTimeout(t1);
@@ -99,7 +99,9 @@ export default function AnimatedSplashScreen({ onFinish }) {
 
   return (
     <Animated.View style={[styles.container, { opacity: exitAnim }]}>
-      {/* Decorative background glow circles */}
+      <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
+
+      {/* Decorative ambient background glows */}
       <View style={styles.glowCircle1} />
       <View style={styles.glowCircle2} />
 
@@ -112,9 +114,9 @@ export default function AnimatedSplashScreen({ onFinish }) {
           }
         ]}
       >
-        {/* 3D Inflated Clay Icon Coin */}
+        {/* 3D Tactile Executive Logo Coin */}
         <View style={styles.clayLogoCoin}>
-          <Ionicons name="wallet" size={48} color="#FFFFFF" />
+          <Ionicons name="wallet" size={46} color="#FFFFFF" />
         </View>
 
         {/* Brand Typography */}
@@ -122,7 +124,7 @@ export default function AnimatedSplashScreen({ onFinish }) {
         <Text style={styles.brandSubtitle}>Monthly Financial Vault</Text>
       </Animated.View>
 
-      {/* Bottom Clay Loading Progress */}
+      {/* Bottom Loading Progress Bar */}
       <Animated.View style={[styles.progressSection, { opacity: fadeAnim }]}>
         <View style={styles.progressTrack}>
           <Animated.View style={[styles.progressBar, { width: progressWidth }]} />
@@ -139,93 +141,93 @@ export default function AnimatedSplashScreen({ onFinish }) {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#6C52EE', // Tactile Lilac Purple
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width,
+    height,
+    backgroundColor: '#0F172A', // Full screen Obsidian Navy
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 99999
+    zIndex: 999999
   },
   glowCircle1: {
     position: 'absolute',
-    top: -80,
-    right: -80,
-    width: 260,
-    height: 260,
-    borderRadius: 130,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)'
+    top: -100,
+    right: -100,
+    width: 320,
+    height: 320,
+    borderRadius: 160,
+    backgroundColor: 'rgba(79, 70, 229, 0.18)'
   },
   glowCircle2: {
     position: 'absolute',
-    bottom: -60,
-    left: -60,
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    backgroundColor: 'rgba(0, 0, 0, 0.15)'
+    bottom: -80,
+    left: -80,
+    width: 280,
+    height: 280,
+    borderRadius: 140,
+    backgroundColor: 'rgba(16, 185, 129, 0.12)'
   },
   contentWrap: {
     alignItems: 'center',
-    marginBottom: 60
+    marginBottom: 80
   },
   clayLogoCoin: {
     width: 96,
     height: 96,
-    borderRadius: 32,
-    backgroundColor: '#806BF2',
-    borderTopWidth: 3,
+    borderRadius: 30,
+    backgroundColor: '#4F46E5',
+    borderTopWidth: 2.5,
     borderLeftWidth: 2,
-    borderRightWidth: 1.5,
+    borderRightWidth: 1,
     borderBottomWidth: 5,
-    borderTopColor: 'rgba(255, 255, 255, 0.75)',
-    borderLeftColor: 'rgba(255, 255, 255, 0.45)',
-    borderRightColor: '#563CC5',
-    borderBottomColor: '#452CA8',
+    borderTopColor: 'rgba(255, 255, 255, 0.7)',
+    borderLeftColor: 'rgba(255, 255, 255, 0.4)',
+    borderRightColor: '#312E81',
+    borderBottomColor: '#1E1B4B',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
-    shadowColor: '#2C1B7A',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.45,
-    shadowRadius: 20,
-    elevation: 10
+    shadowColor: '#4F46E5',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.4,
+    shadowRadius: 18,
+    elevation: 8
   },
   brandTitle: {
     color: '#FFFFFF',
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: '900',
-    letterSpacing: -0.8
+    letterSpacing: -0.6
   },
   brandSubtitle: {
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: '#94A3B8',
     fontSize: 13,
     fontWeight: '600',
     marginTop: 6,
-    letterSpacing: 0.4
+    letterSpacing: 0.3
   },
   progressSection: {
     position: 'absolute',
-    bottom: 50,
-    width: Math.min(width - 60, 320),
+    bottom: 60,
+    width: Math.min(width - 64, 320),
     alignItems: 'center'
   },
   progressTrack: {
     width: '100%',
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderTopColor: 'rgba(0, 0, 0, 0.35)',
-    borderBottomColor: 'rgba(255, 255, 255, 0.25)',
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     overflow: 'hidden',
     marginBottom: 10
   },
   progressBar: {
     height: '100%',
-    borderRadius: 4,
-    backgroundColor: '#34D399', // Mint green fill
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.7)'
+    borderRadius: 3.5,
+    backgroundColor: '#10B981' // Emerald Mint Fill
   },
   progressStatusRow: {
     flexDirection: 'row',
@@ -233,12 +235,12 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   statusText: {
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: '#94A3B8',
     fontSize: 11,
     fontWeight: '600'
   },
   percentText: {
-    color: '#34D399',
+    color: '#10B981',
     fontSize: 11,
     fontWeight: '800'
   }

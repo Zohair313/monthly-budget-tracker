@@ -19,6 +19,7 @@ export default function SummaryCards({
   const { summary, incomeData, expenses, selectedMonth, selectedYear } = useBudget();
   const { user, themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
+  const isDark = themeMode === 'dark';
 
   const totalIncome = summary.total_income || 0;
   const totalExpense = summary.total_expense || 0;
@@ -27,39 +28,39 @@ export default function SummaryCards({
   const isOverBudget = remainingBalance < 0;
   const isBudgetAlert = summary.is_budget_alert || burnRate >= 80;
 
-  // Claymorphic Card background tone matching reference image
-  let cardBg = '#5B42DE'; // Soft embossed 3D violet clay card
-  let accentPillBg = 'rgba(255, 255, 255, 0.2)';
-  let accentPillText = '#FFFFFF';
+  // Executive Balance Card background tone
+  let cardBg = isDark ? '#111827' : '#0F172A'; // Obsidian Navy Standard
+  let statusBadgeColor = '#10B981';
+  let statusBadgeText = 'Healthy';
 
   if (isOverBudget) {
-    cardBg = '#881337'; // Crimson
-    accentPillBg = 'rgba(0, 0, 0, 0.3)';
-    accentPillText = '#FDA4AF';
+    cardBg = isDark ? '#7F1D1D' : '#881337'; // Crimson
+    statusBadgeColor = '#EF4444';
+    statusBadgeText = 'Over Budget';
   } else if (isBudgetAlert) {
-    cardBg = '#78350F'; // Amber
-    accentPillBg = 'rgba(0, 0, 0, 0.3)';
-    accentPillText = '#FDE68A';
+    cardBg = isDark ? '#78350F' : '#713F12'; // Amber
+    statusBadgeColor = '#F59E0B';
+    statusBadgeText = '80% Spent';
   }
 
   return (
     <View style={styles.container}>
-      {/* 1. 3D Clay Debit-Style Balance Card (Mirrors User Reference Design) */}
+      {/* 1. Executive 3D Tactile Balance Card */}
       <View style={[styles.executiveCard, { backgroundColor: cardBg }]}>
-        {/* Subtle Clay Inner Highlight Overlays */}
+        {/* Subtle glass reflection gradient simulation */}
         <View style={styles.cardBevelHighlight} />
 
-        {/* Card Header: Label & Overlapping Mastercard Circles */}
+        {/* Card Header: Label & Mastercard Circles */}
         <View style={styles.cardHeader}>
           <View style={styles.balanceLabelGroup}>
-            <Text style={styles.balanceOverline}>BALANCE</Text>
+            <Text style={styles.balanceOverline}>TOTAL AVAILABLE BALANCE</Text>
             <Text style={styles.balanceAmount}>{formatCurrency(remainingBalance)}</Text>
           </View>
 
-          {/* Mastercard Logo (Overlapping Coral & Gold Circles) */}
+          {/* Overlapping Mastercard Circular Emblem */}
           <View style={styles.mastercardContainer}>
-            <View style={[styles.mastercardCircle, { backgroundColor: '#FF4757' }]} />
-            <View style={[styles.mastercardCircle, { backgroundColor: '#FFA502', marginLeft: -12, opacity: 0.92 }]} />
+            <View style={[styles.mastercardCircle, { backgroundColor: '#EF4444' }]} />
+            <View style={[styles.mastercardCircle, { backgroundColor: '#F59E0B', marginLeft: -12, opacity: 0.92 }]} />
           </View>
         </View>
 
@@ -71,20 +72,21 @@ export default function SummaryCards({
         {/* Card Footer: Expiry, Cardholder & Budget Health Pill */}
         <View style={styles.cardFooter}>
           <View style={styles.cardMetaBlock}>
-            <Text style={styles.cardMetaLabel}>EXP</Text>
-            <Text style={styles.cardMetaValue}>12/28</Text>
-          </View>
-
-          <View style={styles.cardMetaBlock}>
             <Text style={styles.cardMetaLabel}>CARDHOLDER</Text>
             <Text style={styles.cardMetaValue} numberOfLines={1}>
               {user?.name || 'Trainee Developer'}
             </Text>
           </View>
 
-          <View style={[styles.statusPill, { backgroundColor: accentPillBg }]}>
-            <Text style={[styles.statusPillText, { color: accentPillText }]}>
-              {isOverBudget ? 'Over Budget' : (isBudgetAlert ? '80% Spent' : 'Healthy')}
+          <View style={styles.cardMetaBlock}>
+            <Text style={styles.cardMetaLabel}>EXPIRES</Text>
+            <Text style={styles.cardMetaValue}>12/28</Text>
+          </View>
+
+          <View style={[styles.statusPill, { backgroundColor: 'rgba(255, 255, 255, 0.15)', borderColor: statusBadgeColor }]}>
+            <View style={[styles.statusDot, { backgroundColor: statusBadgeColor }]} />
+            <Text style={[styles.statusPillText, { color: '#FFFFFF' }]}>
+              {statusBadgeText}
             </Text>
           </View>
         </View>
@@ -97,12 +99,12 @@ export default function SummaryCards({
                 styles.progressBar,
                 {
                   width: `${Math.min(burnRate, 100)}%`,
-                  backgroundColor: isOverBudget ? '#FB7185' : (isBudgetAlert ? '#FBBF24' : '#2ED573')
+                  backgroundColor: statusBadgeColor
                 }
               ]}
             />
           </View>
-          <Text style={styles.progressPercentText}>{burnRate}% used</Text>
+          <Text style={styles.progressPercentText}>{burnRate}% spent</Text>
         </View>
 
         {/* Quick Balance Metrics Bar */}
@@ -114,10 +116,10 @@ export default function SummaryCards({
             accessibilityLabel="Set Monthly Income"
           >
             <View style={styles.metricLabelRow}>
-              <View style={[styles.miniDot, { backgroundColor: '#2ED573' }]} />
+              <View style={[styles.miniDot, { backgroundColor: '#10B981' }]} />
               <Text style={styles.metricLabel}>INCOME</Text>
             </View>
-            <Text style={[styles.metricValue, { color: '#2ED573' }]}>
+            <Text style={[styles.metricValue, { color: '#10B981' }]}>
               {formatCurrency(totalIncome)}
             </Text>
           </TouchableOpacity>
@@ -131,68 +133,68 @@ export default function SummaryCards({
             accessibilityLabel="View Expenses"
           >
             <View style={styles.metricLabelRow}>
-              <View style={[styles.miniDot, { backgroundColor: '#FF6B81' }]} />
+              <View style={[styles.miniDot, { backgroundColor: '#EF4444' }]} />
               <Text style={styles.metricLabel}>EXPENSES</Text>
             </View>
-            <Text style={[styles.metricValue, { color: '#FF6B81' }]}>
+            <Text style={[styles.metricValue, { color: '#EF4444' }]}>
               {formatCurrency(totalExpense)}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* 2. Four Pastel Squircle Clay Action Buttons (Matches Reference Image) */}
+      {/* 2. Four Tactile Action Tiles */}
       <View style={styles.actionsGrid}>
-        {/* Action 1: Income / Transfer (Mint Clay Squircle) */}
+        {/* Action 1: Income */}
         <TouchableOpacity
           style={styles.actionCol}
           onPress={onOpenSetIncome}
           activeOpacity={0.8}
           accessibilityLabel="Open Income Accordion"
         >
-          <View style={[styles.actionIconBox, { backgroundColor: '#55E6C1' }]}>
-            <Ionicons name="arrow-down-circle" size={24} color="#057A55" />
+          <View style={[styles.actionIconBox, { backgroundColor: colors.tileMintBg, borderColor: colors.tileMintBorder }]}>
+            <Ionicons name="arrow-down-circle" size={24} color={colors.tileMint} />
           </View>
-          <Text style={styles.actionLabel}>Income</Text>
+          <Text style={[styles.actionLabel, { color: colors.text }]}>Income</Text>
         </TouchableOpacity>
 
-        {/* Action 2: Expense / Pay Bill (Rose Clay Squircle) */}
+        {/* Action 2: Expense */}
         <TouchableOpacity
           style={styles.actionCol}
           onPress={onOpenAddExpense}
           activeOpacity={0.8}
           accessibilityLabel="Open Expense Accordion"
         >
-          <View style={[styles.actionIconBox, { backgroundColor: '#FF7698' }]}>
-            <Ionicons name="receipt" size={24} color="#9F1239" />
+          <View style={[styles.actionIconBox, { backgroundColor: colors.tileCoralBg, borderColor: colors.tileCoralBorder }]}>
+            <Ionicons name="receipt" size={24} color={colors.tileCoral} />
           </View>
-          <Text style={styles.actionLabel}>Expense</Text>
+          <Text style={[styles.actionLabel, { color: colors.text }]}>Expense</Text>
         </TouchableOpacity>
 
-        {/* Action 3: Analytics / Shop (Lilac Clay Squircle) */}
+        {/* Action 3: Analytics */}
         <TouchableOpacity
           style={styles.actionCol}
           onPress={onToggleCategoryBreakdown}
           activeOpacity={0.8}
           accessibilityLabel="Toggle Analytics"
         >
-          <View style={[styles.actionIconBox, { backgroundColor: '#A29BFE' }]}>
-            <Ionicons name="pie-chart" size={23} color="#4338CA" />
+          <View style={[styles.actionIconBox, { backgroundColor: colors.tileVioletBg, borderColor: colors.tileVioletBorder }]}>
+            <Ionicons name="bar-chart" size={22} color={colors.tileViolet} />
           </View>
-          <Text style={styles.actionLabel}>Analytics</Text>
+          <Text style={[styles.actionLabel, { color: colors.text }]}>Analytics</Text>
         </TouchableOpacity>
 
-        {/* Action 4: Statement / Saving (Sky Blue Clay Squircle) */}
+        {/* Action 4: Statement */}
         <TouchableOpacity
           style={styles.actionCol}
           onPress={onOpenExport}
           activeOpacity={0.8}
           accessibilityLabel="Export Statement"
         >
-          <View style={[styles.actionIconBox, { backgroundColor: '#70D6FF' }]}>
-            <Ionicons name="document-text" size={23} color="#0369A1" />
+          <View style={[styles.actionIconBox, { backgroundColor: colors.tileCyanBg, borderColor: colors.tileCyanBorder }]}>
+            <Ionicons name="document-text" size={22} color={colors.tileCyan} />
           </View>
-          <Text style={styles.actionLabel}>Statement</Text>
+          <Text style={[styles.actionLabel, { color: colors.text }]}>Statement</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -202,21 +204,19 @@ export default function SummaryCards({
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 22
+    paddingTop: 6,
+    paddingBottom: 16
   },
   executiveCard: {
-    borderRadius: 26,
+    borderRadius: 24,
     padding: 22,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.35)',
-    borderTopColor: 'rgba(255, 255, 255, 0.7)',
-    borderLeftColor: 'rgba(255, 255, 255, 0.5)',
-    shadowColor: '#2B1A78',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.35,
-    shadowRadius: 22,
-    elevation: 9,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.14)',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 8,
     position: 'relative',
     overflow: 'hidden'
   },
@@ -225,10 +225,10 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    borderTopLeftRadius: 26,
-    borderTopRightRadius: 26
+    height: 44,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24
   },
   cardHeader: {
     flexDirection: 'row',
@@ -240,8 +240,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   balanceOverline: {
-    color: 'rgba(255, 255, 255, 0.75)',
-    fontSize: 11,
+    color: '#94A3B8',
+    fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.8
   },
@@ -249,13 +249,13 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 28,
     fontWeight: '900',
-    letterSpacing: -0.6,
+    letterSpacing: -0.5,
     marginTop: 4
   },
   mastercardContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 2
+    paddingTop: 4
   },
   mastercardCircle: {
     width: 28,
@@ -266,8 +266,8 @@ const styles = StyleSheet.create({
     marginVertical: 12
   },
   cardNumberText: {
-    color: 'rgba(255, 255, 255, 0.7)',
-    fontSize: 14,
+    color: '#64748B',
+    fontSize: 13,
     fontWeight: '600',
     letterSpacing: 3
   },
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   cardMetaLabel: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#64748B',
     fontSize: 9,
     fontWeight: '700',
     letterSpacing: 0.5
@@ -294,11 +294,18 @@ const styles = StyleSheet.create({
     maxWidth: 120
   },
   statusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)'
+    borderWidth: 1
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3
   },
   statusPillText: {
     fontSize: 10,
@@ -314,7 +321,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 5,
     borderRadius: 2.5,
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     overflow: 'hidden'
   },
   progressBar: {
@@ -322,7 +329,7 @@ const styles = StyleSheet.create({
     borderRadius: 2.5
   },
   progressPercentText: {
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: '#94A3B8',
     fontSize: 10,
     fontWeight: '700'
   },
@@ -330,9 +337,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: 10,
+    paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.12)'
+    borderTopColor: 'rgba(255, 255, 255, 0.1)'
   },
   metricTouch: {
     flex: 1
@@ -349,7 +356,7 @@ const styles = StyleSheet.create({
     borderRadius: 3
   },
   metricLabel: {
-    color: 'rgba(255, 255, 255, 0.75)',
+    color: '#94A3B8',
     fontSize: 9,
     fontWeight: '700',
     letterSpacing: 0.5
@@ -362,44 +369,36 @@ const styles = StyleSheet.create({
   verticalDivider: {
     width: 1,
     height: 26,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     marginHorizontal: 12
   },
   actionsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 18
   },
   actionCol: {
     alignItems: 'center',
     flex: 1
   },
   actionIconBox: {
-    width: 58,
-    height: 58,
-    borderRadius: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 18,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    borderTopWidth: 2,
-    borderLeftWidth: 1.5,
-    borderRightWidth: 1,
-    borderBottomWidth: 3.5,
-    borderTopColor: 'rgba(255, 255, 255, 0.85)',
-    borderLeftColor: 'rgba(255, 255, 255, 0.65)',
-    borderRightColor: 'rgba(0, 0, 0, 0.08)',
-    borderBottomColor: 'rgba(0, 0, 0, 0.15)',
-    shadowColor: '#1E1B4B',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.16,
-    shadowRadius: 10,
-    elevation: 4
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2
   },
   actionLabel: {
-    color: '#FFFFFF',
     fontSize: 11,
     fontWeight: '700',
-    marginTop: 8,
-    letterSpacing: 0.2
+    marginTop: 7,
+    letterSpacing: 0.1
   }
 });

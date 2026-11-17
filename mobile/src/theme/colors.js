@@ -1,67 +1,52 @@
 export const palette = {
-  // Light Theme: Tactile Clay Lilac & Executive Porcelain (Reference Dribbble / Claymorphism Standard)
+  // Light Theme: Unified Executive Ceramic Slate (Apple / Revolut / Stripe Financial Standard)
   light: {
     name: 'light',
-    // Executive Brand Canvas
-    brandViolet: '#6C52EE',          // Vibrant Purple/Lilac Canvas
-    brandVioletDark: '#563CC5',      // Deep Lilac
-    brandVioletLight: '#856EFF',     // Soft Lilac Highlight
-    brandVioletDeep: '#3F2B96',
+    // Universal Unified Canvas
+    background: '#F8FAFC',           // Entire screen background (Consistent top to bottom)
+    sheetBackground: '#F8FAFC',      // Seamless matching sheet
+    topHeaderBg: '#F8FAFC',
     
-    // Backgrounds & Surfaces
-    background: '#6C52EE',           // Top header canvas
-    sheetBackground: '#F8F9FD',      // Pristine porcelain ceramic
-    surface: '#FFFFFF',              // Pure pristine white card
-    surfaceSubtle: '#F3F4F8',        // Soft tactile mist
-    surfaceHover: '#EBEFF5',
-    border: '#E8ECF2',               // Hairline soft border
-    borderSubtle: '#F1F4F8',
+    // Elevated Cards & Surfaces
+    surface: '#FFFFFF',              // Pure crisp elevated white card
+    surfaceSubtle: '#F1F5F9',        // Soft tactile mist
+    surfaceHover: '#E2E8F0',
+    border: '#E2E8F0',               // Hairline crisp border
+    borderSubtle: '#F1F5F9',
+    
+    // Executive Balance Card (Hero Obsidian Navy)
+    brandCard: '#0F172A',            // Midnight Obsidian Card
+    brandCardHighlight: '#1E293B',
+    brandCardBorder: 'rgba(255, 255, 255, 0.12)',
     
     // Typography
-    text: '#1E1B4B',                 // Deep slate purple
+    text: '#0F172A',                 // Deep obsidian slate
     textWhite: '#FFFFFF',
-    textSecondary: '#64748B',
+    textSecondary: '#475569',
     textTertiary: '#94A3B8',
     textMuted: '#CBD5E1',
     
-    primary: '#6C52EE',
-    primaryDark: '#563CC5',
-    primaryLight: 'rgba(108, 82, 238, 0.08)',
+    // Brand Accent
+    primary: '#4F46E5',              // Royal Indigo
+    primaryDark: '#3730A3',
+    primaryLight: 'rgba(79, 70, 229, 0.08)',
     
-    // Professional Financial Action Tiles (Squircle Clay Badges)
-    tileMint: '#10B981',
-    tileMintBg: '#D1FAE5',
-    tileMintBorder: '#A7F3D0',
-    
-    tileCoral: '#F43F5E',
-    tileCoralBg: '#FFE4E6',
-    tileCoralBorder: '#FECDD3',
-    
-    tileViolet: '#8B5CF6',
-    tileVioletBg: '#EDE9FE',
-    tileVioletBorder: '#DDD6FE',
-    
-    tileCyan: '#06B6D4',
-    tileCyanBg: '#CFFAFE',
-    tileCyanBorder: '#BAE6FD',
-    tileCyanBorder: '#BAE6FD',
-    
-    // Status colors
-    income: '#059669',               // Emerald
-    incomeDark: '#047857',
-    incomeLight: 'rgba(5, 150, 105, 0.08)',
+    // Financial Metrics
+    income: '#10B981',               // Emerald Mint
+    incomeDark: '#059669',
+    incomeLight: 'rgba(16, 185, 129, 0.08)',
     incomeSurface: '#ECFDF5',
     incomeBorder: '#A7F3D0',
     
-    expense: '#E11D48',              // Crimson Rose
-    expenseDark: '#9F1239',
-    expenseLight: 'rgba(225, 29, 72, 0.08)',
-    expenseSurface: '#FFF1F2',
+    expense: '#EF4444',              // Crimson Rose
+    expenseDark: '#DC2626',
+    expenseLight: 'rgba(239, 68, 68, 0.08)',
+    expenseSurface: '#FEF2F2',
     expenseBorder: '#FECDD3',
     
-    warning: '#D97706',              // Amber
-    warningDark: '#92400E',
-    warningLight: 'rgba(217, 119, 6, 0.08)',
+    warning: '#F59E0B',              // Amber Caution
+    warningDark: '#D97706',
+    warningLight: 'rgba(245, 158, 11, 0.08)',
     warningSurface: '#FFFBEB',
     warningBorder: '#FDE68A',
     
@@ -69,32 +54,48 @@ export const palette = {
     infoDark: '#0369A1',
     infoLight: 'rgba(2, 132, 199, 0.08)',
     
-    shadow: '#0F172A',
-    cardShadow: '#64748B',
+    // Action Tiles
+    tileMint: '#10B981',
+    tileMintBg: '#ECFDF5',
+    tileMintBorder: '#A7F3D0',
     
-    // Sleek, refined tactile elevation
-    clayBorderTop: '#FFFFFF',
-    clayBorderLeft: '#FFFFFF',
-    clayBorderRight: '#E2E8F0',
-    clayBorderBottom: '#E2E8F0',
-    clayShadowColor: '#0F172A'
+    tileCoral: '#EF4444',
+    tileCoralBg: '#FEF2F2',
+    tileCoralBorder: '#FECDD3',
+    
+    tileViolet: '#4F46E5',
+    tileVioletBg: '#EEF2FF',
+    tileVioletBorder: '#C7D2FE',
+    
+    tileCyan: '#0284C7',
+    tileCyanBg: '#F0F9FF',
+    tileCyanBorder: '#BAE6FD',
+    
+    // Bottom Dock
+    dockBg: '#0F172A',
+    dockActive: '#4F46E5',
+    dockInactive: '#94A3B8',
+    
+    shadow: '#0F172A',
+    cardShadow: '#64748B'
   },
 
-  // Dark Theme: Midnight Obsidian & Luminous Indigo (Linear / Mercury Dark Standard)
+  // Dark Theme: Midnight Obsidian & Luminous Sapphire (Linear / Mercury Dark Standard)
   dark: {
     name: 'dark',
-    brandViolet: '#3730A3',
-    brandVioletDark: '#1E1B4B',
-    brandVioletLight: '#4F46E5',
-    brandVioletDeep: '#0F0E1E',
+    background: '#0B0F19',           // Seamless Midnight Obsidian
+    sheetBackground: '#0B0F19',
+    topHeaderBg: '#0B0F19',
     
-    background: '#0B0F19',
-    sheetBackground: '#0F172A',
-    surface: '#1E293B',
-    surfaceSubtle: '#334155',
-    surfaceHover: '#475569',
+    surface: '#1E293B',              // Elevated Slate Card
+    surfaceSubtle: '#161F30',
+    surfaceHover: '#334155',
     border: '#334155',
     borderSubtle: '#1E293B',
+    
+    brandCard: '#111827',            // Midnight Card with subtle rim
+    brandCardHighlight: '#1F2937',
+    brandCardBorder: 'rgba(255, 255, 255, 0.15)',
     
     text: '#F8FAFC',
     textWhite: '#FFFFFF',
@@ -102,91 +103,87 @@ export const palette = {
     textTertiary: '#64748B',
     textMuted: '#475569',
     
-    primary: '#6366F1',
+    primary: '#6366F1',              // Luminous Indigo
     primaryDark: '#4F46E5',
     primaryLight: 'rgba(99, 102, 241, 0.15)',
     
-    tileMint: '#10B981',
-    tileMintBg: '#064E3B',
-    tileMintBorder: '#047857',
+    income: '#34D399',               // Neon Mint
+    incomeDark: '#10B981',
+    incomeLight: 'rgba(52, 211, 153, 0.12)',
+    incomeSurface: 'rgba(52, 211, 153, 0.10)',
+    incomeBorder: 'rgba(52, 211, 153, 0.3)',
     
-    tileCoral: '#F43F5E',
-    tileCoralBg: '#881337',
-    tileCoralBorder: '#BE123C',
+    expense: '#FB7185',              // Neon Rose
+    expenseDark: '#F43F5E',
+    expenseLight: 'rgba(251, 113, 133, 0.12)',
+    expenseSurface: 'rgba(251, 113, 133, 0.10)',
+    expenseBorder: 'rgba(251, 113, 133, 0.3)',
     
-    tileViolet: '#818CF8',
-    tileVioletBg: '#312E81',
-    tileVioletBorder: '#4338CA',
-    
-    tileCyan: '#38BDF8',
-    tileCyanBg: '#0C4A6E',
-    tileCyanBorder: '#0284C7',
-    
-    income: '#10B981',
-    incomeDark: '#047857',
-    incomeLight: 'rgba(16, 185, 129, 0.15)',
-    incomeSurface: '#064E3B',
-    incomeBorder: '#047857',
-    
-    expense: '#F43F5E',
-    expenseDark: '#BE123C',
-    expenseLight: 'rgba(244, 63, 94, 0.15)',
-    expenseSurface: '#881337',
-    expenseBorder: '#BE123C',
-    
-    warning: '#F59E0B',
-    warningDark: '#B45309',
-    warningLight: 'rgba(245, 158, 11, 0.15)',
-    warningSurface: '#78350F',
-    warningBorder: '#92400E',
+    warning: '#FBBF24',
+    warningDark: '#F59E0B',
+    warningLight: 'rgba(251, 191, 36, 0.12)',
+    warningSurface: 'rgba(251, 191, 36, 0.10)',
+    warningBorder: 'rgba(251, 191, 36, 0.3)',
     
     info: '#38BDF8',
     infoDark: '#0284C7',
-    infoLight: 'rgba(56, 189, 248, 0.15)',
+    infoLight: 'rgba(56, 189, 248, 0.12)',
+    
+    tileMint: '#34D399',
+    tileMintBg: 'rgba(52, 211, 153, 0.12)',
+    tileMintBorder: 'rgba(52, 211, 153, 0.25)',
+    
+    tileCoral: '#FB7185',
+    tileCoralBg: 'rgba(251, 113, 133, 0.12)',
+    tileCoralBorder: 'rgba(251, 113, 133, 0.25)',
+    
+    tileViolet: '#818CF8',
+    tileVioletBg: 'rgba(129, 140, 248, 0.12)',
+    tileVioletBorder: 'rgba(129, 140, 248, 0.25)',
+    
+    tileCyan: '#38BDF8',
+    tileCyanBg: 'rgba(56, 189, 248, 0.12)',
+    tileCyanBorder: 'rgba(56, 189, 248, 0.25)',
+    
+    dockBg: '#111827',
+    dockActive: '#6366F1',
+    dockInactive: '#64748B',
     
     shadow: '#000000',
-    cardShadow: '#000000',
-    
-    clayBorderTop: 'rgba(255, 255, 255, 0.12)',
-    clayBorderLeft: 'rgba(255, 255, 255, 0.08)',
-    clayBorderRight: 'rgba(0, 0, 0, 0.3)',
-    clayBorderBottom: 'rgba(0, 0, 0, 0.4)',
-    clayShadowColor: '#000000'
+    cardShadow: '#000000'
   }
 };
 
-export const categoryColors = {
-  Food: { bg: '#FFF1F2', darkBg: '#38161E', color: '#E11D48', darkColor: '#FB7185', icon: 'restaurant-outline' },
-  Bills: { bg: '#EEF2FF', darkBg: '#251D42', color: '#4F46E5', darkColor: '#818CF8', icon: 'receipt-outline' },
-  Travel: { bg: '#ECFDF5', darkBg: '#0F2C29', color: '#059669', darkColor: '#34D399', icon: 'car-outline' },
-  Shopping: { bg: '#FDF2F8', darkBg: '#351629', color: '#DB2777', darkColor: '#F472B6', icon: 'bag-handle-outline' },
-  Health: { bg: '#ECFDF5', darkBg: '#0E2F23', color: '#059669', darkColor: '#34D399', icon: 'medkit-outline' },
-  Entertainment: { bg: '#FAF5FF', darkBg: '#2D1B44', color: '#7C3AED', darkColor: '#A78BFA', icon: 'film-outline' },
-  Education: { bg: '#FEFCE8', darkBg: '#332E0E', color: '#CA8A04', darkColor: '#FACC15', icon: 'book-outline' },
-  General: { bg: '#F1F5F9', darkBg: '#1E2333', color: '#475569', darkColor: '#94A3B8', icon: 'pricetag-outline' }
-};
-
-// Professional Clean Tactile Style Generators
-export const getClayCard = (theme = 'light') => {
-  const c = palette[theme] || palette.light;
+export const getClayCard = (themeMode = 'light') => {
+  const isDark = themeMode === 'dark';
   return {
-    backgroundColor: c.surface,
-    borderRadius: 20,
+    backgroundColor: isDark ? '#1E293B' : '#FFFFFF',
+    borderColor: isDark ? '#334155' : '#E2E8F0',
     borderWidth: 1,
-    borderColor: c.border,
-    shadowColor: c.shadow,
+    shadowColor: isDark ? '#000000' : '#0F172A',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: theme === 'dark' ? 0.35 : 0.06,
+    shadowOpacity: isDark ? 0.35 : 0.06,
     shadowRadius: 12,
     elevation: 3
   };
 };
 
-export const getClayButton = (theme = 'light', baseColor = '#4F46E5', bottomColor = '#3730A3') => {
+export const getClayButton = (themeMode = 'light', variant = 'primary') => {
+  const isDark = themeMode === 'dark';
+  let bg = isDark ? '#6366F1' : '#4F46E5';
+  let shadow = isDark ? '#4F46E5' : '#3730A3';
+  
+  if (variant === 'income') {
+    bg = isDark ? '#059669' : '#10B981';
+    shadow = '#047857';
+  } else if (variant === 'expense') {
+    bg = isDark ? '#E11D48' : '#EF4444';
+    shadow = '#BE123C';
+  }
+  
   return {
-    backgroundColor: baseColor,
-    borderRadius: 14,
-    shadowColor: baseColor,
+    backgroundColor: bg,
+    shadowColor: shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 8,
@@ -194,31 +191,30 @@ export const getClayButton = (theme = 'light', baseColor = '#4F46E5', bottomColo
   };
 };
 
-export const getClayPill = (theme = 'light') => {
-  const c = palette[theme] || palette.light;
+export const getClayInput = (themeMode = 'light') => {
+  const isDark = themeMode === 'dark';
   return {
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: c.border,
-    shadowColor: c.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: theme === 'dark' ? 0.2 : 0.04,
-    shadowRadius: 4,
-    elevation: 1
+    backgroundColor: isDark ? '#161F30' : '#F8FAFC',
+    borderColor: isDark ? '#334155' : '#E2E8F0',
+    borderWidth: 1
   };
 };
 
-export const getClayInput = (theme = 'light') => {
-  const c = palette[theme] || palette.light;
+export const getClayPill = (themeMode = 'light') => {
+  const isDark = themeMode === 'dark';
   return {
-    backgroundColor: c.surface,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: c.border,
-    shadowColor: c.shadow,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 2,
-    elevation: 1
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: isDark ? '#334155' : '#E2E8F0'
   };
+};
+
+export const categoryColors = {
+  Food: { color: '#EF4444', bg: '#FEF2F2', icon: 'fast-food' },
+  Bills: { color: '#F59E0B', bg: '#FFFBEB', icon: 'flash' },
+  Travel: { color: '#0284C7', bg: '#F0F9FF', icon: 'car-sport' },
+  Shopping: { color: '#8B5CF6', bg: '#F5F3FF', icon: 'bag-handle' },
+  Health: { color: '#10B981', bg: '#ECFDF5', icon: 'medkit' },
+  Entertainment: { color: '#EC4899', bg: '#FDF2F8', icon: 'game-controller' },
+  General: { color: '#64748B', bg: '#F1F5F9', icon: 'cube' }
 };
