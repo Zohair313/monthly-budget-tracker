@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette, getClayCard, getClayPill } from '../theme/colors';
+import { palette, getClayCard } from '../theme/colors';
 
 const formatCurrency = (amount) => {
   const num = Number(amount) || 0;
@@ -15,7 +15,6 @@ export default function MonthComparisonCard() {
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
   const clayCard = getClayCard(themeMode);
-  const clayPill = getClayPill(themeMode);
 
   const comparison = summary.comparison_with_prev_month;
   if (!comparison) return null;
@@ -31,34 +30,63 @@ export default function MonthComparisonCard() {
 
   const trendColor = isIncrease ? colors.expense : (isZero ? colors.textSecondary : colors.income);
   const trendBg = isIncrease ? colors.expenseLight : (isZero ? colors.surfaceSubtle : colors.incomeLight);
-  const trendBorderBottom = isIncrease ? colors.expenseDark : (isZero ? colors.clayBorderBottom : colors.incomeDark);
   const iconName = isIncrease ? 'trending-up' : (isZero ? 'remove' : 'trending-down');
 
   return (
-    <View style={[styles.container, clayCard]}>
-      <View style={styles.contentRow}>
-        <View style={styles.leftInfo}>
-          <Text style={[styles.overline, { color: colors.textSecondary }]}>
-            PREVIOUS MONTH COMPARISON
-          </Text>
-          <Text style={[styles.subtitle, { color: colors.textTertiary }]}>
-            Previous Expense: <Text style={{ color: colors.text, fontWeight: '800' }}>{formatCurrency(prevExpense)}</Text>
-          </Text>
+    <View
+      style={[
+        styles.container,
+        clayCard,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          borderWidth: 1.5
+        }
+      ]}
+    >
+      <View style={styles.cardTouch}>
+        <View style={styles.cardLeft}>
+          {/* Uniform 46x46 Squircle Violet Coin */}
+          <View
+            style={[
+              styles.iconCoin,
+              {
+                backgroundColor: isIncrease ? colors.expenseLight : colors.incomeLight,
+                borderColor: isIncrease ? colors.expenseBorder : colors.incomeBorder
+              }
+            ]}
+          >
+            <Ionicons name={iconName} size={22} color={trendColor} />
+          </View>
+
+          <View style={styles.cardTextGroup}>
+            <View style={styles.titleRow}>
+              <Text style={[styles.cardTitle, { color: colors.text }]}>Previous Month</Text>
+              <View
+                style={[
+                  styles.badgePill,
+                  {
+                    backgroundColor: trendBg,
+                    borderColor: trendColor
+                  }
+                ]}
+              >
+                <Text style={[styles.badgeText, { color: trendColor }]}>
+                  {isIncrease ? `+${changePercent}%` : `${changePercent}%`}
+                </Text>
+              </View>
+            </View>
+
+            <Text style={[styles.cardSubtitle, { color: colors.textSecondary }]} numberOfLines={1}>
+              Last Month's Spending
+            </Text>
+          </View>
         </View>
 
-        <View
-          style={[
-            styles.trendPill,
-            clayPill,
-            {
-              backgroundColor: trendBg,
-              borderBottomColor: trendBorderBottom
-            }
-          ]}
-        >
-          <Ionicons name={iconName} size={15} color={trendColor} />
-          <Text style={[styles.trendText, { color: trendColor }]}>
-            {isIncrease ? `+${changePercent}%` : `${changePercent}%`}
+        {/* Right: Amount */}
+        <View style={styles.cardRight}>
+          <Text style={[styles.amountText, { color: colors.text }]}>
+            {formatCurrency(prevExpense)}
           </Text>
         </View>
       </View>
@@ -68,37 +96,68 @@ export default function MonthComparisonCard() {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
-    marginTop: 10,
-    padding: 16
+    width: '100%',
+    borderRadius: 20,
+    marginBottom: 12,
+    overflow: 'hidden'
   },
-  contentRow: {
+  cardTouch: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    minHeight: 74
   },
-  leftInfo: {
+  cardLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 12
+  },
+  iconCoin: {
+    width: 46,
+    height: 46,
+    borderRadius: 15,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  cardTextGroup: {
     flex: 1
   },
-  overline: {
-    fontSize: 10,
-    fontWeight: '900',
-    letterSpacing: 0.8,
-    marginBottom: 4
-  },
-  subtitle: {
-    fontSize: 12,
-    fontWeight: '600'
-  },
-  trendPill: {
+  titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 5
+    gap: 6
   },
-  trendText: {
+  cardTitle: {
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: -0.2
+  },
+  badgePill: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 8,
+    borderWidth: 1
+  },
+  badgeText: {
+    fontSize: 9,
+    fontWeight: '800'
+  },
+  cardSubtitle: {
     fontSize: 12,
-    fontWeight: '900'
+    fontWeight: '500',
+    marginTop: 3
+  },
+  cardRight: {
+    alignItems: 'flex-end',
+    justifyContent: 'center'
+  },
+  amountText: {
+    fontSize: 16,
+    fontWeight: '900',
+    letterSpacing: -0.4
   }
 });

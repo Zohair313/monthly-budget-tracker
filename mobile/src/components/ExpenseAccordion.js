@@ -15,7 +15,7 @@ import {
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette, getClayCard, getClayButton, getClayInput, getClayPill } from '../theme/colors';
+import { palette, getClayCard, getClayInput, getClayPill } from '../theme/colors';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -46,8 +46,8 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
   const { summary, expenses, addExpense, deleteExpense, selectedMonth, selectedYear } = useBudget();
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
+  const isDark = themeMode === 'dark';
   const clayCard = getClayCard(themeMode);
-  const clayPill = getClayPill(themeMode);
   const clayInput = getClayInput(themeMode);
 
   // Form State
@@ -59,13 +59,12 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
   const [deletingId, setDeletingId] = useState(null);
   const [showForm, setShowForm] = useState(true);
 
-  // Chevron rotation animation
   const rotateAnim = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
 
   useEffect(() => {
     Animated.timing(rotateAnim, {
       toValue: isExpanded ? 1 : 0,
-      duration: 300,
+      duration: 250,
       useNativeDriver: true
     }).start();
   }, [isExpanded]);
@@ -94,7 +93,6 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
 
     setIsAdding(true);
     try {
-      // Build date for currently selected month
       const today = new Date();
       const currentYear = today.getFullYear();
       const currentMonth = today.getMonth() + 1;
@@ -156,7 +154,6 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
   };
 
   const totalExpense = summary.total_expense || 0;
-  const totalIncome = summary.total_income || 0;
   const burnRate = summary.burn_rate_percent || 0;
   const isOverBudget = summary.remaining_balance !== undefined ? summary.remaining_balance < 0 : false;
   const isBudgetAlert = summary.is_budget_alert || burnRate >= 80;
@@ -167,12 +164,13 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
         styles.container,
         clayCard,
         {
+          backgroundColor: colors.surface,
           borderColor: isExpanded ? colors.expense : colors.border,
-          borderWidth: isExpanded ? 1.5 : 1
+          borderWidth: 1.5
         }
       ]}
     >
-      {/* Accordion Header (Clickable) */}
+      {/* Accordion Header (Clickable) - Exact 74px Matching Height */}
       <TouchableOpacity
         style={styles.headerTouch}
         onPress={handleToggle}
@@ -180,14 +178,13 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
         accessibilityLabel="Toggle Monthly Expense Accordion"
       >
         <View style={styles.headerLeft}>
-          {/* 3D Coral/Rose Clay Icon Coin */}
+          {/* Uniform 46x46 Squircle Coral Coin */}
           <View
             style={[
               styles.iconCoin,
               {
-                backgroundColor: colors.expenseSurface,
-                borderColor: colors.expenseBorder,
-                borderTopColor: 'rgba(255, 255, 255, 0.8)'
+                backgroundColor: colors.expenseLight,
+                borderColor: colors.expenseBorder
               }
             ]}
           >
@@ -200,7 +197,6 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
               <View
                 style={[
                   styles.badgePill,
-                  clayPill,
                   {
                     backgroundColor: isOverBudget ? '#FFE4E6' : (isBudgetAlert ? '#FEF3C7' : colors.expenseLight),
                     borderColor: isOverBudget ? '#FDA4AF' : (isBudgetAlert ? '#FDE68A' : colors.expenseBorder)
@@ -218,7 +214,7 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
               </View>
             </View>
 
-            <Text style={[styles.accordionSubtitle, { color: colors.textSecondary }]}>
+            <Text style={[styles.accordionSubtitle, { color: colors.textSecondary }]} numberOfLines={1}>
               {MONTH_NAMES[selectedMonth - 1]} {selectedYear} • {burnRate}% of income
             </Text>
           </View>
@@ -268,24 +264,23 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
           </View>
 
           {/* Tab Switcher: Add Form vs Expense List */}
-          <View style={styles.tabSwitcher}>
+          <View style={[styles.tabSwitcher, { backgroundColor: colors.surfaceSubtle }]}>
             <TouchableOpacity
               style={[
                 styles.tabBtn,
-                showForm && styles.tabBtnActive,
-                showForm && { backgroundColor: colors.primary }
+                showForm && [styles.tabBtnActive, { backgroundColor: colors.surface }]
               ]}
               onPress={() => setShowForm(true)}
             >
               <Ionicons
                 name="add-circle"
                 size={16}
-                color={showForm ? '#FFFFFF' : colors.textSecondary}
+                color={showForm ? colors.primary : colors.textSecondary}
               />
               <Text
                 style={[
                   styles.tabBtnText,
-                  { color: showForm ? '#FFFFFF' : colors.textSecondary }
+                  { color: showForm ? colors.primary : colors.textSecondary, fontWeight: showForm ? '800' : '600' }
                 ]}
               >
                 + Add Expense
@@ -295,20 +290,19 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
             <TouchableOpacity
               style={[
                 styles.tabBtn,
-                !showForm && styles.tabBtnActive,
-                !showForm && { backgroundColor: colors.primary }
+                !showForm && [styles.tabBtnActive, { backgroundColor: colors.surface }]
               ]}
               onPress={() => setShowForm(false)}
             >
               <Ionicons
                 name="list"
                 size={16}
-                color={!showForm ? '#FFFFFF' : colors.textSecondary}
+                color={!showForm ? colors.primary : colors.textSecondary}
               />
               <Text
                 style={[
                   styles.tabBtnText,
-                  { color: !showForm ? '#FFFFFF' : colors.textSecondary }
+                  { color: !showForm ? colors.primary : colors.textSecondary, fontWeight: !showForm ? '800' : '600' }
                 ]}
               >
                 View Items ({expenses.length})
@@ -323,7 +317,7 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>
                 EXPENSE TITLE / DESCRIPTION
               </Text>
-              <View style={[styles.inputRow, clayInput]}>
+              <View style={[styles.inputRow, clayInput, { backgroundColor: colors.surfaceSubtle }]}>
                 <Ionicons name="pricetag-outline" size={18} color={colors.textTertiary} />
                 <TextInput
                   style={[styles.textInput, { color: colors.text }]}
@@ -335,13 +329,13 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
               </View>
 
               {/* Expense Amount Input */}
-              <Text style={[styles.inputLabel, { color: colors.textSecondary, marginTop: 12 }]}>
+              <Text style={[styles.inputLabel, { color: colors.textSecondary, marginTop: 10 }]}>
                 AMOUNT (PKR)
               </Text>
-              <View style={[styles.inputRow, clayInput]}>
+              <View style={[styles.inputRow, clayInput, { backgroundColor: colors.surfaceSubtle }]}>
                 <Text style={[styles.currencyPrefix, { color: colors.expense }]}>Rs.</Text>
                 <TextInput
-                  style={[styles.textInput, { color: colors.text }]}
+                  style={[styles.textInput, { color: colors.text, fontWeight: '700' }]}
                   keyboardType="numeric"
                   placeholder="1200"
                   placeholderTextColor={colors.textTertiary}
@@ -350,8 +344,8 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
                 />
               </View>
 
-              {/* Category Pills */}
-              <Text style={[styles.inputLabel, { color: colors.textSecondary, marginTop: 12 }]}>
+              {/* Category Pills: Equal 4x2 Grid */}
+              <Text style={[styles.inputLabel, { color: colors.textSecondary, marginTop: 10 }]}>
                 SELECT CATEGORY
               </Text>
               <View style={styles.categoryWrap}>
@@ -363,8 +357,8 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
                       style={[
                         styles.categoryChip,
                         {
-                          backgroundColor: isSelected ? cat.bg : colors.surfaceSubtle,
-                          borderColor: isSelected ? cat.color : colors.border,
+                          backgroundColor: isSelected ? cat.color : colors.surfaceSubtle,
+                          borderColor: isSelected ? cat.color : (isDark ? '#334155' : '#E2E8F0'),
                           borderWidth: isSelected ? 1.5 : 1
                         }
                       ]}
@@ -374,16 +368,17 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
                       <Ionicons
                         name={cat.icon}
                         size={15}
-                        color={isSelected ? cat.color : colors.textSecondary}
+                        color={isSelected ? '#FFFFFF' : cat.color}
                       />
                       <Text
                         style={[
                           styles.categoryChipText,
                           {
-                            color: isSelected ? cat.color : colors.textSecondary,
-                            fontWeight: isSelected ? '700' : '500'
+                            color: isSelected ? '#FFFFFF' : colors.text,
+                            fontWeight: isSelected ? '800' : '600'
                           }
                         ]}
+                        numberOfLines={1}
                       >
                         {cat.label}
                       </Text>
@@ -449,7 +444,9 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
                 </View>
               ) : (
                 expenses.map((item) => {
-                  const catConfig = CATEGORIES.find(c => c.id === item.category) || CATEGORIES[6];
+                  const catMatch = CATEGORIES.find(c => c.id.toLowerCase() === (item.category || '').toLowerCase());
+                  const catColor = catMatch ? catMatch.color : colors.primary;
+                  const catIcon = catMatch ? catMatch.icon : 'pricetag';
                   const isDeleting = deletingId === item.id;
 
                   return (
@@ -457,46 +454,44 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
                       key={item.id}
                       style={[
                         styles.expenseItemRow,
-                        { backgroundColor: colors.surfaceSubtle, borderColor: colors.border }
+                        {
+                          backgroundColor: colors.surfaceSubtle,
+                          borderColor: colors.border
+                        }
                       ]}
                     >
-                      {/* Icon */}
-                      <View style={[styles.itemIconBox, { backgroundColor: catConfig.bg }]}>
-                        <Ionicons name={catConfig.icon} size={18} color={catConfig.color} />
+                      <View style={[styles.itemIconBox, { backgroundColor: catColor + '18' }]}>
+                        <Ionicons name={catIcon} size={18} color={catColor} />
                       </View>
 
-                      {/* Title & Date */}
-                      <View style={styles.itemMeta}>
+                      <View style={styles.itemInfo}>
                         <Text style={[styles.itemTitle, { color: colors.text }]} numberOfLines={1}>
-                          {item.title || item.name}
+                          {item.name || item.title || 'Expense'}
                         </Text>
-                        <Text style={[styles.itemDate, { color: colors.textTertiary }]}>
-                          {item.date} • {item.category}
+                        <Text style={[styles.itemMeta, { color: colors.textTertiary }]}>
+                          {item.category} • {item.date ? item.date.split('T')[0] : 'Today'}
                         </Text>
                       </View>
 
-                      {/* Amount & Actions */}
-                      <View style={styles.itemRightWrap}>
+                      <View style={styles.itemRight}>
                         <Text style={[styles.itemAmount, { color: colors.expense }]}>
                           -{formatCurrency(item.amount)}
                         </Text>
 
                         <View style={styles.itemActions}>
-                          {onEditExpense && (
-                            <TouchableOpacity
-                              style={styles.actionIconBtn}
-                              onPress={() => onEditExpense(item)}
-                              accessibilityLabel="Edit expense"
-                            >
-                              <Ionicons name="pencil" size={14} color={colors.primary} />
-                            </TouchableOpacity>
-                          )}
+                          <TouchableOpacity
+                            onPress={() => onEditExpense && onEditExpense(item)}
+                            style={styles.actionBtn}
+                            accessibilityLabel={`Edit ${item.name}`}
+                          >
+                            <Ionicons name="pencil-outline" size={15} color={colors.primary} />
+                          </TouchableOpacity>
 
                           <TouchableOpacity
-                            style={styles.actionIconBtn}
-                            onPress={() => handleDeleteExpense(item.id, item.title)}
+                            onPress={() => handleDeleteExpense(item.id, item.name || item.title)}
+                            style={styles.actionBtn}
                             disabled={isDeleting}
-                            accessibilityLabel="Delete expense"
+                            accessibilityLabel={`Delete ${item.name}`}
                           >
                             {isDeleting ? (
                               <ActivityIndicator size="small" color={colors.expense} />
@@ -520,41 +515,32 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 22,
-    marginBottom: 14,
-    overflow: 'hidden',
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.08,
-    shadowRadius: 14,
-    elevation: 4
+    width: '100%',
+    borderRadius: 20,
+    marginBottom: 12,
+    overflow: 'hidden'
   },
   headerTouch: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 18,
-    paddingVertical: 16
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    minHeight: 74
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    gap: 14
+    gap: 12
   },
   iconCoin: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 46,
+    height: 46,
+    borderRadius: 15,
+    borderWidth: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1.5,
-    shadowColor: '#E11D48',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 2
+    justifyContent: 'center'
   },
   headerTextGroup: {
     flex: 1
@@ -562,45 +548,41 @@ const styles = StyleSheet.create({
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    flexWrap: 'wrap'
+    gap: 6
   },
   accordionTitle: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '800',
     letterSpacing: -0.2
   },
   badgePill: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 8,
     borderWidth: 1
   },
   badgeText: {
-    fontSize: 10,
-    fontWeight: '700',
-    textTransform: 'uppercase'
+    fontSize: 9,
+    fontWeight: '800'
   },
   accordionSubtitle: {
     fontSize: 12,
     fontWeight: '500',
-    marginTop: 2
+    marginTop: 3
   },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10
+    gap: 8
   },
   amountText: {
-    fontSize: 15,
-    fontWeight: '800',
-    letterSpacing: -0.3
+    fontSize: 16,
+    fontWeight: '900',
+    letterSpacing: -0.4
   },
   expandedContent: {
-    paddingHorizontal: 18,
-    paddingBottom: 20,
-    paddingTop: 12,
-    borderTopWidth: 1
+    borderTopWidth: 1,
+    padding: 16
   },
   budgetStatusBar: {
     padding: 12,
@@ -634,7 +616,6 @@ const styles = StyleSheet.create({
   },
   tabSwitcher: {
     flexDirection: 'row',
-    backgroundColor: '#F1F5F9',
     borderRadius: 12,
     padding: 3,
     marginBottom: 16
@@ -651,36 +632,34 @@ const styles = StyleSheet.create({
   tabBtnActive: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.12,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2
   },
   tabBtnText: {
-    fontSize: 12,
-    fontWeight: '700'
+    fontSize: 12
   },
   formSection: {
     marginTop: 2
   },
   inputLabel: {
     fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.5,
+    fontWeight: '800',
+    letterSpacing: 0.6,
     marginBottom: 6
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 14,
-    borderWidth: 1,
     paddingHorizontal: 14,
     height: 48,
-    gap: 8,
-    backgroundColor: '#F8FAFC'
+    borderRadius: 14,
+    borderWidth: 1,
+    gap: 8
   },
   currencyPrefix: {
     fontSize: 15,
-    fontWeight: '700'
+    fontWeight: '800'
   },
   textInput: {
     flex: 1,
@@ -720,11 +699,12 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   saveBtn: {
+    width: '100%',
+    height: 48,
+    borderRadius: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 46,
-    borderRadius: 14,
     gap: 8,
     shadowColor: '#E11D48',
     shadowOffset: { width: 0, height: 4 },
@@ -735,7 +715,7 @@ const styles = StyleSheet.create({
   saveBtnText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '700'
+    fontWeight: '800'
   },
   itemsListContainer: {
     marginTop: 4
@@ -751,9 +731,7 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   emptyItemsSub: {
-    fontSize: 12,
-    textAlign: 'center',
-    paddingHorizontal: 20
+    fontSize: 12
   },
   expenseItemRow: {
     flexDirection: 'row',
@@ -767,35 +745,35 @@ const styles = StyleSheet.create({
   itemIconBox: {
     width: 38,
     height: 38,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center'
   },
-  itemMeta: {
+  itemInfo: {
     flex: 1
   },
   itemTitle: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '700'
   },
-  itemDate: {
+  itemMeta: {
     fontSize: 11,
     marginTop: 2
   },
-  itemRightWrap: {
+  itemRight: {
     alignItems: 'flex-end',
     gap: 4
   },
   itemAmount: {
-    fontSize: 13,
-    fontWeight: '700'
+    fontSize: 14,
+    fontWeight: '800'
   },
   itemActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8
+    gap: 6
   },
-  actionIconBtn: {
+  actionBtn: {
     padding: 4
   }
 });
