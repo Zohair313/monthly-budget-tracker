@@ -419,11 +419,15 @@ const styles = StyleSheet.create({
   presetRow: {
     flexDirection: 'row',
     gap: 8,
+    justifyContent: 'space-between',
     marginVertical: 4
   },
   presetChip: {
-    paddingHorizontal: 10,
-    paddingVertical: 6
+    flex: 1,
+    height: 38,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12
   },
   presetText: {
     fontSize: 11,

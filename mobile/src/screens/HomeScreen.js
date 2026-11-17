@@ -99,12 +99,8 @@ export default function HomeScreen() {
       >
         {/* 2. Executive Balance Card & Action Tiles */}
         <SummaryCards
-          onOpenSetIncome={() => {
-            setExpandedAccordion(prev => (prev === 'income' ? null : 'income'));
-          }}
-          onOpenAddExpense={() => {
-            setExpandedAccordion(prev => (prev === 'expense' ? null : 'expense'));
-          }}
+          onOpenSetIncome={() => setShowSetIncome(true)}
+          onOpenAddExpense={() => setShowAddExpense(true)}
           onToggleCategoryBreakdown={() => setShowCharts(!showCharts)}
           onOpenExport={() => setShowExport(true)}
         />
@@ -220,7 +216,7 @@ export default function HomeScreen() {
         <TouchableOpacity
           style={[styles.dockCenterBtn, { backgroundColor: colors.primary }]}
           onPress={() => {
-            setExpandedAccordion('expense');
+            setShowAddExpense(true);
           }}
           accessibilityLabel="Add New Expense"
         >

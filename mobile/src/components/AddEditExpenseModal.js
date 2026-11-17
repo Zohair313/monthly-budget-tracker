@@ -20,42 +20,32 @@ const CATEGORIES = [
 ];
 
 const CATEGORY_ICONS = {
+  General: 'pricetag-outline',
   Food: 'restaurant-outline',
   Bills: 'receipt-outline',
   Travel: 'car-outline',
   Shopping: 'bag-handle-outline',
   Health: 'medkit-outline',
   Entertainment: 'film-outline',
-  Education: 'book-outline',
-  General: 'pricetag-outline'
+  Education: 'book-outline'
 };
 
 const CATEGORY_COLORS = {
+  General: '#64748B',
   Food: '#F59E0B',
   Bills: '#6366F1',
   Travel: '#14B8A6',
   Shopping: '#EC4899',
   Health: '#10B981',
   Entertainment: '#8B5CF6',
-  Education: '#EAB308',
-  General: '#64748B'
-};
-
-const CATEGORY_DARK_COLORS = {
-  Food: '#B45309',
-  Bills: '#4338CA',
-  Travel: '#0F766E',
-  Shopping: '#BE185D',
-  Health: '#047857',
-  Entertainment: '#6D28D9',
-  Education: '#A16207',
-  General: '#334155'
+  Education: '#EAB308'
 };
 
 export default function AddEditExpenseModal({ visible, onClose, editingExpense }) {
   const { summary, addExpense, editExpense } = useBudget();
   const { themeMode } = useAuth();
-  const colors = palette[themeMode] || palette.dark;
+  const colors = palette[themeMode] || palette.light;
+  const isDark = themeMode === 'dark';
   const clayCard = getClayCard(themeMode);
   const clayInput = getClayInput(themeMode);
   const clayPill = getClayPill(themeMode);
@@ -71,7 +61,7 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
     if (visible) {
       setErrorText('');
       if (editingExpense) {
-        setName(editingExpense.name || '');
+        setName(editingExpense.name || editingExpense.title || '');
         setAmountStr(String(editingExpense.amount || ''));
         setCategory(editingExpense.category || 'General');
         setDate(editingExpense.date ? editingExpense.date.split('T')[0] : new Date().toISOString().split('T')[0]);
@@ -84,7 +74,6 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
     }
   }, [visible, editingExpense]);
 
-  // Balance warning calculation
   const currentRemaining = summary.remaining_balance || 0;
   const numAmount = parseFloat(amountStr) || 0;
   const effectiveAvailable = editingExpense
@@ -112,6 +101,7 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
       if (editingExpense) {
         await editExpense(editingExpense.id, {
           name: name.trim(),
+          title: name.trim(),
           amount: numAmount,
           category,
           date
@@ -119,6 +109,7 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
       } else {
         await addExpense({
           name: name.trim(),
+          title: name.trim(),
           amount: numAmount,
           category,
           date
@@ -132,17 +123,13 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
     }
   };
 
-  const btnBg = editingExpense ? colors.primary : colors.expense;
-  const btnBottom = editingExpense ? colors.primaryDark : colors.expenseDark;
-  const submitButtonClay = getClayButton(themeMode, btnBg, btnBottom);
-
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.overlay}
       >
-        <View style={[styles.modalCard, clayCard]}>
+        <View style={[styles.modalCard, clayCard, { backgroundColor: colors.surface }]}>
           {/* Header */}
           <View style={styles.headerRow}>
             <View style={styles.titleWrap}>
@@ -151,45 +138,43 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
                   styles.iconWrap,
                   {
                     backgroundColor: editingExpense ? colors.primaryLight : colors.expenseLight,
-                    borderTopColor: 'rgba(255, 255, 255, 0.45)',
-                    borderBottomColor: editingExpense ? colors.primaryDark : colors.expenseDark
+                    borderColor: editingExpense ? colors.primary : colors.expense
                   }
                 ]}
               >
                 <Ionicons
-                  name={editingExpense ? 'pencil-outline' : 'add-outline'}
-                  size={20}
+                  name={editingExpense ? 'pencil-outline' : 'add-circle-outline'}
+                  size={22}
                   color={editingExpense ? colors.primary : colors.expense}
                 />
               </View>
-              <Text style={[styles.modalTitle, { color: colors.text }]}>
-                {editingExpense ? 'Edit Expense' : 'Add New Expense'}
-              </Text>
+              <View>
+                <Text style={[styles.modalTitle, { color: colors.text }]}>
+                  {editingExpense ? 'Edit Expense' : 'Add Expense'}
+                </Text>
+                <Text style={[styles.modalSubtitle, { color: colors.textSecondary }]}>
+                  Record spending in single vertical flow
+                </Text>
+              </View>
             </View>
             <TouchableOpacity
               onPress={onClose}
-              style={[
-                styles.closeBtn,
-                {
-                  backgroundColor: colors.surfaceSubtle,
-                  borderTopColor: colors.clayBorderTop,
-                  borderBottomColor: colors.clayBorderBottom
-                }
-              ]}
+              style={[styles.closeBtn, { backgroundColor: colors.surfaceSubtle }]}
+              accessibilityLabel="Close Modal"
             >
               <Ionicons name="close" size={18} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
 
           <ScrollView style={styles.formScroll} showsVerticalScrollIndicator={false}>
-            {/* Field 1: Name */}
+            {/* Field 1: Name (Full Width Box) */}
             <View style={styles.inputGroup}>
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>EXPENSE NAME</Text>
-              <View style={[styles.inputBox, clayInput]}>
+              <View style={[styles.inputBox, clayInput, { backgroundColor: colors.surfaceSubtle }]}>
                 <Ionicons name="pricetag-outline" size={18} color={colors.textTertiary} style={styles.inputIcon} />
                 <TextInput
                   style={[styles.textInput, { color: colors.text }]}
-                  placeholder="e.g. Grocery Shopping, Electric Bill"
+                  placeholder="e.g. Grocery Shopping, Electricity Bill"
                   placeholderTextColor={colors.textTertiary}
                   value={name}
                   onChangeText={setName}
@@ -198,13 +183,13 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
               </View>
             </View>
 
-            {/* Field 2: Amount */}
+            {/* Field 2: Amount (Full Width Box - Identical Size) */}
             <View style={styles.inputGroup}>
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>AMOUNT (PKR / RS)</Text>
-              <View style={[styles.inputBox, clayInput]}>
-                <Text style={[styles.currencyPrefix, { color: colors.textSecondary }]}>Rs.</Text>
+              <View style={[styles.inputBox, clayInput, { backgroundColor: colors.surfaceSubtle }]}>
+                <Text style={[styles.currencyPrefix, { color: colors.expense }]}>Rs.</Text>
                 <TextInput
-                  style={[styles.amountInput, { color: colors.expense }]}
+                  style={[styles.textInput, { color: colors.text, fontWeight: '700' }]}
                   keyboardType="numeric"
                   placeholder="0"
                   placeholderTextColor={colors.textTertiary}
@@ -222,8 +207,7 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
                   clayPill,
                   {
                     backgroundColor: colors.warningLight,
-                    borderBottomColor: colors.warningDark,
-                    borderRadius: 14
+                    borderColor: colors.warning
                   }
                 ]}
               >
@@ -233,56 +217,49 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
                     Expense Exceeds Remaining Balance
                   </Text>
                   <Text style={[styles.warningText, { color: colors.textSecondary }]}>
-                    Adding this will put your monthly budget in deficit by Rs. {deficitAmount.toLocaleString()}.
-                  </Text>
-                  <Text style={[styles.policyNotice, { color: colors.textTertiary }]}>
-                    Policy: Allowed with warning. Balance will update automatically.
+                    Adding this puts your balance in deficit by Rs. {deficitAmount.toLocaleString()}.
                   </Text>
                 </View>
               </View>
             )}
 
-            {/* Field 3: Category Chips */}
+            {/* Field 3: Category (Symmetric 4x2 Grid with EQUAL Box Sizes) */}
             <View style={styles.inputGroup}>
-              <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>CATEGORY</Text>
-              <View style={styles.categoryWrap}>
+              <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>SELECT CATEGORY</Text>
+              <View style={styles.equalGrid}>
                 {CATEGORIES.map((cat) => {
                   const isSelected = category === cat;
                   const catColor = CATEGORY_COLORS[cat] || colors.primary;
-                  const catDarkColor = CATEGORY_DARK_COLORS[cat] || colors.primaryDark;
                   const iconName = CATEGORY_ICONS[cat] || 'pricetag-outline';
 
                   return (
                     <TouchableOpacity
                       key={cat}
                       onPress={() => setCategory(cat)}
+                      activeOpacity={0.7}
                       style={[
-                        styles.catChip,
-                        clayPill,
-                        isSelected
-                          ? {
-                              backgroundColor: catColor,
-                              borderTopColor: 'rgba(255, 255, 255, 0.45)',
-                              borderBottomColor: catDarkColor
-                            }
-                          : {
-                              backgroundColor: colors.surfaceSubtle
-                            }
+                        styles.equalCategoryBox,
+                        {
+                          backgroundColor: isSelected ? catColor : colors.surfaceSubtle,
+                          borderColor: isSelected ? catColor : (isDark ? '#334155' : '#E2E8F0'),
+                          borderWidth: isSelected ? 1.5 : 1
+                        }
                       ]}
                     >
                       <Ionicons
                         name={iconName}
-                        size={13}
+                        size={16}
                         color={isSelected ? '#FFFFFF' : catColor}
                       />
                       <Text
                         style={[
-                          styles.catChipText,
+                          styles.equalCategoryText,
                           {
                             color: isSelected ? '#FFFFFF' : colors.text,
                             fontWeight: isSelected ? '800' : '600'
                           }
                         ]}
+                        numberOfLines={1}
                       >
                         {cat}
                       </Text>
@@ -292,14 +269,14 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
               </View>
             </View>
 
-            {/* Field 4: Date */}
+            {/* Field 4: Date (Full Width Box - Identical Size) */}
             <View style={styles.inputGroup}>
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>DATE (YYYY-MM-DD)</Text>
-              <View style={[styles.inputBox, clayInput]}>
+              <View style={[styles.inputBox, clayInput, { backgroundColor: colors.surfaceSubtle }]}>
                 <Ionicons name="calendar-outline" size={18} color={colors.textTertiary} style={styles.inputIcon} />
                 <TextInput
                   style={[styles.textInput, { color: colors.text }]}
-                  placeholder="2026-11-16"
+                  placeholder="2026-11-17"
                   placeholderTextColor={colors.textTertiary}
                   value={date}
                   onChangeText={setDate}
@@ -314,42 +291,50 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
                   clayPill,
                   {
                     backgroundColor: colors.expenseLight,
-                    borderBottomColor: colors.expenseDark
+                    borderColor: colors.expense
                   }
                 ]}
               >
-                <Ionicons name="alert-circle-outline" size={14} color={colors.expense} />
+                <Ionicons name="alert-circle-outline" size={15} color={colors.expense} />
                 <Text style={[styles.errorText, { color: colors.expense }]}>{errorText}</Text>
               </View>
             )}
+
+            {/* Action Buttons: Full Width Stacked One Below the Other */}
+            <View style={styles.actionStack}>
+              {/* Primary Action Button (100% Width) */}
+              <TouchableOpacity
+                onPress={handleSubmit}
+                style={[
+                  styles.primarySubmitBtn,
+                  { backgroundColor: editingExpense ? colors.primary : colors.expense }
+                ]}
+                disabled={isSubmitting}
+                activeOpacity={0.85}
+              >
+                <Ionicons
+                  name={editingExpense ? 'checkmark-circle' : 'add-circle'}
+                  size={18}
+                  color="#FFFFFF"
+                />
+                <Text style={styles.primarySubmitBtnText}>
+                  {isSubmitting ? 'Saving...' : editingExpense ? 'Update Expense Record' : 'Add Expense Record'}
+                </Text>
+              </TouchableOpacity>
+
+              {/* Secondary Cancel Button (100% Width) */}
+              <TouchableOpacity
+                onPress={onClose}
+                style={[styles.secondaryCancelBtn, { backgroundColor: colors.surfaceSubtle }]}
+                disabled={isSubmitting}
+                activeOpacity={0.8}
+              >
+                <Text style={[styles.secondaryCancelBtnText, { color: colors.textSecondary }]}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+            </View>
           </ScrollView>
-
-          {/* Action Buttons */}
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              onPress={onClose}
-              style={[
-                styles.cancelBtn,
-                clayPill,
-                {
-                  backgroundColor: colors.surfaceSubtle
-                }
-              ]}
-              disabled={isSubmitting}
-            >
-              <Text style={[styles.cancelBtnText, { color: colors.textSecondary }]}>Cancel</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={handleSubmit}
-              style={[styles.submitBtn, submitButtonClay]}
-              disabled={isSubmitting}
-            >
-              <Text style={styles.submitBtnText}>
-                {isSubmitting ? 'Saving...' : editingExpense ? 'Update Expense' : 'Save Expense'}
-              </Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -359,129 +344,132 @@ export default function AddEditExpenseModal({ visible, onClose, editingExpense }
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20
+    padding: 18
   },
   modalCard: {
     width: '100%',
-    maxWidth: 440,
-    maxHeight: '90%',
-    padding: 22
+    maxWidth: 420,
+    borderRadius: 24,
+    padding: 22,
+    borderWidth: 1,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.2,
+    shadowRadius: 24,
+    elevation: 10
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16
+    marginBottom: 18
   },
   titleWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12
+    gap: 12,
+    flex: 1
   },
   iconWrap: {
     width: 42,
     height: 42,
-    borderRadius: 21,
-    borderTopWidth: 2,
-    borderLeftWidth: 1.5,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 3.5,
+    borderRadius: 14,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
   modalTitle: {
     fontSize: 17,
-    fontWeight: '900',
+    fontWeight: '800',
     letterSpacing: -0.3
+  },
+  modalSubtitle: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 2
   },
   closeBtn: {
     width: 34,
     height: 34,
-    borderRadius: 17,
-    borderTopWidth: 1.5,
-    borderBottomWidth: 2.5,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center'
   },
   formScroll: {
-    maxHeight: 420
+    maxHeight: 460
   },
   inputGroup: {
-    marginBottom: 16
+    marginBottom: 14
   },
   inputLabel: {
     fontSize: 10,
     fontWeight: '800',
-    letterSpacing: 0.7,
+    letterSpacing: 0.6,
     marginBottom: 6
   },
   inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 14,
-    paddingVertical: 12
+    height: 48,
+    borderRadius: 14,
+    borderWidth: 1
   },
   inputIcon: {
     marginRight: 10
   },
   currencyPrefix: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
-    marginRight: 6
+    marginRight: 8
   },
   textInput: {
     flex: 1,
     fontSize: 14,
-    padding: 0
-  },
-  amountInput: {
-    flex: 1,
-    fontSize: 20,
-    fontWeight: '900',
+    fontWeight: '600',
     padding: 0
   },
   warningBox: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: 10,
     padding: 12,
-    marginBottom: 16
+    borderRadius: 14,
+    borderWidth: 1,
+    marginBottom: 14
   },
   warningContent: {
     flex: 1
   },
   warningTitle: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '800',
-    marginBottom: 3
+    marginBottom: 2
   },
   warningText: {
     fontSize: 11,
-    fontWeight: '500',
-    lineHeight: 16
+    lineHeight: 15
   },
-  policyNotice: {
-    fontSize: 10,
-    marginTop: 4,
-    fontStyle: 'italic'
-  },
-  categoryWrap: {
+  equalGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8
+    gap: 8,
+    justifyContent: 'space-between'
   },
-  catChip: {
-    flexDirection: 'row',
+  equalCategoryBox: {
+    width: '23%',
+    height: 44,
+    borderRadius: 12,
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8
+    justifyContent: 'center',
+    gap: 3
   },
-  catChipText: {
-    fontSize: 12
+  equalCategoryText: {
+    fontSize: 9,
+    textAlign: 'center'
   },
   errorBox: {
     flexDirection: 'row',
@@ -489,34 +477,47 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 12,
     paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 1,
     marginBottom: 14
   },
   errorText: {
     fontSize: 11,
     fontWeight: '700'
   },
-  buttonRow: {
+  actionStack: {
+    marginTop: 8,
+    gap: 10,
+    paddingBottom: 4
+  },
+  primarySubmitBtn: {
+    width: '100%',
+    height: 48,
+    borderRadius: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    gap: 12,
-    marginTop: 12
+    justifyContent: 'center',
+    gap: 8,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 3
   },
-  cancelBtn: {
-    paddingHorizontal: 16,
-    paddingVertical: 10
+  primarySubmitBtnText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '800'
   },
-  cancelBtnText: {
+  secondaryCancelBtn: {
+    width: '100%',
+    height: 44,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  secondaryCancelBtnText: {
     fontSize: 13,
     fontWeight: '700'
-  },
-  submitBtn: {
-    paddingHorizontal: 20,
-    paddingVertical: 10
-  },
-  submitBtnText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '800'
   }
 });

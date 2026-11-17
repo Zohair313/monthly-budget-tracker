@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity, KeyboardAvo
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette, getClayCard, getClayButton, getClayInput, getClayPill } from '../theme/colors';
+import { palette, getClayCard, getClayInput, getClayPill } from '../theme/colors';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -13,9 +13,9 @@ const MONTH_NAMES = [
 export default function SetIncomeModal({ visible, onClose }) {
   const { selectedMonth, selectedYear, incomeData, updateIncome } = useBudget();
   const { themeMode } = useAuth();
-  const colors = palette[themeMode] || palette.dark;
+  const colors = palette[themeMode] || palette.light;
+  const isDark = themeMode === 'dark';
   const clayCard = getClayCard(themeMode);
-  const clayButton = getClayButton(themeMode, colors.primary, colors.primaryDark);
   const clayInput = getClayInput(themeMode);
   const clayPill = getClayPill(themeMode);
 
@@ -50,13 +50,17 @@ export default function SetIncomeModal({ visible, onClose }) {
     }
   };
 
+  const handlePreset = (val) => {
+    setAmountStr(String(val));
+  };
+
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.overlay}
       >
-        <View style={[styles.modalCard, clayCard]}>
+        <View style={[styles.modalCard, clayCard, { backgroundColor: colors.surface }]}>
           {/* Header */}
           <View style={styles.headerRow}>
             <View style={styles.titleWrap}>
@@ -65,12 +69,11 @@ export default function SetIncomeModal({ visible, onClose }) {
                   styles.iconWrap,
                   {
                     backgroundColor: colors.incomeLight,
-                    borderTopColor: 'rgba(255, 255, 255, 0.45)',
-                    borderBottomColor: colors.incomeDark
+                    borderColor: colors.income
                   }
                 ]}
               >
-                <Ionicons name="wallet-outline" size={20} color={colors.income} />
+                <Ionicons name="wallet-outline" size={22} color={colors.income} />
               </View>
               <View>
                 <Text style={[styles.modalTitle, { color: colors.text }]}>Set Monthly Income</Text>
@@ -81,41 +84,37 @@ export default function SetIncomeModal({ visible, onClose }) {
             </View>
             <TouchableOpacity
               onPress={onClose}
-              style={[
-                styles.closeBtn,
-                {
-                  backgroundColor: colors.surfaceSubtle,
-                  borderTopColor: colors.clayBorderTop,
-                  borderBottomColor: colors.clayBorderBottom
-                }
-              ]}
+              style={[styles.closeBtn, { backgroundColor: colors.surfaceSubtle }]}
+              accessibilityLabel="Close Modal"
             >
               <Ionicons name="close" size={18} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
 
-          {/* Quick Explanatory Note */}
+          {/* Explanatory Policy Banner */}
           <View
             style={[
               styles.infoBanner,
               clayPill,
               {
-                backgroundColor: colors.surfaceSubtle,
-                borderRadius: 14
+                backgroundColor: colors.incomeLight,
+                borderColor: colors.incomeBorder
               }
             ]}
           >
-            <Ionicons name="information-circle-outline" size={16} color={colors.primary} />
-            <Text style={[styles.infoBannerText, { color: colors.textSecondary }]}>
-              Setting your income will automatically recalculate your remaining balance for {MONTH_NAMES[selectedMonth - 1]}.
+            <Ionicons name="information-circle-outline" size={18} color={colors.income} />
+            <Text style={[styles.infoBannerText, { color: colors.incomeDark }]}>
+              Setting your monthly income dynamically updates your remaining balance.
             </Text>
           </View>
 
-          {/* Amount Input */}
+          {/* Field 1: Amount Input (Full Width Box) */}
           <View style={styles.inputGroup}>
-            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>INCOME AMOUNT (PKR / RS)</Text>
-            <View style={[styles.inputBox, clayInput]}>
-              <Text style={[styles.currencyPrefix, { color: colors.textSecondary }]}>Rs.</Text>
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>
+              INCOME AMOUNT (PKR / RS)
+            </Text>
+            <View style={[styles.inputBox, clayInput, { backgroundColor: colors.surfaceSubtle }]}>
+              <Text style={[styles.currencyPrefix, { color: colors.income }]}>Rs.</Text>
               <TextInput
                 style={[styles.textInput, { color: colors.text }]}
                 keyboardType="numeric"
@@ -128,6 +127,39 @@ export default function SetIncomeModal({ visible, onClose }) {
             </View>
           </View>
 
+          {/* Field 2: Quick Presets (4 Equal Boxes) */}
+          <View style={styles.inputGroup}>
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>QUICK PRESETS</Text>
+            <View style={styles.presetsRow}>
+              {[50000, 100000, 150000, 200000].map((preset) => (
+                <TouchableOpacity
+                  key={preset}
+                  onPress={() => handlePreset(preset)}
+                  style={[
+                    styles.presetBox,
+                    {
+                      backgroundColor: amountStr === String(preset) ? colors.income : colors.surfaceSubtle,
+                      borderColor: amountStr === String(preset) ? colors.income : (isDark ? '#334155' : '#E2E8F0')
+                    }
+                  ]}
+                  activeOpacity={0.7}
+                >
+                  <Text
+                    style={[
+                      styles.presetText,
+                      {
+                        color: amountStr === String(preset) ? '#FFFFFF' : colors.text,
+                        fontWeight: amountStr === String(preset) ? '800' : '600'
+                      }
+                    ]}
+                  >
+                    Rs. {preset / 1000}k
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
           {errorText.length > 0 && (
             <View
               style={[
@@ -135,7 +167,7 @@ export default function SetIncomeModal({ visible, onClose }) {
                 clayPill,
                 {
                   backgroundColor: colors.expenseLight,
-                  borderBottomColor: colors.expenseDark
+                  borderColor: colors.expense
                 }
               ]}
             >
@@ -144,29 +176,30 @@ export default function SetIncomeModal({ visible, onClose }) {
             </View>
           )}
 
-          {/* Actions */}
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              onPress={onClose}
-              style={[
-                styles.cancelBtn,
-                clayPill,
-                {
-                  backgroundColor: colors.surfaceSubtle
-                }
-              ]}
-              disabled={isSubmitting}
-            >
-              <Text style={[styles.cancelBtnText, { color: colors.textSecondary }]}>Cancel</Text>
-            </TouchableOpacity>
-
+          {/* Action Stack: Stacked One Below the Other */}
+          <View style={styles.actionStack}>
+            {/* Primary Submit Button (100% Width) */}
             <TouchableOpacity
               onPress={handleSubmit}
-              style={[styles.submitBtn, clayButton]}
+              style={[styles.primarySubmitBtn, { backgroundColor: colors.income }]}
               disabled={isSubmitting}
+              activeOpacity={0.85}
             >
-              <Text style={styles.submitBtnText}>
-                {isSubmitting ? 'Saving...' : 'Save Income'}
+              <Ionicons name="checkmark-circle" size={18} color="#FFFFFF" />
+              <Text style={styles.primarySubmitBtnText}>
+                {isSubmitting ? 'Saving...' : 'Save Monthly Income'}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Secondary Cancel Button (100% Width) */}
+            <TouchableOpacity
+              onPress={onClose}
+              style={[styles.secondaryCancelBtn, { backgroundColor: colors.surfaceSubtle }]}
+              disabled={isSubmitting}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.secondaryCancelBtnText, { color: colors.textSecondary }]}>
+                Cancel
               </Text>
             </TouchableOpacity>
           </View>
@@ -179,15 +212,22 @@ export default function SetIncomeModal({ visible, onClose }) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20
+    padding: 18
   },
   modalCard: {
     width: '100%',
     maxWidth: 420,
-    padding: 22
+    borderRadius: 24,
+    padding: 22,
+    borderWidth: 1,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.2,
+    shadowRadius: 24,
+    elevation: 10
   },
   headerRow: {
     flexDirection: 'row',
@@ -198,76 +238,92 @@ const styles = StyleSheet.create({
   titleWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12
+    gap: 12,
+    flex: 1
   },
   iconWrap: {
     width: 42,
     height: 42,
-    borderRadius: 21,
-    borderTopWidth: 2,
-    borderLeftWidth: 1.5,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 3.5,
+    borderRadius: 14,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
   modalTitle: {
     fontSize: 17,
-    fontWeight: '900',
+    fontWeight: '800',
     letterSpacing: -0.3
   },
   modalSubtitle: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500',
     marginTop: 2
   },
   closeBtn: {
     width: 34,
     height: 34,
-    borderRadius: 17,
-    borderTopWidth: 1.5,
-    borderBottomWidth: 2.5,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center'
   },
   infoBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
     padding: 12,
-    marginBottom: 18
+    borderRadius: 14,
+    borderWidth: 1,
+    marginBottom: 16
   },
   infoBannerText: {
     flex: 1,
     fontSize: 11,
-    fontWeight: '500',
-    lineHeight: 16
+    lineHeight: 15,
+    fontWeight: '500'
   },
   inputGroup: {
-    marginBottom: 18
+    marginBottom: 16
   },
   inputLabel: {
     fontSize: 10,
     fontWeight: '800',
-    letterSpacing: 0.7,
+    letterSpacing: 0.6,
     marginBottom: 6
   },
   inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 14,
-    paddingVertical: 12
+    height: 48,
+    borderRadius: 14,
+    borderWidth: 1
   },
   currencyPrefix: {
     fontSize: 16,
     fontWeight: '800',
-    marginRight: 6
+    marginRight: 8
   },
   textInput: {
     flex: 1,
-    fontSize: 20,
-    fontWeight: '900',
+    fontSize: 18,
+    fontWeight: '800',
     padding: 0
+  },
+  presetsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'space-between'
+  },
+  presetBox: {
+    flex: 1,
+    height: 40,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  presetText: {
+    fontSize: 11
   },
   errorBox: {
     flexDirection: 'row',
@@ -275,33 +331,46 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 12,
     paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 1,
     marginBottom: 14
   },
   errorText: {
     fontSize: 11,
     fontWeight: '700'
   },
-  buttonRow: {
+  actionStack: {
+    marginTop: 6,
+    gap: 10
+  },
+  primarySubmitBtn: {
+    width: '100%',
+    height: 48,
+    borderRadius: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    gap: 12
+    justifyContent: 'center',
+    gap: 8,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 3
   },
-  cancelBtn: {
-    paddingHorizontal: 16,
-    paddingVertical: 10
+  primarySubmitBtnText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '800'
   },
-  cancelBtnText: {
+  secondaryCancelBtn: {
+    width: '100%',
+    height: 44,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  secondaryCancelBtnText: {
     fontSize: 13,
     fontWeight: '700'
-  },
-  submitBtn: {
-    paddingHorizontal: 20,
-    paddingVertical: 10
-  },
-  submitBtnText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '800'
   }
 });

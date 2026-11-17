@@ -33,6 +33,7 @@ const CATEGORIES = [
   { id: 'Shopping', label: 'Shopping', icon: 'bag-handle', color: '#7C3AED', bg: '#F5F3FF' },
   { id: 'Entertainment', label: 'Fun', icon: 'game-controller', color: '#EC4899', bg: '#FDF2F8' },
   { id: 'Health', label: 'Health', icon: 'medkit', color: '#059669', bg: '#ECFDF5' },
+  { id: 'General', label: 'General', icon: 'pricetag', color: '#6366F1', bg: '#EEF2FF' },
   { id: 'Other', label: 'Other', icon: 'cube', color: '#64748B', bg: '#F1F5F9' }
 ];
 
@@ -691,19 +692,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
+    justifyContent: 'space-between',
     marginTop: 6,
     marginBottom: 14
   },
   categoryChip: {
-    flexDirection: 'row',
+    width: '23%',
+    height: 44,
+    borderRadius: 12,
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: 10,
-    gap: 6
+    justifyContent: 'center',
+    gap: 3
   },
   categoryChipText: {
-    fontSize: 11
+    fontSize: 9,
+    textAlign: 'center'
   },
   feedbackBox: {
     padding: 10,
