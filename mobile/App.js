@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { BudgetProvider } from './src/context/BudgetContext';
 import AuthScreen from './src/screens/AuthScreen';
 import HomeScreen from './src/screens/HomeScreen';
+import AnimatedSplashScreen from './src/components/AnimatedSplashScreen';
 import { palette } from './src/theme/colors';
 
 // Fallback Error Boundary to display runtime errors gracefully
@@ -69,6 +70,16 @@ function RootNavigator() {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  if (showSplash) {
+    return (
+      <SafeAreaProvider style={styles.rootFill}>
+        <AnimatedSplashScreen onFinish={() => setShowSplash(false)} />
+      </SafeAreaProvider>
+    );
+  }
+
   return (
     <SafeAreaProvider style={styles.rootFill}>
       <ErrorBoundary>

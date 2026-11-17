@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: monthly-budget-tracker-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install && npm run migrate
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false

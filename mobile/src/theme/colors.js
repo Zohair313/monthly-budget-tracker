@@ -1,48 +1,49 @@
 export const palette = {
-  // Light Theme: Executive Ceramic & Royal Indigo (Stripe / Revolut / Apple Financial Standard)
+  // Light Theme: Tactile Clay Lilac & Executive Porcelain (Reference Dribbble / Claymorphism Standard)
   light: {
     name: 'light',
     // Executive Brand Canvas
-    brandViolet: '#4F46E5',          // Royal Indigo (clean, trustworthy, high-end)
-    brandVioletDark: '#3730A3',
-    brandVioletLight: '#6366F1',
-    brandVioletDeep: '#312E81',
+    brandViolet: '#6C52EE',          // Vibrant Purple/Lilac Canvas
+    brandVioletDark: '#563CC5',      // Deep Lilac
+    brandVioletLight: '#856EFF',     // Soft Lilac Highlight
+    brandVioletDeep: '#3F2B96',
     
     // Backgrounds & Surfaces
-    background: '#4F46E5',           // Top header canvas
-    sheetBackground: '#F8FAFC',      // Crisp, clean ceramic slate
+    background: '#6C52EE',           // Top header canvas
+    sheetBackground: '#F8F9FD',      // Pristine porcelain ceramic
     surface: '#FFFFFF',              // Pure pristine white card
-    surfaceSubtle: '#F1F5F9',        // Soft tactile mist
-    surfaceHover: '#E2E8F0',
-    border: '#E2E8F0',               // Hairline crisp border
-    borderSubtle: '#EDF2F7',
+    surfaceSubtle: '#F3F4F8',        // Soft tactile mist
+    surfaceHover: '#EBEFF5',
+    border: '#E8ECF2',               // Hairline soft border
+    borderSubtle: '#F1F4F8',
     
     // Typography
-    text: '#0F172A',                 // Deep obsidian slate
+    text: '#1E1B4B',                 // Deep slate purple
     textWhite: '#FFFFFF',
-    textSecondary: '#475569',
+    textSecondary: '#64748B',
     textTertiary: '#94A3B8',
     textMuted: '#CBD5E1',
     
-    primary: '#4F46E5',
-    primaryDark: '#3730A3',
-    primaryLight: 'rgba(79, 70, 229, 0.08)',
+    primary: '#6C52EE',
+    primaryDark: '#563CC5',
+    primaryLight: 'rgba(108, 82, 238, 0.08)',
     
-    // Professional Financial Action Tiles
-    tileMint: '#059669',
-    tileMintBg: '#ECFDF5',
+    // Professional Financial Action Tiles (Squircle Clay Badges)
+    tileMint: '#10B981',
+    tileMintBg: '#D1FAE5',
     tileMintBorder: '#A7F3D0',
     
-    tileCoral: '#E11D48',
-    tileCoralBg: '#FFF1F2',
+    tileCoral: '#F43F5E',
+    tileCoralBg: '#FFE4E6',
     tileCoralBorder: '#FECDD3',
     
-    tileViolet: '#4F46E5',
-    tileVioletBg: '#EEF2FF',
-    tileVioletBorder: '#C7D2FE',
+    tileViolet: '#8B5CF6',
+    tileVioletBg: '#EDE9FE',
+    tileVioletBorder: '#DDD6FE',
     
-    tileCyan: '#0284C7',
-    tileCyanBg: '#F0F9FF',
+    tileCyan: '#06B6D4',
+    tileCyanBg: '#CFFAFE',
+    tileCyanBorder: '#BAE6FD',
     tileCyanBorder: '#BAE6FD',
     
     // Status colors

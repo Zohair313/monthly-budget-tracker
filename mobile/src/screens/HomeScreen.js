@@ -20,6 +20,8 @@ import BudgetAlertBanner from '../components/BudgetAlertBanner';
 import MonthComparisonCard from '../components/MonthComparisonCard';
 import CategoryBreakdown from '../components/CategoryBreakdown';
 import ExpenseList from '../components/ExpenseList';
+import IncomeAccordion from '../components/IncomeAccordion';
+import ExpenseAccordion from '../components/ExpenseAccordion';
 
 import SetIncomeModal from '../components/SetIncomeModal';
 import AddEditExpenseModal from '../components/AddEditExpenseModal';
@@ -34,6 +36,9 @@ export default function HomeScreen() {
   // Active Category Filter & View Toggles
   const [activeCategory, setActiveCategory] = useState(null);
   const [showCharts, setShowCharts] = useState(false);
+
+  // Accordion State: 'income' | 'expense' | null
+  const [expandedAccordion, setExpandedAccordion] = useState(null);
 
   // Modal States
   const [showSetIncome, setShowSetIncome] = useState(false);
@@ -90,10 +95,11 @@ export default function HomeScreen() {
       >
         {/* 2. Executive Card & Clean Squircle Quick Tiles */}
         <SummaryCards
-          onOpenSetIncome={() => setShowSetIncome(true)}
+          onOpenSetIncome={() => {
+            setExpandedAccordion(prev => (prev === 'income' ? null : 'income'));
+          }}
           onOpenAddExpense={() => {
-            setEditingExpense(null);
-            setShowAddExpense(true);
+            setExpandedAccordion(prev => (prev === 'expense' ? null : 'expense'));
           }}
           onToggleCategoryBreakdown={() => setShowCharts(!showCharts)}
           onOpenExport={() => setShowExport(true)}
@@ -108,6 +114,31 @@ export default function HomeScreen() {
 
           {/* Budget Alert Banner */}
           <BudgetAlertBanner />
+
+          {/* 4. Primary Interactive Clay Accordions (Income & Expense) */}
+          <View style={styles.accordionsSection}>
+            <View style={styles.accordionsHeaderRow}>
+              <Text style={[styles.accordionsMainTitle, { color: colors.text }]}>
+                Budget Breakdown
+              </Text>
+              <Text style={[styles.accordionsSubtitle, { color: colors.textSecondary }]}>
+                Tap to expand, record & review
+              </Text>
+            </View>
+
+            {/* Income Accordion (Clickable with smooth spring animation) */}
+            <IncomeAccordion
+              isExpanded={expandedAccordion === 'income'}
+              onToggle={() => setExpandedAccordion(expandedAccordion === 'income' ? null : 'income')}
+            />
+
+            {/* Expense Accordion (Clickable with smooth spring animation) */}
+            <ExpenseAccordion
+              isExpanded={expandedAccordion === 'expense'}
+              onToggle={() => setExpandedAccordion(expandedAccordion === 'expense' ? null : 'expense')}
+              onEditExpense={handleOpenEdit}
+            />
+          </View>
 
           {/* Month Comparison Card */}
           <MonthComparisonCard />
@@ -124,8 +155,7 @@ export default function HomeScreen() {
           <ExpenseList
             activeCategory={activeCategory}
             onAddExpense={() => {
-              setEditingExpense(null);
-              setShowAddExpense(true);
+              setExpandedAccordion('expense');
             }}
             onEditExpense={handleOpenEdit}
           />
@@ -240,6 +270,26 @@ const styles = StyleSheet.create({
     width: 38,
     height: 4,
     borderRadius: 2
+  },
+  accordionsSection: {
+    paddingHorizontal: 20,
+    marginTop: 6,
+    marginBottom: 10
+  },
+  accordionsHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginBottom: 12
+  },
+  accordionsMainTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    letterSpacing: -0.3
+  },
+  accordionsSubtitle: {
+    fontSize: 12,
+    fontWeight: '500'
   },
   bottomDock: {
     position: 'absolute',
