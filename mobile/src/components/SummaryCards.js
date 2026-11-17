@@ -263,19 +263,19 @@ const styles = StyleSheet.create({
     borderRadius: 14
   },
   cardNumberWrap: {
-    marginVertical: 12
+    marginVertical: 8
   },
   cardNumberText: {
     color: '#64748B',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
-    letterSpacing: 3
+    letterSpacing: 2.5
   },
   cardFooter: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 14
+    marginBottom: 10
   },
   cardMetaBlock: {
     justifyContent: 'center'
