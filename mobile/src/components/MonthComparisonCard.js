@@ -21,42 +21,27 @@ export default function MonthComparisonCard() {
 
   const prevExpense = comparison.prev_expense || 0;
   const currentExpense = summary.total_expense || 0;
-  const changePercent = comparison.expense_change_percent !== undefined
-    ? comparison.expense_change_percent
-    : (prevExpense > 0 ? Math.round(((currentExpense - prevExpense) / prevExpense) * 1000) / 10 : 0);
-
-  const isIncrease = changePercent > 0;
-  const isZero = changePercent === 0;
-
-  const trendColor = isIncrease ? colors.expense : (isZero ? colors.textSecondary : colors.income);
-  const trendBg = isIncrease ? colors.expenseLight : (isZero ? colors.surfaceSubtle : colors.incomeLight);
-  const iconName = isIncrease ? 'trending-up' : (isZero ? 'remove' : 'trending-down');
+  const isIncrease = currentExpense > prevExpense;
+  const iconName = isIncrease ? 'trending-up' : 'trending-down';
 
   return (
-    <View
-      style={[
-        styles.container,
-        clayCard,
-        {
-          backgroundColor: colors.surface,
-          borderColor: colors.border,
-          borderWidth: 1.5
-        }
-      ]}
-    >
+    <View style={[styles.container, clayCard]}>
       <View style={styles.cardTouch}>
         <View style={styles.cardLeft}>
-          {/* Uniform 46x46 Squircle Violet Coin */}
+          {/* Puffy 3D Solid Lavender Clay Icon Square (Mockup Style) */}
           <View
             style={[
               styles.iconCoin,
               {
-                backgroundColor: isIncrease ? colors.expenseLight : colors.incomeLight,
-                borderColor: isIncrease ? colors.expenseBorder : colors.incomeBorder
+                backgroundColor: colors.tileViolet,
+                borderTopColor: colors.tileVioletTop,
+                borderLeftColor: colors.tileVioletTop,
+                borderBottomColor: colors.tileVioletBottom,
+                shadowColor: colors.tileVioletBottom
               }
             ]}
           >
-            <Ionicons name={iconName} size={22} color={trendColor} />
+            <Ionicons name={iconName} size={23} color="#FFFFFF" />
           </View>
 
           <View style={styles.cardTextGroup}>
@@ -67,9 +52,9 @@ export default function MonthComparisonCard() {
           </View>
         </View>
 
-        {/* Right: Amount */}
+        {/* Right: Clean Bold Amount */}
         <View style={styles.cardRight}>
-          <Text style={[styles.amountText, { color: colors.text }]}>
+          <Text style={[styles.amountText, { color: colors.primary }]}>
             {formatCurrency(prevExpense)}
           </Text>
         </View>
@@ -81,9 +66,8 @@ export default function MonthComparisonCard() {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    borderRadius: 20,
-    marginBottom: 12,
-    overflow: 'hidden'
+    borderRadius: 24,
+    marginBottom: 14
   },
   cardTouch: {
     flexDirection: 'row',
@@ -91,44 +75,37 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    minHeight: 74
+    minHeight: 78
   },
   cardLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    gap: 12
+    gap: 14
   },
   iconCoin: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    borderWidth: 1,
+    width: 50,
+    height: 50,
+    borderRadius: 16,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1,
+    borderBottomWidth: 4,
+    borderRightColor: 'rgba(0, 0, 0, 0.06)',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5
   },
   cardTextGroup: {
     flex: 1
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6
   },
   cardTitle: {
     fontSize: 15,
     fontWeight: '800',
     letterSpacing: -0.2
-  },
-  badgePill: {
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 8,
-    borderWidth: 1
-  },
-  badgeText: {
-    fontSize: 9,
-    fontWeight: '800'
   },
   cardSubtitle: {
     fontSize: 12,

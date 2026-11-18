@@ -105,32 +105,31 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
       style={[
         styles.container,
         clayCard,
-        {
-          backgroundColor: colors.surface,
-          borderColor: isExpanded ? colors.income : colors.border,
-          borderWidth: 1.5
-        }
+        isExpanded && { borderBottomColor: colors.income }
       ]}
     >
-      {/* Accordion Header (Clickable) - Standard 74px Height */}
+      {/* Accordion Header (Clickable) - Standard 78px Puffy Clay Height */}
       <TouchableOpacity
         style={styles.headerTouch}
         onPress={handleToggle}
-        activeOpacity={0.8}
+        activeOpacity={0.82}
         accessibilityLabel="Toggle Monthly Income Accordion"
       >
         <View style={styles.headerLeft}>
-          {/* Uniform 46x46 Squircle Mint Coin */}
+          {/* Puffy 3D Solid Mint Clay Icon Square (Mockup Style) */}
           <View
             style={[
               styles.iconCoin,
               {
-                backgroundColor: colors.incomeLight,
-                borderColor: colors.incomeBorder
+                backgroundColor: colors.incomeSurface,
+                borderTopColor: colors.incomeHighlight,
+                borderLeftColor: colors.incomeHighlight,
+                borderBottomColor: colors.incomeBorder,
+                shadowColor: colors.incomeBorder
               }
             ]}
           >
-            <Ionicons name="arrow-down-circle" size={22} color={colors.income} />
+            <Ionicons name="arrow-down-circle" size={24} color="#FFFFFF" />
           </View>
 
           <View style={styles.headerTextGroup}>
@@ -276,9 +275,8 @@ export default function IncomeAccordion({ isExpanded, onToggle }) {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    borderRadius: 20,
-    marginBottom: 12,
-    overflow: 'hidden'
+    borderRadius: 24,
+    marginBottom: 14
   },
   headerTouch: {
     flexDirection: 'row',
@@ -286,21 +284,29 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    minHeight: 74
+    minHeight: 78
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    gap: 12
+    gap: 14
   },
   iconCoin: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    borderWidth: 1,
+    width: 50,
+    height: 50,
+    borderRadius: 16,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1,
+    borderBottomWidth: 4,
+    borderRightColor: 'rgba(0, 0, 0, 0.06)',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5
   },
   headerTextGroup: {
     flex: 1

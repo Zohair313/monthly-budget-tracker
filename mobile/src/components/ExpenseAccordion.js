@@ -163,32 +163,31 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
       style={[
         styles.container,
         clayCard,
-        {
-          backgroundColor: colors.surface,
-          borderColor: isExpanded ? colors.expense : colors.border,
-          borderWidth: 1.5
-        }
+        isExpanded && { borderBottomColor: colors.expense }
       ]}
     >
-      {/* Accordion Header (Clickable) - Exact 74px Matching Height */}
+      {/* Accordion Header (Clickable) - Exact 78px Puffy Clay Height */}
       <TouchableOpacity
         style={styles.headerTouch}
         onPress={handleToggle}
-        activeOpacity={0.8}
+        activeOpacity={0.82}
         accessibilityLabel="Toggle Monthly Expense Accordion"
       >
         <View style={styles.headerLeft}>
-          {/* Uniform 46x46 Squircle Coral Coin */}
+          {/* Puffy 3D Solid Coral Clay Icon Square (Mockup Style) */}
           <View
             style={[
               styles.iconCoin,
               {
-                backgroundColor: colors.expenseLight,
-                borderColor: colors.expenseBorder
+                backgroundColor: colors.expenseSurface,
+                borderTopColor: colors.expenseHighlight,
+                borderLeftColor: colors.expenseHighlight,
+                borderBottomColor: colors.expenseBorder,
+                shadowColor: colors.expenseBorder
               }
             ]}
           >
-            <Ionicons name="receipt" size={22} color={colors.expense} />
+            <Ionicons name="receipt" size={23} color="#FFFFFF" />
           </View>
 
           <View style={styles.headerTextGroup}>
@@ -495,9 +494,8 @@ export default function ExpenseAccordion({ isExpanded, onToggle, onEditExpense }
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    borderRadius: 20,
-    marginBottom: 12,
-    overflow: 'hidden'
+    borderRadius: 24,
+    marginBottom: 14
   },
   headerTouch: {
     flexDirection: 'row',
@@ -505,21 +503,29 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    minHeight: 74
+    minHeight: 78
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    gap: 12
+    gap: 14
   },
   iconCoin: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    borderWidth: 1,
+    width: 50,
+    height: 50,
+    borderRadius: 16,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1,
+    borderBottomWidth: 4,
+    borderRightColor: 'rgba(0, 0, 0, 0.06)',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5
   },
   headerTextGroup: {
     flex: 1

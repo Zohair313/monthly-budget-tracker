@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput } from 'reac
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette, categoryColors } from '../theme/colors';
+import { palette, categoryColors, getClayCard } from '../theme/colors';
 
 const CATEGORY_ICONS = {
   Food: 'restaurant-outline',
@@ -35,6 +35,7 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
   const { expenses, deleteExpense } = useBudget();
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
+  const clayCard = getClayCard(themeMode);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -121,16 +122,16 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
 
       {/* Transaction List */}
       {filteredExpenses.length === 0 ? (
-        <View style={[styles.emptyContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+        <View style={[styles.emptyContainer, clayCard]}>
           <View style={[styles.emptyIconCircle, { backgroundColor: colors.surfaceSubtle }]}>
-            <Ionicons name="receipt-outline" size={30} color={colors.textTertiary} />
+            <Ionicons name="receipt-outline" size={28} color={colors.primary} />
           </View>
           <Text style={[styles.emptyTitle, { color: colors.text }]}>
             {expenses.length === 0 ? 'No transactions yet' : 'No matching results'}
           </Text>
           <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
             {expenses.length === 0
-              ? 'Tap "+ Add" above to record your first monthly expense.'
+              ? 'Tap "+ Add" above or the "+" orb below to record an expense.'
               : 'Try searching with a different term.'}
           </Text>
         </View>
@@ -140,23 +141,26 @@ export default function ExpenseList({ onEditExpense, onAddExpense, activeCategor
             const cat = item.category || 'General';
             const catConfig = categoryColors[cat] || categoryColors.General;
             const catColor = catConfig.color;
-            const catBg = catConfig.bg;
+            const catDarkColor = catConfig.darkColor || '#5138CC';
             const iconName = CATEGORY_ICONS[cat] || 'pricetag-outline';
 
             return (
               <View
                 key={item.id}
-                style={[
-                  styles.transactionCard,
-                  {
-                    backgroundColor: colors.surface,
-                    borderColor: colors.border
-                  }
-                ]}
+                style={[styles.transactionCard, clayCard]}
               >
-                {/* Left: Clean Squircle Icon Badge */}
-                <View style={[styles.iconBadge, { backgroundColor: catBg }]}>
-                  <Ionicons name={iconName} size={20} color={catColor} />
+                {/* Left: Puffy 3D Solid Clay Icon Square (Mockup Style) */}
+                <View
+                  style={[
+                    styles.iconBadge,
+                    {
+                      backgroundColor: catColor,
+                      borderBottomColor: catDarkColor,
+                      shadowColor: catDarkColor
+                    }
+                  ]}
+                >
+                  <Ionicons name={iconName} size={22} color="#FFFFFF" />
                 </View>
 
                 {/* Middle: Title, Date, Category */}
@@ -282,52 +286,57 @@ const styles = StyleSheet.create({
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 32,
-    borderRadius: 16,
-    borderWidth: 1,
+    padding: 28,
+    borderRadius: 24,
     marginTop: 4
   },
   emptyIconCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 54,
+    height: 54,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 10
   },
   emptyTitle: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '800',
     marginBottom: 3
   },
   emptySubtitle: {
     fontSize: 12,
     textAlign: 'center',
-    lineHeight: 16
+    lineHeight: 17
   },
   listContainer: {
-    gap: 10
+    gap: 12
   },
   transactionCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 16,
-    borderWidth: 1,
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 24,
+    minHeight: 76
   },
   iconBadge: {
-    width: 42,
-    height: 42,
-    borderRadius: 12,
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1,
+    borderBottomWidth: 4,
+    borderTopColor: 'rgba(255, 255, 255, 0.45)',
+    borderLeftColor: 'rgba(255, 255, 255, 0.3)',
+    borderRightColor: 'rgba(0, 0, 0, 0.06)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12
+    marginRight: 14,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.28,
+    shadowRadius: 8,
+    elevation: 4
   },
   infoCol: {
     flex: 1,

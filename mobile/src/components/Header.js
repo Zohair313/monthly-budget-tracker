@@ -32,41 +32,28 @@ export default function Header({ onOpenSettings }) {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Left: Quick Settings / System Status Button */}
+    <View style={[styles.container, { backgroundColor: colors.topBackdrop }]}>
+      {/* Left: 4-Dot Grid / Settings Button (Mockup Style) */}
       <TouchableOpacity
-        style={[
-          styles.iconBtn,
-          {
-            backgroundColor: colors.surface,
-            borderColor: colors.border
-          }
-        ]}
+        style={styles.frostedClayBtn}
         onPress={onOpenSettings}
+        activeOpacity={0.8}
         accessibilityLabel="App Settings"
       >
-        <Ionicons name="settings-outline" size={18} color={colors.textSecondary} />
+        <Ionicons name="grid-outline" size={18} color="#FFFFFF" />
       </TouchableOpacity>
 
-      {/* Center: Clean Frosted Month Navigation Capsule */}
-      <View
-        style={[
-          styles.monthCapsule,
-          {
-            backgroundColor: colors.surface,
-            borderColor: colors.border
-          }
-        ]}
-      >
+      {/* Center: Puffy Frosted Violet Month Capsule */}
+      <View style={styles.monthCapsule}>
         <TouchableOpacity
           onPress={prevMonth}
           style={styles.chevronTouch}
           accessibilityLabel="Previous month"
         >
-          <Ionicons name="chevron-back" size={15} color={colors.textSecondary} />
+          <Ionicons name="chevron-back" size={15} color="#FFFFFF" />
         </TouchableOpacity>
 
-        <Text style={[styles.monthText, { color: colors.text }]}>
+        <Text style={styles.monthText}>
           {MONTH_NAMES[selectedMonth - 1]} {selectedYear}
         </Text>
 
@@ -75,38 +62,34 @@ export default function Header({ onOpenSettings }) {
           style={styles.chevronTouch}
           accessibilityLabel="Next month"
         >
-          <Ionicons name="chevron-forward" size={15} color={colors.textSecondary} />
+          <Ionicons name="chevron-forward" size={15} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
-      {/* Right: Theme Toggle & User Avatar */}
+      {/* Right: Theme Toggle & Glossy Clay Avatar */}
       <View style={styles.rightGroup}>
         <TouchableOpacity
-          style={[
-            styles.iconBtnSmall,
-            {
-              backgroundColor: colors.surface,
-              borderColor: colors.border
-            }
-          ]}
+          style={styles.frostedClayBtnSmall}
           onPress={toggleTheme}
+          activeOpacity={0.8}
           accessibilityLabel="Toggle Theme"
         >
           <Ionicons
             name={isDark ? 'sunny' : 'moon'}
-            size={16}
-            color={isDark ? '#FBBF24' : '#4F46E5'}
+            size={15}
+            color={isDark ? '#FDE047' : '#FFFFFF'}
           />
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.avatarWrap, { borderColor: colors.primary }]}
           onPress={handleLogout}
-          accessibilityLabel="Profile / Logout"
+          style={styles.avatarRing}
+          activeOpacity={0.85}
+          accessibilityLabel="User Profile & Logout"
         >
-          <View style={[styles.avatarCircle, { backgroundColor: colors.primary }]}>
+          <View style={styles.avatarInner}>
             <Text style={styles.avatarText}>
-              {user?.name ? user.name.charAt(0).toUpperCase() : 'B'}
+              {(user?.name || 'U').charAt(0).toUpperCase()}
             </Text>
           </View>
         </TouchableOpacity>
@@ -117,81 +100,88 @@ export default function Header({ onOpenSettings }) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 12
   },
-  iconBtn: {
-    width: 40,
-    height: 40,
+  frostedClayBtn: {
+    width: 38,
+    height: 38,
     borderRadius: 14,
-    borderWidth: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderTopWidth: 1.5,
+    borderBottomWidth: 3,
+    borderTopColor: 'rgba(255, 255, 255, 0.42)',
+    borderBottomColor: 'rgba(40, 20, 120, 0.28)',
     alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2
+    justifyContent: 'center'
   },
-  iconBtnSmall: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    borderWidth: 1,
+  frostedClayBtnSmall: {
+    width: 34,
+    height: 34,
+    borderRadius: 13,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderTopWidth: 1.5,
+    borderBottomWidth: 3,
+    borderTopColor: 'rgba(255, 255, 255, 0.42)',
+    borderBottomColor: 'rgba(40, 20, 120, 0.28)',
     alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2
+    justifyContent: 'center'
   },
   monthCapsule: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    gap: 8,
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 2
+    paddingHorizontal: 10,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    borderTopWidth: 1.5,
+    borderBottomWidth: 3,
+    borderTopColor: 'rgba(255, 255, 255, 0.4)',
+    borderBottomColor: 'rgba(40, 20, 120, 0.25)',
+    gap: 6
   },
   chevronTouch: {
-    padding: 2
+    padding: 4
   },
   monthText: {
+    color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '700',
-    letterSpacing: 0.1
+    fontWeight: '800',
+    letterSpacing: -0.1
   },
   rightGroup: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8
   },
-  avatarWrap: {
+  avatarRing: {
+    width: 38,
+    height: 38,
     borderRadius: 19,
-    padding: 1.5,
-    borderWidth: 1.5
+    backgroundColor: '#FFFFFF',
+    padding: 2.5,
+    borderBottomWidth: 3,
+    borderBottomColor: 'rgba(40, 20, 120, 0.3)',
+    shadowColor: '#362199',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4
   },
-  avatarCircle: {
-    width: 33,
-    height: 33,
-    borderRadius: 16.5,
+  avatarInner: {
+    flex: 1,
+    borderRadius: 16,
+    backgroundColor: '#9080F8',
     alignItems: 'center',
     justifyContent: 'center'
   },
   avatarText: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#FFFFFF'
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '900'
   }
 });

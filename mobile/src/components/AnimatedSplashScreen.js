@@ -99,7 +99,7 @@ export default function AnimatedSplashScreen({ onFinish }) {
 
   return (
     <Animated.View style={[styles.container, { opacity: exitAnim }]}>
-      <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
+      <StatusBar barStyle="light-content" backgroundColor="#7A63F1" />
 
       {/* Decorative ambient background glows */}
       <View style={styles.glowCircle1} />
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width,
     height,
-    backgroundColor: '#0F172A', // Full screen Obsidian Navy
+    backgroundColor: '#7A63F1', // Full screen Claymorphism Soft Violet
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 999999
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     width: 320,
     height: 320,
     borderRadius: 160,
-    backgroundColor: 'rgba(79, 70, 229, 0.18)'
+    backgroundColor: 'rgba(255, 255, 255, 0.14)'
   },
   glowCircle2: {
     position: 'absolute',
@@ -169,33 +169,33 @@ const styles = StyleSheet.create({
     width: 280,
     height: 280,
     borderRadius: 140,
-    backgroundColor: 'rgba(16, 185, 129, 0.12)'
+    backgroundColor: 'rgba(90, 212, 148, 0.22)'
   },
   contentWrap: {
     alignItems: 'center',
     marginBottom: 80
   },
   clayLogoCoin: {
-    width: 96,
-    height: 96,
-    borderRadius: 30,
-    backgroundColor: '#4F46E5',
-    borderTopWidth: 2.5,
+    width: 98,
+    height: 98,
+    borderRadius: 32,
+    backgroundColor: '#6B52E8',
+    borderTopWidth: 3,
     borderLeftWidth: 2,
-    borderRightWidth: 1,
-    borderBottomWidth: 5,
-    borderTopColor: 'rgba(255, 255, 255, 0.7)',
-    borderLeftColor: 'rgba(255, 255, 255, 0.4)',
-    borderRightColor: '#312E81',
-    borderBottomColor: '#1E1B4B',
+    borderRightWidth: 1.5,
+    borderBottomWidth: 6,
+    borderTopColor: 'rgba(255, 255, 255, 0.65)',
+    borderLeftColor: 'rgba(255, 255, 255, 0.45)',
+    borderRightColor: 'rgba(0, 0, 0, 0.08)',
+    borderBottomColor: '#4A32C2',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
-    shadowColor: '#4F46E5',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.4,
-    shadowRadius: 18,
-    elevation: 8
+    shadowColor: '#3B22B0',
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.42,
+    shadowRadius: 22,
+    elevation: 10
   },
   brandTitle: {
     color: '#FFFFFF',
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.6
   },
   brandSubtitle: {
-    color: '#94A3B8',
+    color: 'rgba(255, 255, 255, 0.82)',
     fontSize: 13,
     fontWeight: '600',
     marginTop: 6,
@@ -218,16 +218,16 @@ const styles = StyleSheet.create({
   },
   progressTrack: {
     width: '100%',
-    height: 7,
-    borderRadius: 3.5,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     overflow: 'hidden',
     marginBottom: 10
   },
   progressBar: {
     height: '100%',
-    borderRadius: 3.5,
-    backgroundColor: '#10B981' // Emerald Mint Fill
+    borderRadius: 4,
+    backgroundColor: '#86F0B8'
   },
   progressStatusRow: {
     flexDirection: 'row',
@@ -235,12 +235,12 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   statusText: {
-    color: '#94A3B8',
+    color: 'rgba(255, 255, 255, 0.85)',
     fontSize: 11,
     fontWeight: '600'
   },
   percentText: {
-    color: '#10B981',
+    color: '#FFFFFF',
     fontSize: 11,
     fontWeight: '800'
   }

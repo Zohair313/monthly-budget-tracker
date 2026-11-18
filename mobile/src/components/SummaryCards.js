@@ -16,389 +16,421 @@ export default function SummaryCards({
   onToggleCategoryBreakdown,
   onOpenExport
 }) {
-  const { summary, incomeData, expenses, selectedMonth, selectedYear } = useBudget();
+  const { summary } = useBudget();
   const { user, themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
   const isDark = themeMode === 'dark';
 
   const totalIncome = summary.total_income || 0;
   const totalExpense = summary.total_expense || 0;
-  const remainingBalance = summary.remaining_balance !== undefined ? summary.remaining_balance : (totalIncome - totalExpense);
+  const remainingBalance =
+    summary.remaining_balance !== undefined
+      ? summary.remaining_balance
+      : totalIncome - totalExpense;
   const burnRate = summary.burn_rate_percent || 0;
   const isOverBudget = remainingBalance < 0;
   const isBudgetAlert = summary.is_budget_alert || burnRate >= 80;
 
-  // Executive Balance Card background tone
-  let cardBg = isDark ? '#111827' : '#0F172A'; // Obsidian Navy Standard
-  let statusBadgeColor = '#10B981';
-  let statusBadgeText = 'Healthy';
+  // Puffy 3D Clay Card palette (matches mockup violet; adapts subtly on alert)
+  let cardBg = colors.brandCard;
+  let cardBottom = colors.brandCardBottom;
+  let cardShadow = isDark ? '#000000' : '#5A40DF';
 
   if (isOverBudget) {
-    cardBg = isDark ? '#7F1D1D' : '#881337'; // Crimson
-    statusBadgeColor = '#EF4444';
-    statusBadgeText = 'Over Budget';
+    cardBg = '#D9435E';
+    cardBottom = '#A3243B';
+    cardShadow = '#B82C45';
   } else if (isBudgetAlert) {
-    cardBg = isDark ? '#78350F' : '#713F12'; // Amber
-    statusBadgeColor = '#F59E0B';
-    statusBadgeText = '80% Spent';
+    cardBg = '#D9822B';
+    cardBottom = '#A85D15';
+    cardShadow = '#B5661A';
   }
 
   return (
-    <View style={styles.container}>
-      {/* 1. Executive 3D Tactile Balance Card */}
-      <View style={[styles.executiveCard, { backgroundColor: cardBg }]}>
-        {/* Subtle glass reflection gradient simulation */}
-        <View style={styles.cardBevelHighlight} />
+    <View style={styles.wrapper}>
+      {/* Curved Violet Clay Backdrop Behind Top Half of Floating Card */}
+      <View
+        style={[
+          styles.curvedBackdrop,
+          { backgroundColor: colors.topBackdrop }
+        ]}
+      />
 
-        {/* Card Header: Label & Mastercard Circles */}
-        <View style={styles.cardHeader}>
-          <View style={styles.balanceLabelGroup}>
-            <Text style={styles.balanceOverline}>TOTAL AVAILABLE BALANCE</Text>
-            <Text style={styles.balanceAmount}>{formatCurrency(remainingBalance)}</Text>
+      <View style={styles.container}>
+        {/* 1. Floating Puffy 3D Clay Debit-Style Balance Card */}
+        <View
+          style={[
+            styles.clayCard,
+            {
+              backgroundColor: cardBg,
+              borderBottomColor: cardBottom,
+              shadowColor: cardShadow
+            }
+          ]}
+        >
+          {/* Glossy Top-Left Pillow Highlight */}
+          <View style={styles.clayTopSheen} />
+          {/* Soft Glowing Bottom-Right Orb Accent (from mockup) */}
+          <View style={styles.clayCornerOrb} />
+
+          {/* Row 1: Balance & Mastercard Circles */}
+          <View style={styles.cardHeader}>
+            <View style={styles.balanceGroup}>
+              <Text style={styles.balanceLabel}>Balance</Text>
+              <Text style={styles.balanceAmount} numberOfLines={1} adjustsFontSizeToFit>
+                {formatCurrency(remainingBalance)}
+              </Text>
+            </View>
+
+            <View style={styles.mastercardWrap}>
+              <View style={[styles.mcCircle, { backgroundColor: '#FF4F5A' }]} />
+              <View style={[styles.mcCircle, { backgroundColor: '#FFB300', marginLeft: -12, opacity: 0.92 }]} />
+            </View>
           </View>
 
-          {/* Overlapping Mastercard Circular Emblem */}
-          <View style={styles.mastercardContainer}>
-            <View style={[styles.mastercardCircle, { backgroundColor: '#EF4444' }]} />
-            <View style={[styles.mastercardCircle, { backgroundColor: '#F59E0B', marginLeft: -12, opacity: 0.92 }]} />
+          {/* Row 2: Masked Card Digits */}
+          <View style={styles.cardDigitsRow}>
+            <Text style={styles.cardDigits}>••••   ••••   ••••   3432</Text>
+          </View>
+
+          {/* Row 3: Exp & Cardholder Name (Clean Mockup Layout) */}
+          <View style={styles.cardFooter}>
+            <View>
+              <Text style={styles.metaLabel}>Exp</Text>
+              <Text style={styles.metaValue}>12/28</Text>
+            </View>
+
+            <View style={styles.metaRight}>
+              <Text style={styles.metaLabel}>Name</Text>
+              <Text style={styles.metaValue} numberOfLines={1}>
+                {user?.name || 'Demo Trainee'}
+              </Text>
+            </View>
+          </View>
+
+          {/* Row 4: Soft Frosted Income & Expense Summary Strip */}
+          <View style={styles.metricsStrip}>
+            <TouchableOpacity
+              style={styles.metricHalf}
+              onPress={onOpenSetIncome}
+              activeOpacity={0.8}
+            >
+              <View style={styles.metricTitleRow}>
+                <View style={[styles.metricDot, { backgroundColor: '#6EE7B7' }]} />
+                <Text style={styles.metricOverline}>INCOME</Text>
+              </View>
+              <Text style={styles.metricVal}>{formatCurrency(totalIncome)}</Text>
+            </TouchableOpacity>
+
+            <View style={styles.metricDivider} />
+
+            <TouchableOpacity
+              style={styles.metricHalf}
+              onPress={onOpenAddExpense}
+              activeOpacity={0.8}
+            >
+              <View style={styles.metricTitleRow}>
+                <View style={[styles.metricDot, { backgroundColor: '#FCA5A5' }]} />
+                <Text style={styles.metricOverline}>EXPENSES</Text>
+              </View>
+              <Text style={styles.metricVal}>{formatCurrency(totalExpense)}</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Masked Card Digits */}
-        <View style={styles.cardNumberWrap}>
-          <Text style={styles.cardNumberText}>••••   ••••   ••••   3432</Text>
-        </View>
-
-        {/* Card Footer: Expiry, Cardholder & Budget Health Pill */}
-        <View style={styles.cardFooter}>
-          <View style={styles.cardMetaBlock}>
-            <Text style={styles.cardMetaLabel}>CARDHOLDER</Text>
-            <Text style={styles.cardMetaValue} numberOfLines={1}>
-              {user?.name || 'Trainee Developer'}
-            </Text>
-          </View>
-
-          <View style={styles.cardMetaBlock}>
-            <Text style={styles.cardMetaLabel}>EXPIRES</Text>
-            <Text style={styles.cardMetaValue}>12/28</Text>
-          </View>
-
-          <View style={[styles.statusPill, { backgroundColor: 'rgba(255, 255, 255, 0.15)', borderColor: statusBadgeColor }]}>
-            <View style={[styles.statusDot, { backgroundColor: statusBadgeColor }]} />
-            <Text style={[styles.statusPillText, { color: '#FFFFFF' }]}>
-              {statusBadgeText}
-            </Text>
-          </View>
-        </View>
-
-        {/* Burn Rate Track */}
-        <View style={styles.progressContainer}>
-          <View style={styles.progressTrack}>
-            <View
-              style={[
-                styles.progressBar,
-                {
-                  width: `${Math.min(burnRate, 100)}%`,
-                  backgroundColor: statusBadgeColor
-                }
-              ]}
-            />
-          </View>
-          <Text style={styles.progressPercentText}>{burnRate}% spent</Text>
-        </View>
-
-        {/* Quick Balance Metrics Bar */}
-        <View style={styles.metricsRow}>
+        {/* 2. Four Puffy 3D Pastel Clay Action Tiles (Exact Mockup Colors) */}
+        <View style={styles.tilesGrid}>
+          {/* Tile 1: Mint Green (Income) */}
           <TouchableOpacity
-            style={styles.metricTouch}
+            style={styles.tileCol}
             onPress={onOpenSetIncome}
-            activeOpacity={0.8}
+            activeOpacity={0.82}
             accessibilityLabel="Set Monthly Income"
           >
-            <View style={styles.metricLabelRow}>
-              <View style={[styles.miniDot, { backgroundColor: '#10B981' }]} />
-              <Text style={styles.metricLabel}>INCOME</Text>
+            <View
+              style={[
+                styles.clayTile,
+                {
+                  backgroundColor: colors.tileMint,
+                  borderTopColor: colors.tileMintTop,
+                  borderLeftColor: colors.tileMintTop,
+                  borderBottomColor: colors.tileMintBottom,
+                  shadowColor: colors.tileMintBottom
+                }
+              ]}
+            >
+              <Ionicons name="wallet-outline" size={25} color="#FFFFFF" />
             </View>
-            <Text style={[styles.metricValue, { color: '#10B981' }]}>
-              {formatCurrency(totalIncome)}
-            </Text>
+            <Text style={[styles.tileLabel, { color: colors.textSecondary }]}>Income</Text>
           </TouchableOpacity>
 
-          <View style={styles.verticalDivider} />
-
+          {/* Tile 2: Soft Pink (Expense) */}
           <TouchableOpacity
-            style={styles.metricTouch}
+            style={styles.tileCol}
             onPress={onOpenAddExpense}
-            activeOpacity={0.8}
-            accessibilityLabel="View Expenses"
+            activeOpacity={0.82}
+            accessibilityLabel="Add Expense"
           >
-            <View style={styles.metricLabelRow}>
-              <View style={[styles.miniDot, { backgroundColor: '#EF4444' }]} />
-              <Text style={styles.metricLabel}>EXPENSES</Text>
+            <View
+              style={[
+                styles.clayTile,
+                {
+                  backgroundColor: colors.tileCoral,
+                  borderTopColor: colors.tileCoralTop,
+                  borderLeftColor: colors.tileCoralTop,
+                  borderBottomColor: colors.tileCoralBottom,
+                  shadowColor: colors.tileCoralBottom
+                }
+              ]}
+            >
+              <Ionicons name="receipt-outline" size={25} color="#FFFFFF" />
             </View>
-            <Text style={[styles.metricValue, { color: '#EF4444' }]}>
-              {formatCurrency(totalExpense)}
-            </Text>
+            <Text style={[styles.tileLabel, { color: colors.textSecondary }]}>Expense</Text>
+          </TouchableOpacity>
+
+          {/* Tile 3: Periwinkle Violet (Analytics) */}
+          <TouchableOpacity
+            style={styles.tileCol}
+            onPress={onToggleCategoryBreakdown}
+            activeOpacity={0.82}
+            accessibilityLabel="View Analytics"
+          >
+            <View
+              style={[
+                styles.clayTile,
+                {
+                  backgroundColor: colors.tileViolet,
+                  borderTopColor: colors.tileVioletTop,
+                  borderLeftColor: colors.tileVioletTop,
+                  borderBottomColor: colors.tileVioletBottom,
+                  shadowColor: colors.tileVioletBottom
+                }
+              ]}
+            >
+              <Ionicons name="bar-chart" size={24} color="#FFFFFF" />
+            </View>
+            <Text style={[styles.tileLabel, { color: colors.textSecondary }]}>Analytics</Text>
+          </TouchableOpacity>
+
+          {/* Tile 4: Soft Sky Cyan (Statement) */}
+          <TouchableOpacity
+            style={styles.tileCol}
+            onPress={onOpenExport}
+            activeOpacity={0.82}
+            accessibilityLabel="Export Statement"
+          >
+            <View
+              style={[
+                styles.clayTile,
+                {
+                  backgroundColor: colors.tileCyan,
+                  borderTopColor: colors.tileCyanTop,
+                  borderLeftColor: colors.tileCyanTop,
+                  borderBottomColor: colors.tileCyanBottom,
+                  shadowColor: colors.tileCyanBottom
+                }
+              ]}
+            >
+              <Ionicons name="document-text-outline" size={24} color="#FFFFFF" />
+            </View>
+            <Text style={[styles.tileLabel, { color: colors.textSecondary }]}>Statement</Text>
           </TouchableOpacity>
         </View>
-      </View>
-
-      {/* 2. Four Tactile Action Tiles */}
-      <View style={styles.actionsGrid}>
-        {/* Action 1: Income */}
-        <TouchableOpacity
-          style={styles.actionCol}
-          onPress={onOpenSetIncome}
-          activeOpacity={0.8}
-          accessibilityLabel="Open Income Accordion"
-        >
-          <View style={[styles.actionIconBox, { backgroundColor: colors.tileMintBg, borderColor: colors.tileMintBorder }]}>
-            <Ionicons name="arrow-down-circle" size={24} color={colors.tileMint} />
-          </View>
-          <Text style={[styles.actionLabel, { color: colors.text }]}>Income</Text>
-        </TouchableOpacity>
-
-        {/* Action 2: Expense */}
-        <TouchableOpacity
-          style={styles.actionCol}
-          onPress={onOpenAddExpense}
-          activeOpacity={0.8}
-          accessibilityLabel="Open Expense Accordion"
-        >
-          <View style={[styles.actionIconBox, { backgroundColor: colors.tileCoralBg, borderColor: colors.tileCoralBorder }]}>
-            <Ionicons name="receipt" size={24} color={colors.tileCoral} />
-          </View>
-          <Text style={[styles.actionLabel, { color: colors.text }]}>Expense</Text>
-        </TouchableOpacity>
-
-        {/* Action 3: Analytics */}
-        <TouchableOpacity
-          style={styles.actionCol}
-          onPress={onToggleCategoryBreakdown}
-          activeOpacity={0.8}
-          accessibilityLabel="Toggle Analytics"
-        >
-          <View style={[styles.actionIconBox, { backgroundColor: colors.tileVioletBg, borderColor: colors.tileVioletBorder }]}>
-            <Ionicons name="bar-chart" size={22} color={colors.tileViolet} />
-          </View>
-          <Text style={[styles.actionLabel, { color: colors.text }]}>Analytics</Text>
-        </TouchableOpacity>
-
-        {/* Action 4: Statement */}
-        <TouchableOpacity
-          style={styles.actionCol}
-          onPress={onOpenExport}
-          activeOpacity={0.8}
-          accessibilityLabel="Export Statement"
-        >
-          <View style={[styles.actionIconBox, { backgroundColor: colors.tileCyanBg, borderColor: colors.tileCyanBorder }]}>
-            <Ionicons name="document-text" size={22} color={colors.tileCyan} />
-          </View>
-          <Text style={[styles.actionLabel, { color: colors.text }]}>Statement</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    position: 'relative',
+    paddingBottom: 6
+  },
+  curvedBackdrop: {
+    position: 'absolute',
+    top: -10,
+    left: 0,
+    right: 0,
+    height: 126,
+    borderBottomLeftRadius: 44,
+    borderBottomRightRadius: 44
+  },
   container: {
     paddingHorizontal: 20,
-    paddingTop: 6,
-    paddingBottom: 16
+    paddingTop: 6
   },
-  executiveCard: {
-    borderRadius: 22,
-    padding: 18,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.14)',
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.22,
-    shadowRadius: 16,
-    elevation: 8,
+  clayCard: {
+    borderRadius: 28,
+    paddingHorizontal: 22,
+    paddingTop: 20,
+    paddingBottom: 16,
+    borderTopWidth: 2.5,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 6,
+    borderTopColor: 'rgba(255, 255, 255, 0.44)',
+    borderLeftColor: 'rgba(255, 255, 255, 0.28)',
+    borderRightColor: 'rgba(0, 0, 0, 0.08)',
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.36,
+    shadowRadius: 22,
+    elevation: 12,
     position: 'relative',
     overflow: 'hidden'
   },
-  cardBevelHighlight: {
+  clayTopSheen: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: 44,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24
+    height: 48,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26
+  },
+  clayCornerOrb: {
+    position: 'absolute',
+    bottom: -36,
+    right: -24,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    backgroundColor: 'rgba(255, 255, 255, 0.09)'
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    marginBottom: 6
+    justifyContent: 'space-between'
   },
-  balanceLabelGroup: {
-    flex: 1
+  balanceGroup: {
+    flex: 1,
+    marginRight: 10
   },
-  balanceOverline: {
-    color: '#94A3B8',
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.8
+  balanceLabel: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.2
   },
   balanceAmount: {
     color: '#FFFFFF',
-    fontSize: 28,
+    fontSize: 27,
     fontWeight: '900',
     letterSpacing: -0.5,
-    marginTop: 4
+    marginTop: 3
   },
-  mastercardContainer: {
+  mastercardWrap: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingTop: 4
   },
-  mastercardCircle: {
+  mcCircle: {
     width: 28,
     height: 28,
     borderRadius: 14
   },
-  cardNumberWrap: {
-    marginVertical: 8
+  cardDigitsRow: {
+    marginVertical: 14
   },
-  cardNumberText: {
-    color: '#64748B',
-    fontSize: 12,
-    fontWeight: '600',
+  cardDigits: {
+    color: 'rgba(255, 255, 255, 0.85)',
+    fontSize: 14,
+    fontWeight: '700',
     letterSpacing: 2.5
   },
   cardFooter: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'space-between',
-    marginBottom: 10
-  },
-  cardMetaBlock: {
-    justifyContent: 'center'
-  },
-  cardMetaLabel: {
-    color: '#64748B',
-    fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.5
-  },
-  cardMetaValue: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '700',
-    marginTop: 2,
-    maxWidth: 120
-  },
-  statusPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    borderWidth: 1
-  },
-  statusDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3
-  },
-  statusPillText: {
-    fontSize: 10,
-    fontWeight: '800'
-  },
-  progressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
     marginBottom: 14
   },
-  progressTrack: {
-    flex: 1,
-    height: 5,
-    borderRadius: 2.5,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    overflow: 'hidden'
+  metaRight: {
+    alignItems: 'flex-end'
   },
-  progressBar: {
-    height: '100%',
-    borderRadius: 2.5
-  },
-  progressPercentText: {
-    color: '#94A3B8',
+  metaLabel: {
+    color: 'rgba(255, 255, 255, 0.68)',
     fontSize: 10,
-    fontWeight: '700'
+    fontWeight: '600',
+    marginBottom: 2
   },
-  metricsRow: {
+  metaValue: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '800',
+    maxWidth: 160
+  },
+  metricsStrip: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    borderRadius: 16,
+    paddingVertical: 9,
+    paddingHorizontal: 14,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)'
+    borderTopColor: 'rgba(255, 255, 255, 0.25)'
   },
-  metricTouch: {
+  metricHalf: {
     flex: 1
   },
-  metricLabelRow: {
+  metricTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
     marginBottom: 2
   },
-  miniDot: {
+  metricDot: {
     width: 6,
     height: 6,
     borderRadius: 3
   },
-  metricLabel: {
-    color: '#94A3B8',
+  metricOverline: {
+    color: 'rgba(255, 255, 255, 0.78)',
     fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.5
-  },
-  metricValue: {
-    fontSize: 14,
     fontWeight: '800',
-    letterSpacing: -0.2
+    letterSpacing: 0.6
   },
-  verticalDivider: {
+  metricVal: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '900'
+  },
+  metricDivider: {
     width: 1,
     height: 26,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: 'rgba(255, 255, 255, 0.22)',
     marginHorizontal: 12
   },
-  actionsGrid: {
+  tilesGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 14
+    marginTop: 22,
+    marginBottom: 6
   },
-  actionCol: {
+  tileCol: {
     alignItems: 'center',
     flex: 1
   },
-  actionIconBox: {
-    width: 50,
-    height: 50,
-    borderRadius: 16,
-    borderWidth: 1,
+  clayTile: {
+    width: 62,
+    height: 62,
+    borderRadius: 20,
+    borderTopWidth: 2.5,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1,
+    borderBottomWidth: 5,
+    borderRightColor: 'rgba(0, 0, 0, 0.06)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.34,
+    shadowRadius: 12,
+    elevation: 7
   },
-  actionLabel: {
+  tileLabel: {
     fontSize: 11,
     fontWeight: '700',
-    marginTop: 5,
+    marginTop: 8,
     letterSpacing: 0.1
   }
 });

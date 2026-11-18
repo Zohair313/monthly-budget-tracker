@@ -3,264 +3,231 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import Ionicons from './Icon';
 import { useBudget } from '../context/BudgetContext';
 import { useAuth } from '../context/AuthContext';
-import { palette, categoryColors, getClayCard, getClayPill } from '../theme/colors';
+import { palette, categoryColors } from '../theme/colors';
 
-const CATEGORY_ICONS = {
-  Food: 'restaurant-outline',
-  Bills: 'receipt-outline',
-  Travel: 'car-outline',
-  Shopping: 'bag-handle-outline',
-  Health: 'medkit-outline',
-  Entertainment: 'film-outline',
-  Education: 'book-outline',
-  General: 'pricetag-outline'
-};
+const DEFAULT_DEMO_BARS = [
+  { key: 'FO', label: 'Food', pct: 42 },
+  { key: 'BI', label: 'Bills', pct: 76 },
+  { key: 'TR', label: 'Travel', pct: 58 },
+  { key: 'SH', label: 'Shop', pct: 92 },
+  { key: 'HE', label: 'Health', pct: 78 },
+  { key: 'OT', label: 'Other', pct: 48 }
+];
 
 export default function CategoryBreakdown({ onSelectCategory, activeCategory }) {
   const { categoryBreakdown, summary } = useBudget();
   const { themeMode } = useAuth();
   const colors = palette[themeMode] || palette.light;
-  const clayCard = getClayCard(themeMode);
-  const clayPill = getClayPill(themeMode);
 
   const totalExpense = summary.total_expense || 0;
   const categories = Object.keys(categoryBreakdown);
-
-  if (categories.length === 0 || totalExpense === 0) {
-    return null;
-  }
-
-  // Calculate highest category for vertical chart normalization
-  const maxAmount = Math.max(...categories.map((c) => categoryBreakdown[c] || 0), 1);
+  const hasRealData = categories.length > 0 && totalExpense > 0;
+  const maxAmount = hasRealData
+    ? Math.max(...categories.map((c) => categoryBreakdown[c] || 0), 1)
+    : 100;
 
   return (
-    <View style={[styles.container, clayCard]}>
-      {/* Header (Reference image Screen 2 style) */}
-      <View style={styles.headerRow}>
-        <View style={styles.headerLeft}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Outcome Transactions</Text>
-          <Text style={[styles.sectionSubtitle, { color: colors.textSecondary }]}>
-            Category Distribution
-          </Text>
-        </View>
-
-        <View
-          style={[
-            styles.totalBadge,
-            clayPill,
-            {
-              backgroundColor: colors.surfaceSubtle
-            }
-          ]}
-        >
-          <Text style={[styles.totalBadgeText, { color: colors.primary }]}>
-            Rs. {totalExpense.toLocaleString()}
-          </Text>
-        </View>
-      </View>
-
-      {/* 3D Vertical Clay Pill Bar Chart (Screen 2 reference style) */}
+    <View style={styles.wrapper}>
+      {/* Puffy 3D Purple Clay Chart Card (Matches Screen 2 of Mockup) */}
       <View
         style={[
-          styles.chartBox,
+          styles.purpleCard,
           {
-            backgroundColor: themeMode === 'dark' ? '#181630' : '#F7F8FD',
-            borderTopColor: colors.clayBorderTop,
-            borderBottomColor: colors.clayBorderBottom
+            backgroundColor: colors.chartBg,
+            borderBottomColor: colors.brandCardBottom,
+            shadowColor: colors.shadow
           }
         ]}
       >
-        <View style={styles.barsContainer}>
-          {categories.map((cat) => {
-            const amount = categoryBreakdown[cat] || 0;
-            const barHeightPct = Math.max(Math.round((amount / maxAmount) * 100), 18);
-            const catConfig = categoryColors[cat] || categoryColors.General;
-            const catColor = catConfig.color;
-            const catDarkColor = catConfig.darkColor;
-            const isSelected = activeCategory === cat;
+        {/* Top Clay Dropdown Pills Row (Mockup Style) */}
+        <View style={styles.pillsHeader}>
+          <View style={styles.purpleClayPill}>
+            <Text style={styles.purplePillText}>Outcome</Text>
+            <Ionicons name="chevron-down" size={14} color="#FFFFFF" />
+          </View>
 
-            return (
-              <TouchableOpacity
-                key={cat}
-                style={styles.barCol}
-                onPress={() => onSelectCategory(isSelected ? null : cat)}
-                accessibilityLabel={`${cat}: Rs. ${amount}`}
-              >
-                {/* Vertical 3D Clay Pill Bar */}
-                <View style={styles.barTrack}>
-                  <View
-                    style={[
-                      styles.clayVerticalBar,
-                      {
-                        height: `${barHeightPct}%`,
-                        backgroundColor: isSelected ? colors.primary : '#FF8095',
-                        borderTopColor: 'rgba(255, 255, 255, 0.65)',
-                        borderLeftColor: 'rgba(255, 255, 255, 0.40)',
-                        borderRightColor: isSelected ? colors.primaryDark : '#E11D48',
-                        borderBottomColor: isSelected ? colors.primaryDark : '#E11D48',
-                        shadowColor: isSelected ? colors.primaryDark : '#E11D48'
-                      }
-                    ]}
-                  />
-                </View>
-
-                {/* Day / Category Initial */}
-                <Text
-                  style={[
-                    styles.barLabel,
-                    {
-                      color: isSelected ? colors.primary : colors.textSecondary,
-                      fontWeight: isSelected ? '900' : '700'
-                    }
-                  ]}
-                >
-                  {cat.slice(0, 2).toUpperCase()}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+          <View style={styles.purpleClayPill}>
+            <Text style={styles.purplePillText}>Rs. {totalExpense.toLocaleString()}</Text>
+          </View>
         </View>
-      </View>
 
-      {/* Category Pills Slider */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillsScroll}>
-        <TouchableOpacity
-          onPress={() => onSelectCategory(null)}
-          style={[
-            styles.clayPillBtn,
-            clayPill,
-            activeCategory === null
-              ? {
-                  backgroundColor: colors.primary,
-                  borderTopColor: 'rgba(255, 255, 255, 0.50)',
-                  borderBottomColor: colors.primaryDark
-                }
-              : {
-                  backgroundColor: colors.surfaceSubtle
-                }
-          ]}
-        >
-          <Text
-            style={[
-              styles.pillText,
-              {
-                color: activeCategory === null ? '#FFFFFF' : colors.textSecondary,
-                fontWeight: activeCategory === null ? '800' : '600'
-              }
-            ]}
-          >
-            All
+        {/* Inner Soft Violet Clay Well */}
+        <View style={[styles.chartWell, { backgroundColor: colors.chartWell }]}>
+          <Text style={styles.wellTitle}>Outcome Transactions</Text>
+          <Text style={styles.wellSubtitle}>
+            {hasRealData ? 'Tap any bar to filter category' : 'Preview • Add expenses to see live bars'}
           </Text>
-        </TouchableOpacity>
 
-        {categories.map((cat) => {
-          const amount = categoryBreakdown[cat] || 0;
-          const pct = Math.round((amount / totalExpense) * 100);
-          const iconName = CATEGORY_ICONS[cat] || 'pricetag-outline';
-          const catConfig = categoryColors[cat] || categoryColors.General;
-          const catColor = catConfig.color;
-          const catDarkColor = catConfig.darkColor;
-          const isSelected = activeCategory === cat;
+          {/* 3D Puffy Pink Vertical Pill Bars */}
+          <View style={styles.barsRow}>
+            {hasRealData
+              ? categories.map((cat) => {
+                  const amount = categoryBreakdown[cat] || 0;
+                  const pct = Math.max(Math.round((amount / maxAmount) * 100), 22);
+                  const isSelected = activeCategory === cat;
 
-          return (
+                  return (
+                    <TouchableOpacity
+                      key={cat}
+                      style={styles.barCol}
+                      onPress={() => onSelectCategory(isSelected ? null : cat)}
+                      activeOpacity={0.8}
+                    >
+                      <View style={styles.barTrack}>
+                        <View
+                          style={[
+                            styles.pinkClayBar,
+                            {
+                              height: `${pct}%`,
+                              backgroundColor: isSelected ? '#5AD494' : colors.chartBar,
+                              borderTopColor: isSelected ? '#9AF5C4' : colors.chartBarTop,
+                              borderLeftColor: isSelected ? '#9AF5C4' : colors.chartBarTop,
+                              borderBottomColor: isSelected ? '#34AD6E' : colors.chartBarBottom
+                            }
+                          ]}
+                        />
+                      </View>
+                      <Text style={styles.barDayLabel}>{cat.slice(0, 2).toUpperCase()}</Text>
+                    </TouchableOpacity>
+                  );
+                })
+              : DEFAULT_DEMO_BARS.map((bar) => (
+                  <View key={bar.key} style={styles.barCol}>
+                    <View style={styles.barTrack}>
+                      <View
+                        style={[
+                          styles.pinkClayBar,
+                          {
+                            height: `${bar.pct}%`,
+                            opacity: 0.48,
+                            backgroundColor: colors.chartBar,
+                            borderTopColor: colors.chartBarTop,
+                            borderLeftColor: colors.chartBarTop,
+                            borderBottomColor: colors.chartBarBottom
+                          }
+                        ]}
+                      />
+                    </View>
+                    <Text style={styles.barDayLabel}>{bar.key}</Text>
+                  </View>
+                ))}
+          </View>
+        </View>
+
+        {/* Filter Chips */}
+        {hasRealData && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterRow}
+          >
             <TouchableOpacity
-              key={cat}
-              onPress={() => onSelectCategory(isSelected ? null : cat)}
+              onPress={() => onSelectCategory(null)}
               style={[
-                styles.clayPillBtn,
-                clayPill,
-                isSelected
-                  ? {
-                      backgroundColor: catColor,
-                      borderTopColor: 'rgba(255, 255, 255, 0.50)',
-                      borderBottomColor: catDarkColor
-                    }
-                  : {
-                      backgroundColor: colors.surfaceSubtle
-                    }
+                styles.filterChip,
+                activeCategory === null && styles.filterChipActive
               ]}
             >
-              <Ionicons
-                name={iconName}
-                size={13}
-                color={isSelected ? '#FFFFFF' : catColor}
-                style={styles.pillIcon}
-              />
-              <Text
-                style={[
-                  styles.pillText,
-                  {
-                    color: isSelected ? '#FFFFFF' : colors.text,
-                    fontWeight: isSelected ? '800' : '600'
-                  }
-                ]}
-              >
-                {cat}
-              </Text>
-              <Text
-                style={[
-                  styles.pillPercent,
-                  {
-                    color: isSelected ? 'rgba(255, 255, 255, 0.85)' : colors.textTertiary
-                  }
-                ]}
-              >
-                {pct}%
-              </Text>
+              <Text style={styles.filterChipText}>All</Text>
             </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+
+            {categories.map((cat) => {
+              const isSelected = activeCategory === cat;
+              const catInfo = categoryColors[cat] || categoryColors.General;
+              return (
+                <TouchableOpacity
+                  key={cat}
+                  onPress={() => onSelectCategory(isSelected ? null : cat)}
+                  style={[
+                    styles.filterChip,
+                    isSelected && styles.filterChipActive
+                  ]}
+                >
+                  <Ionicons name={catInfo.icon} size={12} color="#FFFFFF" />
+                  <Text style={styles.filterChipText}>{cat}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        )}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: 20,
-    marginTop: 14,
-    padding: 18
+  wrapper: {
+    paddingHorizontal: 20,
+    marginTop: 4,
+    marginBottom: 14
   },
-  headerRow: {
+  purpleCard: {
+    borderRadius: 28,
+    padding: 18,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 5.5,
+    borderTopColor: 'rgba(255, 255, 255, 0.38)',
+    borderLeftColor: 'rgba(255, 255, 255, 0.25)',
+    borderRightColor: 'rgba(0, 0, 0, 0.08)',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10
+  },
+  pillsHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 14,
+    gap: 10
+  },
+  purpleClayPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    borderTopWidth: 1.5,
+    borderBottomWidth: 3.5,
+    borderTopColor: 'rgba(255, 255, 255, 0.38)',
+    borderBottomColor: 'rgba(35, 18, 110, 0.35)'
+  },
+  purplePillText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '800'
+  },
+  chartWell: {
+    borderRadius: 22,
+    padding: 16,
+    borderTopWidth: 2,
+    borderTopColor: 'rgba(35, 18, 110, 0.2)',
+    borderBottomWidth: 1.5,
+    borderBottomColor: 'rgba(255, 255, 255, 0.2)'
+  },
+  wellTitle: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: -0.2
+  },
+  wellSubtitle: {
+    color: 'rgba(255, 255, 255, 0.72)',
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 2,
     marginBottom: 16
   },
-  headerLeft: {
-    flex: 1
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '900',
-    letterSpacing: -0.3
-  },
-  sectionSubtitle: {
-    fontSize: 11,
-    fontWeight: '600',
-    marginTop: 1
-  },
-  totalBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 5
-  },
-  totalBadgeText: {
-    fontSize: 12,
-    fontWeight: '900'
-  },
-  chartBox: {
-    borderRadius: 20,
-    paddingVertical: 18,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-    borderTopWidth: 2,
-    borderBottomWidth: 3
-  },
-  barsContainer: {
+  barsRow: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-around',
-    height: 120
+    height: 136,
+    paddingTop: 8
   },
   barCol: {
     alignItems: 'center',
@@ -269,45 +236,54 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   barTrack: {
-    width: 14,
-    height: 95,
+    height: 106,
+    width: 24,
     justifyContent: 'flex-end',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 8
   },
-  clayVerticalBar: {
-    width: 14,
-    borderRadius: 7,
+  pinkClayBar: {
+    width: 15,
+    borderRadius: 10,
     borderTopWidth: 2,
     borderLeftWidth: 1.5,
-    borderRightWidth: 1.5,
+    borderRightWidth: 1,
     borderBottomWidth: 3.5,
-    shadowOffset: { width: 0, height: 3 },
+    borderRightColor: 'rgba(0, 0, 0, 0.08)',
+    shadowColor: '#3A1C70',
+    shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.35,
-    shadowRadius: 5,
-    elevation: 3
+    shadowRadius: 6,
+    elevation: 4
   },
-  barLabel: {
-    fontSize: 10,
-    marginTop: 8
+  barDayLabel: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 11,
+    fontWeight: '800'
   },
-  pillsScroll: {
-    gap: 8
+  filterRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingTop: 14
   },
-  clayPillBtn: {
+  filterChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 7,
+    gap: 5,
     paddingHorizontal: 12,
-    gap: 5
+    paddingVertical: 6,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)'
   },
-  pillIcon: {
-    marginLeft: 1
+  filterChipActive: {
+    backgroundColor: 'rgba(255, 255, 255, 0.32)',
+    borderColor: '#FFFFFF'
   },
-  pillText: {
-    fontSize: 12
-  },
-  pillPercent: {
-    fontSize: 10,
+  filterChipText: {
+    color: '#FFFFFF',
+    fontSize: 11,
     fontWeight: '700'
   }
 });

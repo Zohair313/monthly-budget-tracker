@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [themeMode, setThemeMode] = useState('dark');
+  const [themeMode, setThemeMode] = useState('light');
   const [demoMode, setDemoModeState] = useState(false);
   const [apiUrl, setApiUrlState] = useState(api.getBaseUrl());
 
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
           await api.init();
           const storedToken = await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
           const storedUser = await AsyncStorage.getItem(STORAGE_KEYS.USER);
-          const storedTheme = await AsyncStorage.getItem(STORAGE_KEYS.THEME);
+          const storedTheme = await AsyncStorage.getItem('@clay_theme_v2');
           const storedDemo = await AsyncStorage.getItem(STORAGE_KEYS.DEMO_MODE);
 
           if (storedToken && storedUser) {
@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
   const toggleTheme = async () => {
     const nextTheme = themeMode === 'dark' ? 'light' : 'dark';
     setThemeMode(nextTheme);
-    await AsyncStorage.setItem(STORAGE_KEYS.THEME, nextTheme);
+    await AsyncStorage.setItem('@clay_theme_v2', nextTheme);
   };
 
   const updateApiUrl = async (newUrl) => {

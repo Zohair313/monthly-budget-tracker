@@ -1,220 +1,284 @@
 export const palette = {
-  // Light Theme: Unified Executive Ceramic Slate (Apple / Revolut / Stripe Financial Standard)
+  // Light Theme: True 3D Tactile Claymorphism (Matches Mockup Reference)
   light: {
     name: 'light',
-    // Universal Unified Canvas
-    background: '#F8FAFC',           // Entire screen background (Consistent top to bottom)
-    sheetBackground: '#F8FAFC',      // Seamless matching sheet
-    topHeaderBg: '#F8FAFC',
-    
-    // Elevated Cards & Surfaces
-    surface: '#FFFFFF',              // Pure crisp elevated white card
-    surfaceSubtle: '#F1F5F9',        // Soft tactile mist
-    surfaceHover: '#E2E8F0',
-    border: '#E2E8F0',               // Hairline crisp border
-    borderSubtle: '#F1F5F9',
-    
-    // Executive Balance Card (Hero Obsidian Navy)
-    brandCard: '#0F172A',            // Midnight Obsidian Card
-    brandCardHighlight: '#1E293B',
-    brandCardBorder: 'rgba(255, 255, 255, 0.12)',
-    
+    // Canvas & Curved Backdrop
+    background: '#F6F6FC',           // Soft Porcelain Lavender-White Canvas
+    sheetBackground: '#F6F6FC',
+    topBackdrop: '#7A63F1',          // Vibrant Soft Clay Violet Header Backdrop
+    topBackdropDark: '#634BD9',
+    topHeaderBg: '#7A63F1',
+
+    // Puffy White Clay Surfaces
+    surface: '#FFFFFF',
+    surfaceSubtle: '#F0F2FA',
+    surfaceHover: '#E7EAF6',
+    border: '#E4E7F5',
+    borderSubtle: '#ECEEF8',
+    clayBorderTop: '#FFFFFF',
+    clayBorderBottom: '#DCE0F2',
+
+    // Hero 3D Purple Clay Card
+    brandCard: '#6B52E8',
+    brandCardHighlight: 'rgba(255, 255, 255, 0.35)',
+    brandCardBottom: '#4C33C6',
+    brandCardBorder: 'rgba(255, 255, 255, 0.35)',
+
     // Typography
-    text: '#0F172A',                 // Deep obsidian slate
+    text: '#1E243C',
     textWhite: '#FFFFFF',
-    textSecondary: '#475569',
-    textTertiary: '#94A3B8',
+    textSecondary: '#7B849E',
+    textTertiary: '#9AA3BC',
     textMuted: '#CBD5E1',
-    
+
     // Brand Accent
-    primary: '#4F46E5',              // Royal Indigo
-    primaryDark: '#3730A3',
-    primaryLight: 'rgba(79, 70, 229, 0.08)',
-    
-    // Financial Metrics
-    income: '#10B981',               // Emerald Mint
-    incomeDark: '#059669',
-    incomeLight: 'rgba(16, 185, 129, 0.08)',
-    incomeSurface: '#ECFDF5',
-    incomeBorder: '#A7F3D0',
-    
-    expense: '#EF4444',              // Crimson Rose
-    expenseDark: '#DC2626',
-    expenseLight: 'rgba(239, 68, 68, 0.08)',
-    expenseSurface: '#FEF2F2',
-    expenseBorder: '#FECDD3',
-    
-    warning: '#F59E0B',              // Amber Caution
+    primary: '#7259EE',
+    primaryDark: '#5138CC',
+    primaryLight: 'rgba(114, 89, 238, 0.12)',
+
+    // Financial Metrics (Pastel Tactile Clay)
+    income: '#34C77B',
+    incomeDark: '#209E5C',
+    incomeHighlight: '#86F0B8',
+    incomeLight: '#E8FAF0',
+    incomeSurface: '#45CF87',
+    incomeBorder: '#24A462',
+
+    expense: '#F06464',
+    expenseDark: '#CC4343',
+    expenseHighlight: '#FFA3A3',
+    expenseLight: '#FFF0F0',
+    expenseSurface: '#F2696B',
+    expenseBorder: '#CE4546',
+
+    warning: '#F59E0B',
     warningDark: '#D97706',
-    warningLight: 'rgba(245, 158, 11, 0.08)',
-    warningSurface: '#FFFBEB',
+    warningLight: '#FFFBEB',
+    warningSurface: '#FBBF24',
     warningBorder: '#FDE68A',
-    
-    info: '#0284C7',
-    infoDark: '#0369A1',
-    infoLight: 'rgba(2, 132, 199, 0.08)',
-    
-    // Action Tiles
-    tileMint: '#10B981',
-    tileMintBg: '#ECFDF5',
-    tileMintBorder: '#A7F3D0',
-    
-    tileCoral: '#EF4444',
-    tileCoralBg: '#FEF2F2',
-    tileCoralBorder: '#FECDD3',
-    
-    tileViolet: '#4F46E5',
-    tileVioletBg: '#EEF2FF',
-    tileVioletBorder: '#C7D2FE',
-    
-    tileCyan: '#0284C7',
-    tileCyanBg: '#F0F9FF',
-    tileCyanBorder: '#BAE6FD',
-    
-    // Bottom Dock
-    dockBg: '#0F172A',
-    dockActive: '#4F46E5',
-    dockInactive: '#94A3B8',
-    
-    shadow: '#0F172A',
-    cardShadow: '#64748B'
+
+    info: '#70C7D6',
+    infoDark: '#4AA1B0',
+    infoLight: '#ECF9FB',
+
+    // 4 Puffy 3D Pastel Action Tiles (Exact Mockup Colors)
+    tileMint: '#5AD494',
+    tileMintTop: '#9AF5C4',
+    tileMintBottom: '#34AD6E',
+
+    tileCoral: '#F59AB3',
+    tileCoralTop: '#FFCCD9',
+    tileCoralBottom: '#D46D8A',
+
+    tileViolet: '#8A79F6',
+    tileVioletTop: '#BCB0FF',
+    tileVioletBottom: '#6150CE',
+
+    tileCyan: '#92D9E6',
+    tileCyanTop: '#C7F3FA',
+    tileCyanBottom: '#5DB2C2',
+
+    // Curved Puffy Purple Bottom Dock
+    dockBg: '#6D54EA',
+    dockTop: 'rgba(255, 255, 255, 0.35)',
+    dockBottom: '#4B33C2',
+    dockActive: '#FFFFFF',
+    dockInactive: 'rgba(255, 255, 255, 0.62)',
+
+    // Chart Card (Screen 2 Mockup)
+    chartBg: '#745CEB',
+    chartWell: '#634BD9',
+    chartBar: '#F794AD',
+    chartBarTop: '#FFC8D7',
+    chartBarBottom: '#D46684',
+
+    shadow: '#6D54EA',
+    cardShadow: '#7A63F1'
   },
 
-  // Dark Theme: Midnight Obsidian & Luminous Sapphire (Linear / Mercury Dark Standard)
+  // Dark Theme: Puffy Velvet Indigo Claymorphism
   dark: {
     name: 'dark',
-    background: '#0B0F19',           // Seamless Midnight Obsidian
-    sheetBackground: '#0B0F19',
-    topHeaderBg: '#0B0F19',
-    
-    surface: '#1E293B',              // Elevated Slate Card
-    surfaceSubtle: '#161F30',
-    surfaceHover: '#334155',
-    border: '#334155',
-    borderSubtle: '#1E293B',
-    
-    brandCard: '#111827',            // Midnight Card with subtle rim
-    brandCardHighlight: '#1F2937',
-    brandCardBorder: 'rgba(255, 255, 255, 0.15)',
-    
+    background: '#131224',
+    sheetBackground: '#131224',
+    topBackdrop: '#463599',
+    topBackdropDark: '#312375',
+    topHeaderBg: '#463599',
+
+    surface: '#1F1D36',
+    surfaceSubtle: '#17152B',
+    surfaceHover: '#292647',
+    border: '#2E2B4F',
+    borderSubtle: '#262342',
+    clayBorderTop: 'rgba(255, 255, 255, 0.14)',
+    clayBorderBottom: '#0C0B18',
+
+    brandCard: '#5B43D6',
+    brandCardHighlight: 'rgba(255, 255, 255, 0.28)',
+    brandCardBottom: '#3B25A8',
+    brandCardBorder: 'rgba(255, 255, 255, 0.25)',
+
     text: '#F8FAFC',
     textWhite: '#FFFFFF',
-    textSecondary: '#94A3B8',
-    textTertiary: '#64748B',
-    textMuted: '#475569',
-    
-    primary: '#6366F1',              // Luminous Indigo
-    primaryDark: '#4F46E5',
-    primaryLight: 'rgba(99, 102, 241, 0.15)',
-    
-    income: '#34D399',               // Neon Mint
-    incomeDark: '#10B981',
-    incomeLight: 'rgba(52, 211, 153, 0.12)',
-    incomeSurface: 'rgba(52, 211, 153, 0.10)',
-    incomeBorder: 'rgba(52, 211, 153, 0.3)',
-    
-    expense: '#FB7185',              // Neon Rose
-    expenseDark: '#F43F5E',
-    expenseLight: 'rgba(251, 113, 133, 0.12)',
-    expenseSurface: 'rgba(251, 113, 133, 0.10)',
-    expenseBorder: 'rgba(251, 113, 133, 0.3)',
-    
+    textSecondary: '#A4A9C4',
+    textTertiary: '#737999',
+    textMuted: '#4E5370',
+
+    primary: '#7D66F5',
+    primaryDark: '#5942CC',
+    primaryLight: 'rgba(125, 102, 245, 0.18)',
+
+    income: '#43D98C',
+    incomeDark: '#24A663',
+    incomeHighlight: '#85F5BB',
+    incomeLight: 'rgba(67, 217, 140, 0.14)',
+    incomeSurface: '#34C77B',
+    incomeBorder: '#1E8C52',
+
+    expense: '#FA7476',
+    expenseDark: '#D14B4D',
+    expenseHighlight: '#FFA8AA',
+    expenseLight: 'rgba(250, 116, 118, 0.14)',
+    expenseSurface: '#EB5E60',
+    expenseBorder: '#BD393B',
+
     warning: '#FBBF24',
-    warningDark: '#F59E0B',
-    warningLight: 'rgba(251, 191, 36, 0.12)',
-    warningSurface: 'rgba(251, 191, 36, 0.10)',
-    warningBorder: 'rgba(251, 191, 36, 0.3)',
-    
-    info: '#38BDF8',
-    infoDark: '#0284C7',
-    infoLight: 'rgba(56, 189, 248, 0.12)',
-    
-    tileMint: '#34D399',
-    tileMintBg: 'rgba(52, 211, 153, 0.12)',
-    tileMintBorder: 'rgba(52, 211, 153, 0.25)',
-    
-    tileCoral: '#FB7185',
-    tileCoralBg: 'rgba(251, 113, 133, 0.12)',
-    tileCoralBorder: 'rgba(251, 113, 133, 0.25)',
-    
-    tileViolet: '#818CF8',
-    tileVioletBg: 'rgba(129, 140, 248, 0.12)',
-    tileVioletBorder: 'rgba(129, 140, 248, 0.25)',
-    
-    tileCyan: '#38BDF8',
-    tileCyanBg: 'rgba(56, 189, 248, 0.12)',
-    tileCyanBorder: 'rgba(56, 189, 248, 0.25)',
-    
-    dockBg: '#111827',
-    dockActive: '#6366F1',
-    dockInactive: '#64748B',
-    
+    warningDark: '#D97706',
+    warningLight: 'rgba(251, 191, 36, 0.15)',
+    warningSurface: '#F59E0B',
+    warningBorder: 'rgba(251, 191, 36, 0.35)',
+
+    info: '#6BD4E8',
+    infoDark: '#44A8BC',
+    infoLight: 'rgba(107, 212, 232, 0.14)',
+
+    tileMint: '#3FC47E',
+    tileMintTop: '#7CEDB2',
+    tileMintBottom: '#239156',
+
+    tileCoral: '#E67D9A',
+    tileCoralTop: '#FFB0C6',
+    tileCoralBottom: '#B8516E',
+
+    tileViolet: '#7866E8',
+    tileVioletTop: '#A99BFF',
+    tileVioletBottom: '#4F3EB8',
+
+    tileCyan: '#69C2D4',
+    tileCyanTop: '#A4E9F7',
+    tileCyanBottom: '#3E92A3',
+
+    dockBg: '#533DC9',
+    dockTop: 'rgba(255, 255, 255, 0.25)',
+    dockBottom: '#352299',
+    dockActive: '#FFFFFF',
+    dockInactive: 'rgba(255, 255, 255, 0.55)',
+
+    chartBg: '#4C39AD',
+    chartWell: '#3C2A94',
+    chartBar: '#F794AD',
+    chartBarTop: '#FFC8D7',
+    chartBarBottom: '#C95D7A',
+
     shadow: '#000000',
     cardShadow: '#000000'
   }
 };
 
+// True Puffy 3D Claymorphism Card Helper
 export const getClayCard = (themeMode = 'light') => {
   const isDark = themeMode === 'dark';
   return {
-    backgroundColor: isDark ? '#1E293B' : '#FFFFFF',
-    borderColor: isDark ? '#334155' : '#E2E8F0',
-    borderWidth: 1,
-    shadowColor: isDark ? '#000000' : '#0F172A',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: isDark ? 0.35 : 0.06,
-    shadowRadius: 12,
-    elevation: 3
+    backgroundColor: isDark ? '#1F1D36' : '#FFFFFF',
+    borderRadius: 24,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1.5,
+    borderBottomWidth: 4.5,
+    borderTopColor: isDark ? 'rgba(255, 255, 255, 0.14)' : '#FFFFFF',
+    borderLeftColor: isDark ? 'rgba(255, 255, 255, 0.08)' : '#FFFFFF',
+    borderRightColor: isDark ? 'rgba(0, 0, 0, 0.25)' : '#ECEEF8',
+    borderBottomColor: isDark ? '#0D0C1A' : '#DCE0F3',
+    shadowColor: isDark ? '#000000' : '#7A63F1',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: isDark ? 0.45 : 0.13,
+    shadowRadius: 18,
+    elevation: 7
   };
 };
 
-export const getClayButton = (themeMode = 'light', variant = 'primary') => {
+// Puffy 3D Clay Button Helper
+export const getClayButton = (themeMode = 'light', customBg, customBottom) => {
   const isDark = themeMode === 'dark';
-  let bg = isDark ? '#6366F1' : '#4F46E5';
-  let shadow = isDark ? '#4F46E5' : '#3730A3';
-  
-  if (variant === 'income') {
-    bg = isDark ? '#059669' : '#10B981';
-    shadow = '#047857';
-  } else if (variant === 'expense') {
-    bg = isDark ? '#E11D48' : '#EF4444';
-    shadow = '#BE123C';
+  let bg = customBg || (isDark ? '#7D66F5' : '#7259EE');
+  let bottom = customBottom || (isDark ? '#543DC4' : '#4E35C4');
+
+  if (customBg === 'income') {
+    bg = '#45CF87';
+    bottom = '#24A462';
+  } else if (customBg === 'expense') {
+    bg = '#F2696B';
+    bottom = '#CE4546';
+  } else if (customBg === 'primary') {
+    bg = isDark ? '#7D66F5' : '#7259EE';
+    bottom = isDark ? '#543DC4' : '#4E35C4';
   }
-  
+
   return {
     backgroundColor: bg,
-    shadowColor: shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 4
+    borderRadius: 18,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1,
+    borderBottomWidth: 4.5,
+    borderTopColor: 'rgba(255, 255, 255, 0.42)',
+    borderLeftColor: 'rgba(255, 255, 255, 0.25)',
+    borderRightColor: 'rgba(0, 0, 0, 0.08)',
+    borderBottomColor: bottom,
+    shadowColor: bottom,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5
   };
 };
 
+// Soft Recessed Clay Input Helper
 export const getClayInput = (themeMode = 'light') => {
   const isDark = themeMode === 'dark';
   return {
-    backgroundColor: isDark ? '#161F30' : '#F8FAFC',
-    borderColor: isDark ? '#334155' : '#E2E8F0',
-    borderWidth: 1
+    backgroundColor: isDark ? '#151329' : '#F3F4FB',
+    borderRadius: 16,
+    borderTopWidth: 2,
+    borderLeftWidth: 1.5,
+    borderRightWidth: 1,
+    borderBottomWidth: 1.5,
+    borderTopColor: isDark ? '#0B0A17' : '#DDE1F2',
+    borderLeftColor: isDark ? '#0D0C1C' : '#E3E6F5',
+    borderRightColor: isDark ? 'rgba(255,255,255,0.06)' : '#FFFFFF',
+    borderBottomColor: isDark ? 'rgba(255,255,255,0.08)' : '#FFFFFF'
   };
 };
 
+// Soft Puffy Clay Pill Helper
 export const getClayPill = (themeMode = 'light') => {
   const isDark = themeMode === 'dark';
   return {
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: isDark ? '#334155' : '#E2E8F0'
+    borderRadius: 14,
+    borderTopWidth: 1.5,
+    borderBottomWidth: 3,
+    borderTopColor: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.9)',
+    borderBottomColor: isDark ? '#0C0B18' : '#D9DDF0'
   };
 };
 
 export const categoryColors = {
-  Food: { color: '#EF4444', bg: '#FEF2F2', icon: 'fast-food' },
-  Bills: { color: '#F59E0B', bg: '#FFFBEB', icon: 'flash' },
-  Travel: { color: '#0284C7', bg: '#F0F9FF', icon: 'car-sport' },
-  Shopping: { color: '#8B5CF6', bg: '#F5F3FF', icon: 'bag-handle' },
-  Health: { color: '#10B981', bg: '#ECFDF5', icon: 'medkit' },
-  Entertainment: { color: '#EC4899', bg: '#FDF2F8', icon: 'game-controller' },
-  General: { color: '#64748B', bg: '#F1F5F9', icon: 'cube' }
+  Food: { color: '#F2696B', darkColor: '#CE4546', bg: '#FFF0F0', icon: 'fast-food' },
+  Bills: { color: '#F59AB3', darkColor: '#D46D8A', bg: '#FFF2F6', icon: 'flash' },
+  Travel: { color: '#70C7D6', darkColor: '#4BA1B0', bg: '#ECF9FB', icon: 'car-sport' },
+  Shopping: { color: '#8A79F6', darkColor: '#6150CE', bg: '#F2F0FF', icon: 'bag-handle' },
+  Health: { color: '#45CF87', darkColor: '#24A462', bg: '#E8FAF0', icon: 'medkit' },
+  Entertainment: { color: '#F59E0B', darkColor: '#D97706', bg: '#FFFBEB', icon: 'game-controller' },
+  Education: { color: '#6366F1', darkColor: '#4338CA', bg: '#EEF2FF', icon: 'book' },
+  General: { color: '#7D66F5', darkColor: '#5942CC', bg: '#F2F0FF', icon: 'cube' }
 };

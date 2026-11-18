@@ -74,7 +74,7 @@ export default function App() {
 
   if (showSplash) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#0F172A' }}>
+      <View style={{ flex: 1, backgroundColor: '#7A63F1' }}>
         <AnimatedSplashScreen onFinish={() => setShowSplash(false)} />
       </View>
     );
